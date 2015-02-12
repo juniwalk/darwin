@@ -20,13 +20,9 @@
         "mnapoli/silly": "dev-master"
     },
     "autoload": {
-        "psr-4": {
-            "JuniWalk\\Darwin\\": "src/"
-        }
+        "psr-4": {"JuniWalk\\Darwin\\": "src/"}
     },
     "autoload-dev": {
-        "psr-4": {
-            "JuniWalk\\Darwin\\Tests\\": "tests/"
-        }
+        "psr-4": {"JuniWalk\\Darwin\\Tests\\": "tests/"}
     }
 }
