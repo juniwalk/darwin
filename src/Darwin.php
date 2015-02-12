@@ -10,8 +10,23 @@
 
 namespace JuniWalk\Darwin;
 
+use JuniWalk\Darwin\Command\FixCommand;
 use Symfony\Component\Console\Application;
 
 class Darwin extends Application
 {
+    /**
+     * Gets the default commands that should always be available.
+     *
+     * @return Command[] An array of default Command instances
+     */
+    protected function getDefaultCommands()
+    {
+        // Get default parent commands and add new
+        $cmds = parent::getDefaultCommands();
+        $cmds[] = new FixCommand();
+
+        // Return commands
+        return $cmds;
+    }
 }
