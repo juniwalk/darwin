@@ -16,7 +16,8 @@
     "bin": ["bin/darwin"],
     "require": {
         "php": ">=5.4",
-        "symfony/console": "~2.6"
+        "symfony/console": "~2.6",
+        "nette/finder": "~2.1"
     },
     "autoload": {
         "psr-4": {"JuniWalk\\Darwin\\": "src/"}
