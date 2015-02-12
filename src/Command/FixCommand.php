@@ -28,7 +28,7 @@ class FixCommand extends Command
 
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
-        $this->addOption('owner', 'o', InputOption::VALUE_OPTIONAL, 'Define owner for files', 'www-data');
+        $this->addOption('owner', 'o', InputOption::VALUE_REQUIRED, 'Define owner for files', 'www-data');
     }
 
 
