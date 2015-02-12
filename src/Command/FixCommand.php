@@ -26,7 +26,7 @@ class FixCommand extends Command
         $this->setDescription('Fix permissions of the files and dirs');
 
         // Define arguments and options of this command
-        $this->addArgument('name', InputArgument::OPTIONAL, 'Path to the project');
+        $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project');
         $this->addOption('owner', 'o', InputOption::VALUE_OPTIONAL, 'Define owner for files');
     }
 
@@ -39,17 +39,11 @@ class FixCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
-        if ($name) {
-            $text = 'Hello '.$name;
-        } else {
-            $text = 'Hello';
-        }
+        // Gather arguments and options of this command
+        $dir = $input->getArgument('dir') ?: getcwd();
+        $owner = $input->getOption('owner') ?: 'www-data';
 
-        if ($input->getOption('yell')) {
-            $text = strtoupper($text);
-        }
 
-        $output->writeln($text);
+        $output->writeln("\$ darwin fix {$dir} --owner={$owner}");
     }
 }
