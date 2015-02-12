@@ -13,5 +13,5 @@ namespace JuniWalk\Darwin\Bin;
 
 
 // Include vendor autoloader to access projects
-include __DIR__.'/../../vendor/autoload.php';
+include __DIR__.'/../../autoload.php';
 
