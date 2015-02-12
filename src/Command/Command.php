@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,6 +31,26 @@ class Command extends \Symfony\Component\Console\Command\Command
     {
         $this->input = $input;
         $this->output = $output;
+    }
+
+
+    /**
+     * Dialog to confirm some action.
+     *
+     * @param  int  $steps  Maximum steps
+     * @return ProgressBar
+     */
+    public function getProgressBar($steps = 0)
+    {
+        // Prepare task progress bar
+        $bar = new ProgressBar($this->output, $steps);
+        $bar->setFormat(PHP_EOL.' %current%/%max% [%bar%] %percent:3s%% %memory:6s%'.PHP_EOL.' %message%'.PHP_EOL);
+        $bar->setBarCharacter('<comment>-</comment>');
+        $bar->setProgressCharacter('<comment>></comment>');
+        $bar->setEmptyBarCharacter(' ');
+        $bar->setRedrawFrequency(50);
+
+        return $bar;
     }
 
 
