@@ -11,9 +11,8 @@
 namespace JuniWalk\Darwin;
 
 use JuniWalk\Darwin\Command\FixCommand;
-use Symfony\Component\Console\Application;
 
-class Darwin extends Application
+class Darwin extends \Symfony\Component\Console\Application
 {
     /**
      * Initialize Darwin application.
