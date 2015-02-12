@@ -1,0 +1,32 @@
+{
+    "name": "juniwalk/darwin",
+    "type": "library",
+    "description": "Set of tools to help you with your project.",
+    "keywords": [""],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Procházka",
+            "email": "juniwalk@outlook.cz",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/juniwalk/darwin/issues"
+    },
+    "bin": ["bin/darwin"],
+    "require": {
+        "php": ">=5.4",
+        "mnapoli/silly": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "JuniWalk\\Darwin\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JuniWalk\\Darwin\\Tests\\": "tests/"
+        }
+    }
+}
