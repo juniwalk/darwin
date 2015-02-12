@@ -10,6 +10,8 @@
 
 namespace JuniWalk\Darwin;
 
-class Darwin
+use Symfony\Component\Console\Application;
+
+class Darwin extends Application
 {
 }
