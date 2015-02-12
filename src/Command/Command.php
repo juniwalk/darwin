@@ -10,8 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -41,26 +40,12 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @param  bool    $default  Default outcome
      * @return bool
      */
-    public function getDialog()
-    {
-        // Create DialogHelper instance
-        $dialog = new DialogHelper;
-        $dialog->setInput($this->input);
-
-        return $dialog;
-    }
-
-
-    /**
-     * Dialog to confirm some action.
-     *
-     * @param  string  $message  Dialog message
-     * @param  bool    $default  Default outcome
-     * @return bool
-     */
     public function confirm($message, $default = true)
     {
+        // Build confirmation question with the given message
+        $question = new ConfirmationQuestion($message.PHP_EOL, $default);
+
         // Ask user for confirmation and then return the outcome user has decided
-        return $this->getDialog()->askConfirmation($this->output, $message.PHP_EOL, $default);
+        return $this->getHelper('question')->ask($this->input, $this->output, $question);
     }
 }
