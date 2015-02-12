@@ -18,9 +18,5 @@ use JuniWalk\Darwin\Darwin;
 include __DIR__.'/../../../autoload.php';
 
 
-// Prepare Darwin aplication and all its commands
-$darwin = new Darwin;
-
-
 // Run Darwin Application
-$darwin->run();
+(new Darwin)->run();
