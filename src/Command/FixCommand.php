@@ -24,11 +24,11 @@ class FixCommand extends Command
     protected function configure()
     {
         $this->setName('fix');
-        $this->setDescription('Fix permissions of the files and dirs.');
+        $this->setDescription('Fix permissions of the files and dirs');
 
         //
-        $this->addArgument('name', InputArgument::OPTIONAL, 'Path to the project.');
-        $this->addOption('owner', 'o', InputOption::VALUE_OPTIONAL, 'Define owner for files.');
+        $this->addArgument('name', InputArgument::OPTIONAL, 'Path to the project');
+        $this->addOption('owner', 'o', InputOption::VALUE_OPTIONAL, 'Define owner for files');
         ;
     }
 
