@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use Nette\Utils\Finder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -55,6 +56,47 @@ class FixCommand extends Command
             return null;
         }
 
-        $output->writeln("\$ darwin fix {$dir} --owner={$owner}");
+        // Search for files and dirs in the folder
+        $search = Finder::find('*')->from($dir);
+        $sizeof = iterator_count($search);
+
+        // If there are no contents
+        if (empty($sizeof)) {
+            return null;
+        }
+
+        // Get new progress bar instance
+        $bar = $this->getProgressBar($sizeof);
+
+        // Search for each file and dir in current project and set privileges
+        foreach ($search as $path => $file) {
+            // Display path to file in the message
+            $bar->setMessage($path);
+
+            // If this is not one of locked files
+            if (!preg_match(LOCKED_FILES, $file->getFilename())) {
+                // Change owner to Apache user
+                chown($path, $owner);
+            }
+
+            // If this is a directory
+            if ($file->isDir()) {
+                // Set appropriate mode
+                chmod($path, 0755);
+            }
+
+            // If this is a file
+            if ($file->isFile()) {
+                // Set appropriate mode
+                chmod($path, 0644);
+            }
+
+            // Advance progress bar
+            $bar->advance();
+        }
+
+        // Task has finished
+        $bar->setMessage('<info>Okay, all fixed now.</info>');
+        $bar->finish();
     }
 }
