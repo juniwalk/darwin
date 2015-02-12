@@ -26,9 +26,9 @@ class FixCommand extends Command
         $this->setName('fix');
         $this->setDescription('Fix permissions of the files and dirs');
 
-        // Define arguments and options of this command
-        $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project');
-        $this->addOption('owner', 'o', InputOption::VALUE_OPTIONAL, 'Define owner for files');
+        // Define arguments and options of this command with default values
+        $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
+        $this->addOption('owner', 'o', InputOption::VALUE_OPTIONAL, 'Define owner for files', 'www-data');
     }
 
 
@@ -41,8 +41,8 @@ class FixCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Gather arguments and options of this command
-        $dir = $input->getArgument('dir') ?: getcwd();
-        $owner = $input->getOption('owner') ?: 'www-data';
+        $dir = $input->getArgument('dir');
+        $owner = $input->getOption('owner');
 
 
         $output->writeln("\$ darwin fix {$dir} --owner={$owner}");
