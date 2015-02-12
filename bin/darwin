@@ -11,7 +11,16 @@
 
 namespace JuniWalk\Darwin\Bin;
 
+use JuniWalk\Darwin\Darwin;
+
 
 // Include vendor autoloader to access projects
 include __DIR__.'/../../autoload.php';
 
+
+// Prepare Darwin aplication and all its commands
+$darwin = new Darwin;
+
+
+// Run Darwin Application
+$darwin->run();
