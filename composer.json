@@ -2,7 +2,6 @@
     "name": "juniwalk/darwin",
     "type": "library",
     "description": "Set of tools to help you with your project.",
-    "keywords": [""],
     "license": "MIT",
     "authors": [
         {
