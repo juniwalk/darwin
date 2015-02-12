@@ -10,7 +10,8 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,10 +41,21 @@ class FixCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Set input/output streams into instance
+        $this->setInputOutput($input, $output);
+
         // Gather arguments and options of this command
         $dir = $input->getArgument('dir');
         $owner = $input->getOption('owner');
 
+        // Output which directory we are trying to fix right now
+        $output->writeln(PHP_EOL.'<info>We will fix permissions and set owner to <comment>'.$owner.'</comment> for directory:</info>');
+        $output->writeln('<comment>'.$dir.'</comment>'.PHP_EOL);
+
+        // If the user does not wish to continue
+        if (!$this->confirm('<info>Is this correct path <comment>[y,N]</comment>?</info>', false)) {
+            return null;
+        }
 
         $output->writeln("\$ darwin fix {$dir} --owner={$owner}");
     }
