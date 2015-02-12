@@ -19,6 +19,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FixCommand extends Command
 {
     /**
+     * Define names of files that should be locked out from Apache user
+     *
+     * @var string
+     */
+    const LOCKED_FILES = '/(index|config|htaccess|composer)/is';
+
+
+    /**
      * Configure this command.
      */
     protected function configure()
@@ -74,7 +82,7 @@ class FixCommand extends Command
             $bar->setMessage($path);
 
             // If this is not one of locked files
-            if (!preg_match(LOCKED_FILES, $file->getFilename())) {
+            if (!preg_match(static::LOCKED_FILES, $file->getFilename())) {
                 // Change owner to Apache user
                 chown($path, $owner);
             }
