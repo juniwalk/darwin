@@ -21,7 +21,10 @@ class Darwin extends Application
     public function __construct()
     {
         // Set the name of application
-        parent::__construct('Darwin');
+        parent::__construct('Darwin', 'v0.9');
+
+        // Set description of this CLI application
+        $this->definition = 'Set of tools to help you with your project.';
     }
 
 
