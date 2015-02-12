@@ -16,7 +16,7 @@
     "bin": ["bin/darwin"],
     "require": {
         "php": ">=5.4",
-        "mnapoli/silly": "dev-master"
+        "symfony/console": "~2.2"
     },
     "autoload": {
         "psr-4": {"JuniWalk\\Darwin\\": "src/"}
