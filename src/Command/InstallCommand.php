@@ -36,14 +36,6 @@ class InstallCommand extends Command
 
 
     /**
-     * Path to temporary phar file..
-     *
-     * @var string
-     */
-    const TEMP = './darwin.phar';
-
-
-    /**
      * Configure this command.
      */
     protected function configure()
@@ -72,8 +64,18 @@ class InstallCommand extends Command
         $path = $input->getArgument('path');
         $mode = $input->getArgument('mode');
 
+        // Output which directory we are trying to fix right now
+        $output->writeln(PHP_EOL.'<info>Darwin will be installed into:</info>');
+        $output->writeln('<comment>'.$path.'</comment>'.PHP_EOL);
+
+        // If the user does not wish to continue
+        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
+            return null;
+        }
+
         // Search for the *.php files without tests
-        $files = Finder::findFiles('*.php')->from('./..')
+        $files = Finder::findFiles('*.php')
+            ->from($this->getHome())
             ->exclude('res', 'tests');
 
         // Get the number of found files
@@ -81,20 +83,15 @@ class InstallCommand extends Command
 
         // If there are no contents
         if (empty($sizeof)) {
-            return null;
+            throw new \RuntimeException('Missing Darwin files.');
         }
 
         // Get new progress bar instance
         $bar = $this->getProgressBar($sizeof);
 
-        // If the Phar already exists
-        if (is_file(static::TEMP)) {
-            // Try to unlink it
-            @unlink(static::TEMP);
-        }
-
         // Create new and empty Phar archive
-        $phar = new Phar(static::TEMP, null, 'darwin.phar');
+        $phar = $this->getHome().'/bin/darwin.phar';
+        $phar = new Phar($phar, null, 'darwin.phar');
 
         // Iterate over the found files
         foreach ($files as $realpath => $file) {
@@ -114,10 +111,12 @@ class InstallCommand extends Command
         // Set bootstrap file and compress data
         $phar->setStub($this->getBootstrap());
         $phar->compressFiles($phar::GZ);
-        $phar = null; // Save the archive
+
+        // Close the phar and get path
+        $phar = $phar->getFile();
 
         // Move the file to PATH and set mode
-        if (!rename(static::TEMP, $path)) {
+        if (!rename($phar, $path)) {
             throw new \RuntimeException('Failed to write the phar.');
         }
 
@@ -137,5 +136,17 @@ class InstallCommand extends Command
     {
         // Return the contents of the bootstrap.php file
         return file_get_contents(__DIR__.'/../../res/bootstrap.php');
+    }
+
+
+    /**
+     * Path to home directory.
+     *
+     * @return string
+     */
+    protected function getHome()
+    {
+        // Get the path to /vendor directory
+        return realpath(__DIR__.'/../../../..');
     }
 }
