@@ -13,7 +13,7 @@
     "support": {
         "issues": "https://github.com/juniwalk/darwin/issues"
     },
-    "bin": ["bin/darwin"],
+    "bin": ["bin/darwin", "bin/darwin.php"],
     "require": {
         "php": ">=5.4",
         "symfony/console": "~2.6",
