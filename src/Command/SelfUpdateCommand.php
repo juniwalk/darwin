@@ -39,10 +39,10 @@ class SelfUpdateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Get the name of the application package for update
-        $pkgn = $this->getApplication()->getPackage()->name;
+        $name = $this->getApplication()->getPackage();
 
         // Prepare command to run update on package
-        $cmd = 'composer global update '.$pkgn;
+        $cmd = 'composer global update '.$name;
 
         // If the autoloader should be optimized
         if ($input->getOption('optimize')) {
