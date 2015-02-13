@@ -62,7 +62,7 @@ class InstallCommand extends Command
         }
 
         // Get the path to the darwin executable
-        $link = __DIR__.'/../../bin/darwin';
+        $link = realpath(__DIR__.'/../../bin/darwin');
 
         // If destination file exists
         if (file_exists($path)) {
