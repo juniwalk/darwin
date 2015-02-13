@@ -14,7 +14,7 @@ Permission fix
 --------------
 
 ```
-$ darwin fix dir --owner|-o
+$ darwin fix dir -o|--owner
 ```
 
 Both dir and owner are optional.
