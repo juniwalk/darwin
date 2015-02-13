@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FixCommand extends Command
 {
     /**
-     * Define names of files that should be locked out from Apache user
+     * Define names of files that should be locked out from Apache user.
      *
      * @var string
      */
@@ -41,7 +41,7 @@ class FixCommand extends Command
 
 
     /**
-     * Command's entry point
+     * Command's entry point.
      *
      * @param InputInterface   $input   Input stream
      * @param OutputInterface  $output  Output stream

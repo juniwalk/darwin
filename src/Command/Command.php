@@ -17,7 +17,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Command extends \Symfony\Component\Console\Command\Command
 {
+    /**
+     * Input stream.
+     *
+     * @var InputInterface
+     */
     private $input;
+
+    /**
+     * Output stream.
+     *
+     * @var OutputInterface
+     */
     private $output;
 
 
@@ -27,7 +38,7 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @param InputInterface   $input   Input stream
      * @param OutputInterface  $output  Output stream
      */
-    public function setInputOutput(InputInterface $input, OutputInterface $output)
+    protected function setInputOutput(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;
         $this->output = $output;
@@ -40,7 +51,7 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @param  int  $steps  Maximum steps
      * @return ProgressBar
      */
-    public function getProgressBar($steps = 0)
+    protected function getProgressBar($steps = 0)
     {
         // Prepare task progress bar
         $bar = new ProgressBar($this->output, $steps);
@@ -61,7 +72,7 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @param  bool    $default  Default outcome
      * @return bool
      */
-    public function confirm($message, $default = true)
+    protected function confirm($message, $default = true)
     {
         // Build confirmation question with the given message
         $question = new ConfirmationQuestion($message.PHP_EOL, $default);
