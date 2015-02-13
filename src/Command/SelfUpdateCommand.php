@@ -24,6 +24,8 @@ class SelfUpdateCommand extends Command
     {
         $this->setName('self:update');
         $this->setDescription('Search for updates');
+
+        $this->addOption('optimize', 'o', InputOption::VALUE_NONE, 'Optimize generated autoloader');
     }
 
 
@@ -35,5 +37,20 @@ class SelfUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Get the name of the application for outputing
+        $name = $this->getApplication()->getName();
+        $pkgn = $this->getApplication()->getPackage()->name;
+
+        // Prepare command to run update on package
+        $cmd = 'composer global update '.$pkgn;
+
+        // If the autoloader should be optimized
+        if ($input->getOption('optimize')) {
+            // Add option into the command
+            $cmd .= ' --optimize-autoloader';
+        }
+
+        // Execute given update command in the process helper
+        $this->getHelper('process')->run($output, $cmd);
     }
 }
