@@ -13,6 +13,14 @@ namespace JuniWalk\Darwin\IO;
 class Phar extends \Phar
 {
     /**
+     * Path to opened file.
+     *
+     * @var string
+     */
+    protected $file;
+
+
+    /**
      * Initialize new Phar archive.
      *
      * @param string  $file   Path to Phar file
@@ -21,20 +29,26 @@ class Phar extends \Phar
      */
     public function __construct($file, $flags = null, $alias = null)
     {
+        // Try to unlink any old phar file
+        @unlink($file);
+
         // If there are no flags
         if (empty($flags)) {
             // Set default flags of the FilesystemIterator class
             $flags = static::KEY_AS_PATHNAME | static::CURRENT_AS_FILEINFO;
         }
 
+        // Store file in property
+        $this->file = $file;
+
         // If there is no alias
         if (empty($alias)) {
             // Get the name of destination file
-            $alias = basename($file);
+            $alias = basename($this->file);
         }
 
         // Make sure that we have called parent constructor
-        parent::__construct($file, $flags, $alias);
+        parent::__construct($this->file, $flags, $alias);
 
         // Set default algorithm and enable buffering
         $this->setSignatureAlgorithm(static::SHA1);
@@ -49,6 +63,17 @@ class Phar extends \Phar
     {
         // Disable buffering
         $this->stopBuffering();
+    }
+
+
+    /**
+     * Get the name of source file.
+     *
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 
 
