@@ -17,9 +17,9 @@ use JuniWalk\Darwin\Command\SelfUpdateCommand;
 class Darwin extends \Symfony\Component\Console\Application
 {
     /**
-     * Package information.
+     * Package name information.
      *
-     * @return stdClass
+     * @return string
      */
     protected $package;
 
@@ -118,32 +118,27 @@ class Darwin extends \Symfony\Component\Console\Application
         $json = $this->loadJsonFile(__DIR__.'/../composer.json');
         $lock = $this->loadJsonFile($this->getHome().'/composer.lock');
 
-        // Iterate over all packages in lock file
-        foreach ($lock->packages as $package) {
-            // If the package name does not match
-            if ($package->name !== $json->name) {
-                // Go to next
-                continue;
-            }
-
-            // Store package in property
-            $this->package = $package;
-            break; // Do not continue
-        }
+        // Filter packages, get just the one with name of this package
+        $package = array_filter($lock->packages, function($v) use ($json) {
+            // Compare the name of packages
+            return $v->name == $json->name;
+        });
 
         // If no package was found
-        if (empty($this->package)) {
+        if (empty($package)) {
             // Return simple version
             return 'dev-master';
         }
 
         // Get the version of the package
-        $version = $this->package->version;
+        // and store package name in holder
+        $this->package = $package[0]->name;
+        $version = $package[0]->version;
 
         // If the version is one of dev-[branchname]
         if (preg_match('/dev-(\w+)/i', $version)) {
             // Add first 7 characters of the commit this build references
-            $version .= ' '.substr($this->package->source->reference, 0, 7);
+            $version .= ' '.substr$package[0]->source->reference, 0, 7);
         }
 
         return $version;
