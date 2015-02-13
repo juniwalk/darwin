@@ -11,7 +11,7 @@
 namespace JuniWalk\Darwin;
 
 use JuniWalk\Darwin\Command\FixCommand;
-use JuniWalk\Darwin\Command\InstallCommand;
+use JuniWalk\Darwin\Command\SelfInstallCommand;
 
 class Darwin extends \Symfony\Component\Console\Application
 {
@@ -69,7 +69,9 @@ class Darwin extends \Symfony\Component\Console\Application
         // Get default parent commands and add new
         $cmds = parent::getDefaultCommands();
         $cmds[] = new FixCommand();
-        $cmds[] = new InstallCommand();
+
+        // Self commands
+        $cmds[] = new SelfInstallCommand();
 
         // Return commands
         return $cmds;
