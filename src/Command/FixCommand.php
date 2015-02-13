@@ -79,28 +79,18 @@ class FixCommand extends Command
         // Search for each file and dir in current project and set privileges
         foreach ($search as $path => $file) {
             // Display path to file in the message
+            // and advance progress bar to ne unit
             $bar->setMessage($path);
+            $bar->advance();
 
             // If this is not one of locked files
             if (!preg_match(static::LOCKED_FILES, $file->getFilename())) {
                 // Change owner to Apache user
-                chown($path, $owner);
+                $this->setOwner($path, $owner);
             }
 
-            // If this is a directory
-            if ($file->isDir()) {
-                // Set appropriate mode
-                chmod($path, 0755);
-            }
-
-            // If this is a file
-            if ($file->isFile()) {
-                // Set appropriate mode
-                chmod($path, 0644);
-            }
-
-            // Advance progress bar
-            $bar->advance();
+            // Set appropriate mode to the file / dir
+            $this->setMode($path, $file->isFile());
         }
 
         // Task has finished
@@ -109,5 +99,42 @@ class FixCommand extends Command
 
         // Move pointer to new line
         $output->writeln(PHP_EOL);
+    }
+
+
+    /**
+     * Set new permissions mode.
+     *
+     * @param  string  $path    Path to file or dir
+     * @param  bool    $isFile  Is this file?
+     * @return bool
+     */
+    protected function setMode($path, $isFile = true)
+    {
+        // Directory mode
+        $mode = 0755;
+
+        // If this is file
+        if ($isFile == true) {
+            // Use file mode
+            $mode = 0644;
+        }
+
+        // Set appropriate mode
+        return chmod($path, $mode);
+    }
+
+
+    /**
+     * Set new permissions mode.
+     *
+     * @param  string      $path   Path to file or dir
+     * @param  int|string  $owner  New owner name/id
+     * @return bool
+     */
+    protected function setOwner($path, $owner)
+    {
+        // Set selected owner
+        return chown($path, $owner);
     }
 }
