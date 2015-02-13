@@ -22,7 +22,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    const PATH = '/usr/local/bin/darwin';
+    const PATH = '/usr/local/bin';
 
 
     /**
@@ -31,7 +31,7 @@ class InstallCommand extends Command
     protected function configure()
     {
         $this->setName('install');
-        $this->setDescription('Install Darwin into $PATH directory');
+        $this->setDescription('Install into $PATH directory');
 
         // Define arguments and options of this command with default values
         $this->addArgument('path', InputArgument::OPTIONAL, 'Select custom path', static::PATH);
@@ -49,13 +49,14 @@ class InstallCommand extends Command
     {
         // Set input/output streams into instance
         $this->setInputOutput($input, $output);
+        $name = $this->getApplication()->getName();
 
         // Gather arguments and options of this command
         $path = $input->getArgument('path');
         $force = $input->getOption('force');
 
         // Output which directory we are trying to fix right now
-        $output->writeln(PHP_EOL.'<info>Darwin will be installed into:</info>');
+        $output->writeln(PHP_EOL.'<info>'.$name.' will be installed into:</info>');
         $output->writeln('<comment>'.$path.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
@@ -63,23 +64,24 @@ class InstallCommand extends Command
             return null;
         }
 
-        // Get the path to the darwin executable
-        $link = realpath(__DIR__.'/../../bin/darwin');
+        // Get the path to the application executable
+        $link = realpath(__DIR__.'/../../bin/'.strtolower($name));
+        $path = realpath($path.'/'.strtolower($name));
 
         // If destination file exists and
         // installation was not forced
         if (!$force && file_exists($path)) {
-            throw new \RuntimeException('Darwin is already installed.');
+            throw new \RuntimeException($name.' is already installed.');
         }
 
         // Get process helper instance
         $process = $this->getHelper('process');
 
-        //  Just create symbolic link to Darwin executable file
+        //  Just create symbolic link to appliation executable file
         if (!$process->run($output, 'ln -s '.$link.' '.$path)) {
-            throw new \RuntimeException('Failed to install Darwin.');
+            throw new \RuntimeException('Failed to install '.$name.'.');
         }
 
-        $output->writeln(PHP_EOL.'<info>Darwin has been successfuly installed.</info>');
+        $output->writeln(PHP_EOL.'<info>'.$name.' has been successfuly installed.</info>');
     }
 }
