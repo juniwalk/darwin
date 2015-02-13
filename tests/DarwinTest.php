@@ -14,4 +14,9 @@ use JuniWalk\Darwin\Darwin;
 
 class DarwinTest extends \PHPUnit_Framework_TestCase
 {
+    public function testBasic()
+    {
+        $darwin = new Darwin();
+        print_r($darwin);
+    }
 }
