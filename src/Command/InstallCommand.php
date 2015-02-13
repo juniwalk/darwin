@@ -10,9 +10,6 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\IO\Json;
-use JuniWalk\Darwin\IO\Phar;
-use Nette\Utils\Finder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,50 +70,11 @@ class InstallCommand extends Command
             return null;
         }
 
-        // Search for the *.php files without tests
-        $files = Finder::findFiles('*.php')
-            ->from($this->getHome())
-            ->exclude('res', 'tests');
+        // Get the path to the darwin executable
+        $link = $this->getHome().'/bin/darwin';
 
-        // Get the number of found files
-        $sizeof = iterator_count($files);
-
-        // If there are no contents
-        if (empty($sizeof)) {
-            throw new \RuntimeException('Missing Darwin files.');
-        }
-
-        // Get new progress bar instance
-        $bar = $this->getProgressBar($sizeof);
-
-        // Create new and empty Phar archive
-        $phar = $this->getHome().'/bin/darwin.phar';
-        $phar = new Phar($phar, null, 'darwin.phar');
-
-        // Iterate over the found files
-        foreach ($files as $realpath => $file) {
-            // Display path to file in the message
-            // and advance progress bar to ne unit
-            $bar->setMessage($realpath);
-            $bar->advance();
-
-            // Insert file into Phar
-            $phar->add($file);
-        }
-
-        // Task has finished
-        $bar->setMessage('<info>Darwin.phar generated.</info>');
-        $bar->finish();
-
-        // Set bootstrap file and compress data
-        $phar->setStub($this->getBootstrap());
-        $phar->compressFiles($phar::GZ);
-
-        // Close the phar and get path
-        $phar = $phar->getFile();
-
-        // Move the file to PATH and set mode
-        if (!rename($phar, $path)) {
+        //  Create symbolic link to Darwin
+        if (!symlink($path, $link)) {
             throw new \RuntimeException('Failed to write the phar.');
         }
 
@@ -124,18 +82,6 @@ class InstallCommand extends Command
         chmod($path, $mode);
 
         $output->writeln(PHP_EOL.'<info>Darwin has been successfuly installed.</info>');
-    }
-
-
-    /**
-     * Get phar's bootstrap code.
-     *
-     * @return string
-     */
-    protected function getBootstrap()
-    {
-        // Return the contents of the bootstrap.php file
-        return file_get_contents(__DIR__.'/../../res/bootstrap.php');
     }
 
 
