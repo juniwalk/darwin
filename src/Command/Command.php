@@ -75,7 +75,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     protected function confirm($message, $default = true)
     {
         // Build confirmation question with the given message
-        $question = new ConfirmationQuestion($message.PHP_EOL, $default);
+        $question = new ConfirmationQuestion($message, $default);
 
         // Ask user for confirmation and then return the outcome user has decided
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
