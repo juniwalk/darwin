@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 class SelfUpdateCommand extends Command
 {
@@ -50,7 +51,19 @@ class SelfUpdateCommand extends Command
             $cmd .= ' --optimize-autoloader';
         }
 
-        // Execute given update command in the process helper
-        $this->getHelper('process')->run($output, $cmd);
+        // Inform that we are using composer for updates
+        $output->writeln(PHP_EOL.'<info>Executing update using composer.</info>');
+        $output->writeln(' <comment>$ '.$cmd.'</comment>'.PHP_EOL);
+
+        // Create new process and execute it
+        $process = new Process($cmd);
+        $process->run(function ($type, $data) use ($output)
+        {
+            // Output any changes in real-time
+            $output->write($data);
+        });
+
+        // Inform that the update has finished
+        $output->writeln(PHP_EOL.'<info>Update finished.</info>'.PHP_EOL);
     }
 }
