@@ -138,7 +138,7 @@ class Darwin extends \Symfony\Component\Console\Application
         // If the version is one of dev-[branchname]
         if (preg_match('/dev-(\w+)/i', $version)) {
             // Add first 7 characters of the commit this build references
-            $version .= ' '.substr$package[0]->source->reference, 0, 7);
+            $version .= ' '.substr($package[0]->source->reference, 0, 7);
         }
 
         return $version;
