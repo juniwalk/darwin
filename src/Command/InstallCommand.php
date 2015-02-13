@@ -35,6 +35,7 @@ class InstallCommand extends Command
 
         // Define arguments and options of this command with default values
         $this->addArgument('path', InputArgument::OPTIONAL, 'Select custom path', static::PATH);
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force installation, overwrite existing files');
     }
 
 
@@ -51,6 +52,7 @@ class InstallCommand extends Command
 
         // Gather arguments and options of this command
         $path = $input->getArgument('path');
+        $force = $input->getOption('force');
 
         // Output which directory we are trying to fix right now
         $output->writeln(PHP_EOL.'<info>Darwin will be installed into:</info>');
@@ -64,8 +66,9 @@ class InstallCommand extends Command
         // Get the path to the darwin executable
         $link = realpath(__DIR__.'/../../bin/darwin');
 
-        // If destination file exists
-        if (file_exists($path)) {
+        // If destination file exists and
+        // installation was not forced
+        if (!$force && file_exists($path)) {
             throw new \RuntimeException('Darwin is already installed.');
         }
 
