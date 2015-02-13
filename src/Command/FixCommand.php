@@ -104,7 +104,7 @@ class FixCommand extends Command
         }
 
         // Task has finished
-        $bar->setMessage('<info>Okay, all fixed now.</info>');
+        $bar->setMessage('<info>Okay, all fixed now.</info>'.PHP_EOL);
         $bar->finish();
     }
 }
