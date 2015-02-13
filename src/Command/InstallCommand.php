@@ -53,6 +53,7 @@ class InstallCommand extends Command
 
         // Gather arguments and options of this command
         $path = $input->getArgument('path');
+        $path = $path.'/'.strtolower($name);
         $force = $input->getOption('force');
 
         // Output which directory we are trying to fix right now
@@ -66,7 +67,6 @@ class InstallCommand extends Command
 
         // Get the path to the application executable
         $link = realpath(__DIR__.'/../../bin/'.strtolower($name));
-        $path = realpath($path.'/'.strtolower($name));
 
         // If destination file exists and
         // installation was not forced
