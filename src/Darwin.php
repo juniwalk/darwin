@@ -21,7 +21,42 @@ class Darwin extends \Symfony\Component\Console\Application
     public function __construct()
     {
         // Set the name of application
-        parent::__construct('Darwin', 'v0.9');
+        parent::__construct($this->getName(), $this->getVersion());
+    }
+
+
+    /**
+     * Name of this application.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        // If there is no app name
+        if (!isset($this->name)) {
+            // Get the name from this class without namespaces
+            $this->name = basename(strtr(__CLASS__, '\\', '/'));
+        }
+
+        return $this->name;
+    }
+
+
+    /**
+     * Current version.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        // If the version is unknown
+        if (!isset($this->version)) {
+            // For now return this, in future we will
+            // parse verison out of composer.lock file
+            $this->version = 'v0.9';
+        }
+
+        return $this->version;
     }
 
 
