@@ -71,28 +71,13 @@ class InstallCommand extends Command
         }
 
         // Get the path to the darwin executable
-        $link = $this->getHome().'/bin/darwin';
+        $link = __DIR__.'/../../bin/darwin';
 
-        //  Create symbolic link to Darwin
-        if (!symlink($path, $link)) {
-            throw new \RuntimeException('Failed to write the phar.');
+        //  Create symbolic link to Darwin and set permissions
+        if (!symlink($path, $link) || !chmod($path, $mode)) {
+            throw new \RuntimeException('Failed to install Darwin.');
         }
 
-        // Set the file mode
-        chmod($path, $mode);
-
         $output->writeln(PHP_EOL.'<info>Darwin has been successfuly installed.</info>');
-    }
-
-
-    /**
-     * Path to home directory.
-     *
-     * @return string
-     */
-    protected function getHome()
-    {
-        // Get the path to /vendor directory
-        return realpath(__DIR__.'/../../../..');
     }
 }
