@@ -51,6 +51,11 @@ class InstallCommand extends Command
         $this->setInputOutput($input, $output);
         $name = $this->getApplication()->getName();
 
+        // If we are on Windows platform right now
+        if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
+            throw new \RuntimeException($name.' is UNIX-only application.');
+        }
+
         // Gather arguments and options of this command
         $path = $input->getArgument('path');
         $path = $path.'/'.strtolower($name);
