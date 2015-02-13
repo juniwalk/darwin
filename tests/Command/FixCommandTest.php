@@ -31,7 +31,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         $darwin = new Darwin();
 
-        $command = $dar->find('fix');
+        $command = $darwin->find('fix');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
