@@ -104,7 +104,7 @@ class FixCommand extends Command
         }
 
         // Task has finished
-        $bar->setMessage('<info>Okay, all fixed now.</info>');
+        $bar->setMessage('<info>All is fixed now.</info>');
         $bar->finish();
 
         // Move pointer to new line
