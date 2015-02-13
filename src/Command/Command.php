@@ -55,7 +55,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     {
         // Prepare task progress bar
         $bar = new ProgressBar($this->output, $steps);
-        $bar->setFormat(PHP_EOL.' %current%/%max% [%bar%] %percent:3s%% %memory:6s%'.PHP_EOL.' %message%');
+        $bar->setFormat(PHP_EOL.' %current%/%max% [%bar%] %percent:3s%% %memory:6s%'.PHP_EOL.' %message%'.PHP_EOL);
         $bar->setBarCharacter('<comment>-</comment>');
         $bar->setProgressCharacter('<comment>></comment>');
         $bar->setEmptyBarCharacter(' ');
