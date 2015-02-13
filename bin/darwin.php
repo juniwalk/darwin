@@ -8,8 +8,6 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin\Bin;
-
 use JuniWalk\Darwin\Darwin;
 
 
