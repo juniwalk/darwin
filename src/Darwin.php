@@ -124,12 +124,6 @@ class Darwin extends \Symfony\Component\Console\Application
             return $v->name == $json->name;
         });
 
-        // If no package was found
-        if (empty($package)) {
-            // Return simple version
-            return 'dev-master';
-        }
-
         // Get the version of the package
         // and store package name in holder
         $this->package = $package[0]->name;
