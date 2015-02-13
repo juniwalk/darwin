@@ -16,7 +16,12 @@ class DarwinTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasic()
     {
+        // Get the Darwin instance
         $darwin = new Darwin();
-        print_r($darwin);
+
+        // Assert custom added methods of this application
+        $this->assertSame('Darwin', $darwin->getName());
+        $this->assertSame('dev-master b633e81', $darwin->getVersion());
+        $this->assertSame('juniwalk/darwin', $darwin->getPackage());
     }
 }
