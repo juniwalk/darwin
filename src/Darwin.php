@@ -51,9 +51,8 @@ class Darwin extends \Symfony\Component\Console\Application
     {
         // If the version is unknown
         if (!isset($this->version)) {
-            // For now return this, in future we will
-            // parse verison out of composer.lock file
-            $this->version = 'v0.9';
+            // Load real version from the composer.lock
+            $this->version = $this->getRealVersion();
         }
 
         return $this->version;
@@ -74,5 +73,68 @@ class Darwin extends \Symfony\Component\Console\Application
 
         // Return commands
         return $cmds;
+    }
+
+
+    /**
+     * Parse version of the package from composer.lock.
+     *
+     * @return string
+     */
+    protected function getRealVersion()
+    {
+        // Load composer.lock and composer.json contents and parse them
+        $json = $this->loadJsonFile(__DIR__.'/../composer.json');
+        $lock = $this->loadJsonFile($this->getHome().'/composer.lock');
+
+        // Iterate over all packages in lock file
+        foreach ($lock->packages as $package) {
+            // If the package name does not match
+            if ($package->name !== $json->name) {
+                // Go to next
+                continue;
+            }
+
+            // Stop cycle
+            break;
+        }
+
+        // Get the version of the package
+        $version = $package->version;
+
+        // If the version is one of dev-[branchname]
+        if (preg_match('/dev-(\w+)/i', $version)) {
+            // Add first 7 characters of the commit this build references
+            $version .= ' '.substr($package->source->reference, 0, 7);
+        }
+
+        return $version;
+    }
+
+
+    /**
+     * Get path to home directory.
+     *
+     * @return string
+     */
+    protected function getHome()
+    {
+        // Return path to home directory which
+        // should be /root/.composer project
+        return realpath(__DIR__.'/../../../..');
+    }
+
+
+    /**
+     * Decode JSON file.
+     *
+     * @param  string  $file   Path to JSON file
+     * @param  bool    $assoc  Return array?
+     * @return stdClass|array
+     */
+    protected function loadJsonFile($file, $assoc = false)
+    {
+        // Load contents of the JSON file and decode them
+        return json_decode(file_get_contents($file), $assoc);
     }
 }
