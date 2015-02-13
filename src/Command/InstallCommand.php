@@ -24,13 +24,6 @@ class InstallCommand extends Command
      */
     const PATH = '/usr/local/bin/darwin';
 
-    /**
-     * Default file permissions.
-     *
-     * @var int
-     */
-    const MODE = 0744;
-
 
     /**
      * Configure this command.
@@ -41,8 +34,7 @@ class InstallCommand extends Command
         $this->setDescription('Install Darwin into $PATH directory');
 
         // Define arguments and options of this command with default values
-        $this->addArgument('path', InputArgument::OPTIONAL, 'Override binary path', static::PATH);
-        $this->addArgument('mode', InputArgument::OPTIONAL, 'Override file permissions', static::MODE);
+        $this->addArgument('path', InputArgument::OPTIONAL, 'Select custom path', static::PATH);
     }
 
 
@@ -59,7 +51,6 @@ class InstallCommand extends Command
 
         // Gather arguments and options of this command
         $path = $input->getArgument('path');
-        $mode = $input->getArgument('mode');
 
         // Output which directory we are trying to fix right now
         $output->writeln(PHP_EOL.'<info>Darwin will be installed into:</info>');
@@ -73,8 +64,16 @@ class InstallCommand extends Command
         // Get the path to the darwin executable
         $link = __DIR__.'/../../bin/darwin';
 
-        //  Create symbolic link to Darwin and set permissions
-        if (!symlink($path, $link) || !chmod($path, $mode)) {
+        // If destination file exists
+        if (file_exists($path)) {
+            throw new \RuntimeException('Darwin is already installed.');
+        }
+
+        // Get process helper instance
+        $process = $this->getHelper('process');
+
+        //  Just create symbolic link to Darwin executable file
+        if (!$process->run($output, 'ln -s '.$path.' '.$link)) {
             throw new \RuntimeException('Failed to install Darwin.');
         }
 

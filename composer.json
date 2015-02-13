@@ -17,6 +17,7 @@
     "require": {
         "php": ">=5.4",
         "symfony/console": "~2.6",
+        "symfony/process": "~2.6",
         "nette/finder": "~2.1"
     },
     "autoload": {
