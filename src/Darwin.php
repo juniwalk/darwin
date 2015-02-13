@@ -41,13 +41,17 @@ class Darwin extends \Symfony\Component\Console\Application
      */
     public function getName()
     {
+        // Get the name from parent
+        $name = parent::getName();
+
         // If there is no app name
-        if (!isset($this->name)) {
+        if (!isset($name)) {
             // Get the name from this class without namespaces
-            $this->name = basename(strtr(__CLASS__, '\\', '/'));
+            $name = basename(strtr(__CLASS__, '\\', '/'));
+            $this->setName($name);
         }
 
-        return $this->name;
+        return $name;
     }
 
 
@@ -58,13 +62,17 @@ class Darwin extends \Symfony\Component\Console\Application
      */
     public function getVersion()
     {
+        // Get the version from parent
+        $version = parent::getVersion();
+
         // If the version is unknown
-        if (!isset($this->version)) {
+        if (!isset($version)) {
             // Load real version from the composer.lock
-            $this->version = $this->getRealVersion();
+            $version = $this->getRealVersion();
+            $this->setVersion($version);
         }
 
-        return $this->version;
+        return $version;
     }
 
 
@@ -123,13 +131,19 @@ class Darwin extends \Symfony\Component\Console\Application
             break; // Do not continue
         }
 
+        // If no package was found
+        if (!isset($package->name)) {
+            // Return simple version
+            return 'dev-master';
+        }
+
         // Get the version of the package
-        $version = $package->version;
+        $version = $package->name->version;
 
         // If the version is one of dev-[branchname]
         if (preg_match('/dev-(\w+)/i', $version)) {
             // Add first 7 characters of the commit this build references
-            $version .= ' '.substr($package->source->reference, 0, 7);
+            $version .= ' '.substr($package->name->source->reference, 0, 7);
         }
 
         return $version;
