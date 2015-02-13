@@ -38,8 +38,7 @@ class SelfUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Get the name of the application for outputing
-        $name = $this->getApplication()->getName();
+        // Get the name of the application package for update
         $pkgn = $this->getApplication()->getPackage()->name;
 
         // Prepare command to run update on package
