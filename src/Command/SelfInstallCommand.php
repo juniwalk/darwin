@@ -15,7 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallCommand extends Command
+class SelfInstallCommand extends Command
 {
     /**
      * Path to default binary.
@@ -30,7 +30,7 @@ class InstallCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('install');
+        $this->setName('self:install');
         $this->setDescription('Install into $PATH directory');
 
         // Define arguments and options of this command with default values
