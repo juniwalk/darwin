@@ -132,18 +132,18 @@ class Darwin extends \Symfony\Component\Console\Application
         }
 
         // If no package was found
-        if (!isset($package->name)) {
+        if (empty($this->package)) {
             // Return simple version
             return 'dev-master';
         }
 
         // Get the version of the package
-        $version = $package->name->version;
+        $version = $this->package->version;
 
         // If the version is one of dev-[branchname]
         if (preg_match('/dev-(\w+)/i', $version)) {
             // Add first 7 characters of the commit this build references
-            $version .= ' '.substr($package->name->source->reference, 0, 7);
+            $version .= ' '.substr($this->package->source->reference, 0, 7);
         }
 
         return $version;
