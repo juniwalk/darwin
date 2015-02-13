@@ -25,7 +25,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    const PATH = '/usr/local/bin';
+    const PATH = '/usr/local/bin/darwin';
 
     /**
      * Default file permissions.
