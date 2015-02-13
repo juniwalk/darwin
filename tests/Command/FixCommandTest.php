@@ -30,6 +30,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testExecute()
     {
+/*
         $darwin = new Darwin();
 
         $command = $darwin->find('fix');
@@ -37,7 +38,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(array('command' => $command->getName()));
 
 echo $commandTester->getDisplay();
-
+*/
         //$this->assertRegExp('/.../', );
     }
 }
