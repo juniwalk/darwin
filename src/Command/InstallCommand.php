@@ -73,7 +73,7 @@ class InstallCommand extends Command
         $process = $this->getHelper('process');
 
         //  Just create symbolic link to Darwin executable file
-        if (!$process->run($output, 'ln -s '.$path.' '.$link)) {
+        if (!$process->run($output, 'ln -s '.$link.' '.$path)) {
             throw new \RuntimeException('Failed to install Darwin.');
         }
 
