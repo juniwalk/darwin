@@ -14,6 +14,19 @@ use JuniWalk\Darwin\Darwin;
 
 class FixCommandTest extends \PHPUnit_Framework_TestCase
 {
+    public function __construct()
+    {
+        symlink(__DIR__.'/../Resources/composer.lock', '/home/travis/composer.lock');
+    }
+
+
+    public function __destruct()
+    {
+        // Clear the garbahe after tests
+        unlink('/home/travis/composer.lock');
+    }
+
+
     public function testExecute()
     {
         $darwin = new Darwin();
