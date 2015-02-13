@@ -11,7 +11,6 @@
 namespace JuniWalk\Darwin\Tests;
 
 use JuniWalk\Darwin\Darwin;
-use Symfony\Component\Console\Tester\CommandTester;
 
 class FixCommandTest extends \PHPUnit_Framework_TestCase
 {

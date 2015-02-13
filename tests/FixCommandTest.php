@@ -14,4 +14,16 @@ use JuniWalk\Darwin\Darwin;
 
 class FixCommandTest extends \PHPUnit_Framework_TestCase
 {
+    public function testExecute()
+    {
+        $darwin = new Darwin();
+
+        $command = $dar->find('fix');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array('command' => $command->getName()));
+
+echo $commandTester->getDisplay();
+
+        //$this->assertRegExp('/.../', );
+    }
 }
