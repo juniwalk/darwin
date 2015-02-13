@@ -52,7 +52,7 @@ class SelfUpdateCommand extends Command
         }
 
         // Inform that we are using composer for updates
-        $output->writeln(PHP_EOL.'<info>Executing update using composer.</info>');
+        $output->writeln(PHP_EOL.'<info>Executing update using composer:</info>');
         $output->writeln(' <comment>$ '.$cmd.'</comment>'.PHP_EOL);
 
         // Create new process and execute it
