@@ -18,7 +18,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * Create symlinks for needed files.
      */
-    public function __construct()
+    protected function setUp()
     {
         symlink(__DIR__.'/../Resources/composer.lock', '/home/travis/composer.lock');
     }
@@ -27,7 +27,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * Delete all created symlinks.
      */
-    public function __destruct()
+    protected function tearDown()
     {
         // Clear the garbahe after tests
         unlink('/home/travis/composer.lock');
