@@ -60,7 +60,7 @@ class FixCommand extends Command
         $output->writeln('<comment>'.$dir.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
-        if (!$this->confirm('<info>Is this correct path <comment>[y,N]</comment>?</info>', false)) {
+        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
             return null;
         }
 
