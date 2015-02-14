@@ -37,7 +37,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             ['dir' => __DIR__, '--owner' => 'root'],
-            ['interactive' => true]
+            ['interactive' => false]
         );
 
 echo $commandTester->getDisplay();
