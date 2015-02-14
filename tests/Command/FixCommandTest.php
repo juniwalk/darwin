@@ -37,13 +37,32 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * Command - Test command with all arguments.
      */
-    public function testExecute()
+    public function testExecuteAll()
     {
         // Execute Fix test with all possible arguments
         $tester = static::execute('fix', [
             'dir' => realpath(__DIR__.'/../Resources'),
             '--owner' => 'root',
             '--force' => true
+        ]);
+
+        // Print the output to check
+        //echo $tester->getDisplay();
+
+        //$this->assertRegExp('/.../', );
+    }
+
+
+    /**
+     * Command - Test command without forcing.
+     */
+    public function testNoForce()
+    {
+        // Execute Fix test with all possible arguments
+        $tester = static::execute('fix', [
+            'dir' => realpath(__DIR__.'/../Resources'),
+            '--owner' => 'root',
+            '--force' => false
         ]);
 
         // Print the output to check
