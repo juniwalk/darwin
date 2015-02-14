@@ -19,7 +19,7 @@ class DarwinTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        symlink(__DIR__.'/../Resources/composer.lock', '/home/travis/composer.lock');
+        symlink(__DIR__.'/Resources/composer.lock', '/home/travis/composer.lock');
     }
 
 
