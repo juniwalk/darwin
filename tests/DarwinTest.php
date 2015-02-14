@@ -14,6 +14,28 @@ use JuniWalk\Darwin\Darwin;
 
 class DarwinTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Create symlinks for needed files.
+     */
+    protected function setUp()
+    {
+        symlink(__DIR__.'/../Resources/composer.lock', '/home/travis/composer.lock');
+    }
+
+
+    /**
+     * Delete all created symlinks.
+     */
+    protected function tearDown()
+    {
+        // Clear the garbahe after tests
+        unlink('/home/travis/composer.lock');
+    }
+
+
+    /**
+     * Application - Basic application test.
+     */
     public function testBasic()
     {
         // Get the Darwin instance

@@ -55,20 +55,17 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Command - Test command without forcing.
+     *
+     * @expectedException \ErrorException
      */
     public function testNoForce()
     {
-        // Execute Fix test with all possible arguments
+        // Execute Fix test without forcing it
         $tester = static::execute('fix', [
             'dir' => realpath(__DIR__.'/../Resources'),
             '--owner' => 'root',
             '--force' => false
         ]);
-
-        // Print the output to check
-        echo $tester->getDisplay();
-
-        //$this->assertRegExp('/.../', );
     }
 
     /**

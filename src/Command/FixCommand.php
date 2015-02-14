@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use ErrorException;
 use Nette\Utils\Finder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -44,8 +45,9 @@ class FixCommand extends Command
     /**
      * Command's entry point.
      *
-     * @param InputInterface   $input   Input stream
-     * @param OutputInterface  $output  Output stream
+     * @param  InputInterface   $input   Input stream
+     * @param  OutputInterface  $output  Output stream
+     * @throws ErrorException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -68,7 +70,7 @@ class FixCommand extends Command
 
         // If this is not server directory and it is not forced
         if (strpos($dir, '/srv') === false && !$force) {
-            throw new \RuntimeException('You are not in /srv directory.');
+            throw new ErrorException('You are not in /srv directory.');
         }
 
         // Search for files and dirs in the folder
@@ -77,7 +79,7 @@ class FixCommand extends Command
 
         // If there are no contents
         if (empty($sizeof)) {
-            throw new \RuntimeException('No files and/or directories found to fix.');
+            throw new ErrorException('No files and/or directories found to fix.');
         }
 
         // Get new progress bar instance
