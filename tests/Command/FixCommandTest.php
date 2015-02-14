@@ -36,8 +36,8 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
         $command = $darwin->find('fix');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['dir' => __DIR__],
-            ['owner' => 'root', 'interactive' => true]
+            ['dir' => __DIR__, 'owner' => 'root'],
+            ['interactive' => true]
         );
 
 echo $commandTester->getDisplay();
