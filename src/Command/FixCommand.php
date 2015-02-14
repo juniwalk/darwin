@@ -37,6 +37,7 @@ class FixCommand extends Command
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
         $this->addOption('owner', 'o', InputOption::VALUE_REQUIRED, 'Define owner for files', 'www-data');
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the fix for any directory');
     }
 
 
@@ -54,6 +55,7 @@ class FixCommand extends Command
         // Gather arguments and options of this command
         $dir = $input->getArgument('dir');
         $owner = $input->getOption('owner');
+        $force = $input->getOption('force');
 
         // Output which directory we are trying to fix right now
         $output->writeln(PHP_EOL.'<info>We will fix permissions and set owner to <comment>'.$owner.'</comment> for directory:</info>');
@@ -64,13 +66,18 @@ class FixCommand extends Command
             return null;
         }
 
+        // If this is not server directory and it is not forced
+        if (strpos($dir, '/srv') === false && !$force) {
+            throw new \RuntimeException('You are not in /srv directory.');
+        }
+
         // Search for files and dirs in the folder
         $search = Finder::find('*')->from($dir);
         $sizeof = iterator_count($search);
 
         // If there are no contents
         if (empty($sizeof)) {
-            return null;
+            throw new \RuntimeException('No files and/or directories found to fix.');
         }
 
         // Get new progress bar instance
