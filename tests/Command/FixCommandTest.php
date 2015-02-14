@@ -30,15 +30,15 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testExecute()
     {
-/*
+
         $darwin = new Darwin();
 
         $command = $darwin->find('fix');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute([], ['interactive' => true]);
 
 echo $commandTester->getDisplay();
-*/
+
         //$this->assertRegExp('/.../', );
     }
 }
