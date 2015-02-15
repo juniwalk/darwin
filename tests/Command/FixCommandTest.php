@@ -41,7 +41,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Execute Fix test with all possible arguments
         $tester = static::execute('fix', [
-            'dir' => realpath(__DIR__.'/../Resources'),
+            'dir' => realpath(__DIR__.'/../../res'),
             '--owner' => 'root',
             '--force' => true
         ]);
@@ -62,7 +62,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Execute Fix test without forcing it
         $tester = static::execute('fix', [
-            'dir' => realpath(__DIR__.'/../Resources'),
+            'dir' => realpath(__DIR__.'/../../res'),
             '--owner' => 'root',
             '--force' => false
         ]);
