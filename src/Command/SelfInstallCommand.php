@@ -32,7 +32,7 @@ class SelfInstallCommand extends Command
     protected function configure()
     {
         $this->setName('self:install');
-        $this->setDescription('Install into $PATH directory');
+        $this->setDescription('Install into /bin directory');
 
         // Define arguments and options of this command with default values
         $this->addArgument('path', InputArgument::OPTIONAL, 'Select custom path', static::PATH);
