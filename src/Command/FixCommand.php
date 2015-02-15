@@ -68,9 +68,9 @@ class FixCommand extends Command
             return null;
         }
 
-        // If this is not server directory and it is not forced
-        if (strpos($dir, '/srv') === false && !$force) {
-            throw new ErrorException('You are not in /srv directory.');
+        // If this is not server directory and fix is not forced
+        if (!preg_match('/^\/(srv)/i', $dir) && !$force) {
+            throw new ErrorException('You are not in http server directory.');
         }
 
         // No such directory
