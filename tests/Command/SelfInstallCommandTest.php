@@ -35,42 +35,48 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Command - Test command with all arguments.
+     * Command - Install application.
      */
     public function testExecuteAll()
     {
-        // Execute Install test with all possible arguments
+        // Execute install script with custom path
         $tester = static::execute('self:install', [
-            'path' => realpath(__DIR__.'/../../res'),
-            '--force' => true
+            'path' => __DIR__.'/../../res'
         ]);
 
-        echo $tester->getDisplay();
-        // Check that there is no Exception
-        //$this->assertNotRegExp(
-        //    '/Exception/',
-        //    $tester->getDisplay()
-        //);
+        // Check that the file was successfully created
+        $this->assertFileExists(__DIR__.'/../../res/darwin');
     }
 
 
     /**
      * Command - Try to install app again.
+     *
+     * @expectedException \ErrorException
      */
     public function testWhenInstalled()
     {
         // Try to install again without forcing
         $tester = static::execute('self:install', [
-            'path' => realpath(__DIR__.'/../../res'),
+            'path' => __DIR__.'/../../res',
             '--force' => false
         ]);
+    }
 
-        echo $tester->getDisplay();
-        // Check that there is no Exception
-        //$this->assertNotRegExp(
-        //    '/Exception/',
-        //    $tester->getDisplay()
-        //);
+
+    /**
+     * Command - Force installation.
+     */
+    public function testForceInstall()
+    {
+        // Try to install application again over already installed one
+        $tester = static::execute('self:install', [
+            'path' => __DIR__.'/../../res',
+            '--force' => true
+        ]);
+
+        // Check that the file was successfully created
+        $this->assertFileExists(__DIR__.'/../../res/darwin');
     }
 
 
