@@ -80,10 +80,11 @@ class SelfInstallCommand extends Command
         }
 
         // Get process helper instance
-        $process = $this->getHelper('process');
+        //$process = $this->getHelper('process');
 
         //  Just create symbolic link to appliation executable file
-        if (!$process->run($output, 'ln -s '.$link.' '.$path)) {
+        //if (!$process->run($output, 'ln -s '.$link.' '.$path)) {
+        if (!symlink($link, $path)) {
             throw new \RuntimeException('Failed to install '.$name.'.');
         }
 
