@@ -90,6 +90,8 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Command - No available files in dir.
+     *
+     * @expectedException \ErrorException
      */
     public function testNoFiles()
     {
@@ -98,8 +100,6 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
             'dir' => __DIR__.'/../../res/empty',
             '--force' => true
         ]);
-
-        echo $tester->getDisplay();
     }
 
     /**
