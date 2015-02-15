@@ -11,6 +11,7 @@
 namespace JuniWalk\Darwin\Tests;
 
 use JuniWalk\Darwin\Darwin;
+use JuniWalk\Darwin\Tests\Helpers\FixMock;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class FixCommandTest extends \PHPUnit_Framework_TestCase
@@ -20,7 +21,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        symlink(__DIR__.'/../Resources/composer.lock', '/home/travis/composer.lock');
+        symlink(__DIR__.'/../../res/composer.lock', '/home/travis/composer.lock');
     }
 
 
@@ -79,6 +80,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Create new Darwin instance
         $darwin = new Darwin();
+        $darwin->add(new FixMock);
 
         // Try to find desired command in Darwin
         $command = $darwin->find($name);
