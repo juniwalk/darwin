@@ -47,7 +47,6 @@ class FixCommand extends Command
      *
      * @param  InputInterface   $input   Input stream
      * @param  OutputInterface  $output  Output stream
-     * @return int  Response code
      * @throws ErrorException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -66,7 +65,7 @@ class FixCommand extends Command
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
-            return 0;
+            return null;
         }
 
         // If this is not server directory and fix is not forced
