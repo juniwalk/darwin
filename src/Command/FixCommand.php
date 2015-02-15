@@ -73,6 +73,11 @@ class FixCommand extends Command
             throw new ErrorException('You are not in /srv directory.');
         }
 
+        // No such directory
+        if (!is_dir($dir)) {
+            throw new ErrorException('Directory does not exist.');
+        }
+
         // Search for files and dirs in the folder
         $search = Finder::find('*')->from($dir);
         $sizeof = iterator_count($search);

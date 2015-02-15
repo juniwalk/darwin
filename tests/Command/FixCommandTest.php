@@ -69,6 +69,21 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+
+    /**
+     * Command - Test command without forcing.
+     *
+     * @expectedException \ErrorException
+     */
+    public function testNoFiles()
+    {
+        // Execute Fix test without forcing it
+        $tester = static::execute('fix', [
+            'dir' => '/this/dir/does/not/exist',
+            '--force' => true
+        ]);
+    }
+
     /**
      * Execute command in controlled enviroment.
      *
