@@ -13,7 +13,7 @@ This is tiny CLI application which will help you manage your projects.
 Fix permissions
 ---------------
 
-Fix permissions of files and dirs in given dir. If dir is ommited, current working dir is used instead.
+Fix permissions of files and dirs on given path. If dir param is ommited, current working dir is used instead.
 
 ```
 $ darwin fix dir -o|--owner -f|--force
