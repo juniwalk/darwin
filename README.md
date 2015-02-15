@@ -16,7 +16,7 @@ Fix permissions
 Fix permissions of files and dirs on given path. If dir param is ommited, current working dir is used instead.
 
 ```
-$ darwin fix dir -o|--owner -f|--force
+$ darwin fix /path/to/dir -o|--owner -f|--force
 ```
 
 - `dir`: path to dir, if ommited, current dir is used.
