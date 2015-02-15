@@ -39,10 +39,30 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteAll()
     {
-        // Execute Fix test with all possible arguments
+        // Execute Install test with all possible arguments
         $tester = static::execute('self:install', [
             'path' => realpath(__DIR__.'/../../res'),
             '--force' => true
+        ]);
+
+        echo $tester->getDisplay();
+        // Check that there is no Exception
+        //$this->assertNotRegExp(
+        //    '/Exception/',
+        //    $tester->getDisplay()
+        //);
+    }
+
+
+    /**
+     * Command - Try to install app again.
+     */
+    public function testWhenInstalled()
+    {
+        // Try to install again without forcing
+        $tester = static::execute('self:install', [
+            'path' => realpath(__DIR__.'/../../res'),
+            '--force' => false
         ]);
 
         echo $tester->getDisplay();
