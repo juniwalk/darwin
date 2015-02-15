@@ -10,6 +10,32 @@ Darwin - work in progress
 
 This is tiny CLI application which will help you manage your projects.
 
+Installation
+------------
+
+Best way to install Darwin is using global composer.
+
+```
+$ composer global require juniwalk/darwin
+```
+
+If you do not have composer's /bin dir in $PATH then install Darwin using it's own command.
+
+```
+$ /root/.composer/vendor/bin/darwin self::install
+```
+
+This will create symlink to Darwin in `/usr/local/bin` directory.
+
+Updating
+--------
+
+To update Darwin, just use composer's update command.
+
+```
+$ composer global update juniwalk/darwin
+```
+
 Fix permissions
 ---------------
 
