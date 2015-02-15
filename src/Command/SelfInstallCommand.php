@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use ErrorException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,8 +43,10 @@ class SelfInstallCommand extends Command
     /**
      * Command's entry point.
      *
-     * @param InputInterface   $input   Input stream
-     * @param OutputInterface  $output  Output stream
+     * @param  InputInterface   $input   Input stream
+     * @param  OutputInterface  $output  Output stream
+     * @return int  Response code
+     * @throws ErrorException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -53,7 +56,7 @@ class SelfInstallCommand extends Command
 
         // If we are on Windows platform right now
         if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
-            throw new \RuntimeException($name.' is UNIX-only application.');
+            throw new ErrorException($name.' is UNIX-only application.');
         }
 
         // Gather arguments and options of this command
@@ -67,7 +70,7 @@ class SelfInstallCommand extends Command
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
-            return null;
+            return 0;
         }
 
         // Get the path to the application executable
@@ -76,12 +79,12 @@ class SelfInstallCommand extends Command
         // If destination file exists and
         // installation was not forced
         if ($this->linkExists($path, $force)) {
-            throw new \RuntimeException($name.' is already installed.');
+            throw new ErrorException($name.' is already installed.');
         }
 
         // Create link to app executable
         if (!symlink($link, $path)) {
-            throw new \RuntimeException('Failed to install '.$name.'.');
+            throw new ErrorException('Failed to install '.$name.'.');
         }
 
         $output->writeln(PHP_EOL.'<info>'.$name.' has been successfuly installed.</info>');
