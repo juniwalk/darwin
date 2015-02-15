@@ -16,14 +16,6 @@ use JuniWalk\Darwin\Command\SelfInstallCommand;
 class Darwin extends \Symfony\Component\Console\Application
 {
     /**
-     * Package name information.
-     *
-     * @return string
-     */
-    protected $package;
-
-
-    /**
      * Initialize Darwin application.
      */
     public function __construct()
@@ -76,17 +68,6 @@ class Darwin extends \Symfony\Component\Console\Application
 
 
     /**
-     * Get package information.
-     *
-     * @return stdClass
-     */
-    public function getPackage()
-    {
-        return $this->package;
-    }
-
-
-    /**
      * Gets the default commands that should always be available.
      *
      * @return array
@@ -123,8 +104,6 @@ class Darwin extends \Symfony\Component\Console\Application
         });
 
         // Get the version of the package
-        // and store package name in holder
-        $this->package = $package[0]->name;
         $version = $package[0]->version;
 
         // If the version is one of dev-[branchname]
