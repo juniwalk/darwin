@@ -49,10 +49,11 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
             '--force' => true
         ]);
 
-        // Print the output to check
-        //echo $tester->getDisplay();
-
-        //$this->assertRegExp('/.../', );
+        // Check that there is no Exception
+        $this->assertNotRegExp(
+            '/Exception/',
+            $tester->getDisplay()
+        );
     }
 
 
