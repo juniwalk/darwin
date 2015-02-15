@@ -8,15 +8,17 @@ Darwin - work in progress
 [![Tests Coverage](https://img.shields.io/scrutinizer/coverage/g/juniwalk/Darwin.svg?style=flat-square)](https://scrutinizer-ci.com/g/juniwalk/Darwin/)
 [![License](https://img.shields.io/packagist/l/juniwalk/Darwin.svg?style=flat-square)](https://mit-license.org)
 
-This is console application which will help you accomplish some tasks with your project.
+This is tiny CLI application which will help you manage your projects.
 
-Permission fix
---------------
+Fix permissions
+---------------
+
+Fix permissions of files and dirs in given dir. If dir is ommited, current working dir is used instead.
 
 ```
-$ darwin fix dir -o|--owner
+$ darwin fix dir -o|--owner -f|--force
 ```
 
-Both dir and owner are optional.
-- **dir**: path to dir, if ommited, current dir is used.
-- **owner**: owner for found files and dirs, if ommited, www-data is used.
+- `dir`: path to dir, if ommited, current dir is used.
+- `--owner`: owner for found files and dirs, if ommited, www-data is used.
+- `--force`: force the fix without checks.
