@@ -22,6 +22,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         symlink(__DIR__.'/../../res/composer.lock', '/home/travis/composer.lock');
+        mkdir(__DIR__.'/../../res/empty');
     }
 
 
@@ -32,6 +33,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Clear the garbahe after tests
         unlink('/home/travis/composer.lock');
+        unlink(__DIR__.'/../../res/empty');
     }
 
 
@@ -71,7 +73,22 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Command - Test command without forcing.
+     * Command - No such dir exists.
+     *
+     * @expectedException \ErrorException
+     */
+    public function testNoSuchDir()
+    {
+        // Execute Fix test without forcing it
+        $tester = static::execute('fix', [
+            'dir' => '/this/dir/does/not/exist',
+            '--force' => true
+        ]);
+    }
+
+
+    /**
+     * Command - No available files in dir.
      *
      * @expectedException \ErrorException
      */
@@ -79,7 +96,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Execute Fix test without forcing it
         $tester = static::execute('fix', [
-            'dir' => '/this/dir/does/not/exist',
+            'dir' => __DIR__.'/../../res/empty',
             '--force' => true
         ]);
     }
