@@ -33,7 +33,7 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Clear the garbahe after tests
         unlink('/home/travis/composer.lock');
-        unlink(__DIR__.'/../../res/empty');
+        rmdir(__DIR__.'/../../res/empty');
     }
 
 
