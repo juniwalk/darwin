@@ -75,19 +75,39 @@ class SelfInstallCommand extends Command
 
         // If destination file exists and
         // installation was not forced
-        if (!$force && file_exists($path)) {
+        if ($this->linkExists($path, $force)) {
             throw new \RuntimeException($name.' is already installed.');
         }
 
-        // Get process helper instance
-        //$process = $this->getHelper('process');
-
-        //  Just create symbolic link to appliation executable file
-        //if (!$process->run($output, 'ln -s '.$link.' '.$path)) {
+        // Create link to app executable
         if (!symlink($link, $path)) {
             throw new \RuntimeException('Failed to install '.$name.'.');
         }
 
         $output->writeln(PHP_EOL.'<info>'.$name.' has been successfuly installed.</info>');
+    }
+
+
+    /**
+     * Does the link already exist?
+     *
+     * @param  string  $path   Path to link
+     * @param  bool    $force  Force the overwrite?
+     * @return bool
+     */
+    protected function linkExists($path, $force = false)
+    {
+        // If there is no such file
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        // Link does already exist
+        if ($force == false) {
+            return true;
+        }
+
+        // Remove existing link
+        return !unlink($path);
     }
 }
