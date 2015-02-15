@@ -44,6 +44,5 @@ class DarwinTest extends \PHPUnit_Framework_TestCase
         // Assert custom added methods of this application
         $this->assertSame('Darwin', $darwin->getName());
         $this->assertSame('dev-master b633e81', $darwin->getVersion());
-        $this->assertSame('juniwalk/darwin', $darwin->getPackage());
     }
 }
