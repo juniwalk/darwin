@@ -65,7 +65,6 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Create new Darwin instance
         $darwin = new Darwin();
-        $darwin->add(new FixMock);
 
         // Try to find desired command in Darwin
         $command = $darwin->find($name);
