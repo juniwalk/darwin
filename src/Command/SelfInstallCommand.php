@@ -61,7 +61,7 @@ class SelfInstallCommand extends Command
 
         // Get application name and build install path
         $name = $this->getApplication()->getName();
-        $path = $this>dir.'/'.strtolower($name);
+        $path = $this->dir.'/'.strtolower($name);
 
         // Perform check on given directory path
         if (!$this->isReady($this>dir, $this->force)) {
