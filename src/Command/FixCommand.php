@@ -82,41 +82,41 @@ class FixCommand extends Command
 
         // Get the files and count them
         $files = $this->getFiles();
-        $count = iterator_count($files);
 
         // If there are no files
-        if (empty($count)) {
+        if (!iterator_count($files)) {
             throw new ErrorException('No files and/or directories found to fix.');
         }
 
-        // Get new progress bar instance
-        $bar = $this->getProgressBar($count);
-
-        // Iterate over found files and fix them
-        foreach ($files as $path => $file) {
-            // Display path to file in the message
-            // and advance progress bar to ne unit
-            $bar->setMessage($path);
-            $bar->advance();
-
-            // Set appropriate mode to the file / dir
-            // and change owner to web server user
-            $this->setMode($path, $file->isFile());
-            $this->setOwner($path, $this->owner);
-
-            // If this is one of the files to be locked from access
-            if (preg_match(static::LOCKED_FILES, $file->getFilename())) {
-                // Change owner to root user
-                $this->setOwner($path, 'root');
-            }
-        }
-
-        // Task has finished
+        // Iterate over all files we have found and send them for processing
+        $bar = $this->progressIterator($files, [$this, 'process']);
         $bar->setMessage('<info>All is fixed now.</info>');
-        $bar->finish();
 
         // Move pointer to new line
         $this->write(PHP_EOL);
+    }
+
+
+    /**
+     * Process file or directory.
+     *
+     * @return bool
+     * @throws ErrorException
+     */
+    public function process($path, \SplFileInfo $file)
+    {
+        // Set appropriate mode to the file / dir
+        // and change owner to web server user
+        $this->setMode($path, $file->isFile());
+        $this->setOwner($path, $this->owner);
+
+        // If this is one of the files to be locked from access
+        if (preg_match(static::LOCKED_FILES, $file->getFilename())) {
+            // Change owner to root user
+            $this->setOwner($path, 'root');
+        }
+
+        return true;
     }
 
 

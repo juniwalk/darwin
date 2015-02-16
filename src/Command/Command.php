@@ -117,4 +117,45 @@ class Command extends \Symfony\Component\Console\Command\Command
         // Ask user for confirmation and then return the outcome user has decided
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
     }
+
+
+    /**
+     * Iterate over found filess and execute method.
+     *
+     * @param  int  $steps  Maximum steps
+     * @return ProgressBar
+     * @throws ErrorException
+     */
+    protected function progressIterator($files, callable $method)
+    {
+        // Get the count of the items
+        $count = iterator_count($files);
+
+        // If there are no files
+        if (empty($count)) {
+            throw new ErrorException('No files and/or directories found.');
+        }
+
+        // Get new progress bar instance
+        $bar = $this->getProgressBar($count);
+
+        // Iterate over found files and fix them
+        foreach ($files as $path => $file) {
+            // Display path to file in the message
+            // and advance progress bar to ne unit
+            $bar->setMessage($path);
+            $bar->advance();
+
+            // Process current path
+            if (!$method($path, $file)) {
+                throw new ErrorException('Failed to process file or directory.');
+            }
+        }
+
+        // The progress has finished
+        $bar->finish();
+
+        // Return progress bar
+        return $bar;
+    }
 }
