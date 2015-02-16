@@ -166,7 +166,7 @@ class Command extends \Symfony\Component\Console\Command\Command
         // Iterate over found files and fix them
         foreach ($files as $path => $file) {
             // Display path to file in the message
-            // and advance progress bar to ne unit
+            // and advance progress bar to next point
             $bar->setMessage($path);
             $bar->advance();
 
