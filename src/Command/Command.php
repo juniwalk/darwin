@@ -164,11 +164,12 @@ class Command extends \Symfony\Component\Console\Command\Command
     /**
      * Iterate over found filess and execute method.
      *
-     * @param  int  $steps  Maximum steps
+     * @param  \Traversable  $files   Files to iterate over
+     * @param  callable      $method  Callback method
      * @return ProgressBar
      * @throws ErrorException
      */
-    protected function iterate($files, callable $method)
+    protected function iterate(\Traversable $files, callable $method)
     {
         // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(iterator_count($files));
