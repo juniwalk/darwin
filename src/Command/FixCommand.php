@@ -75,8 +75,8 @@ class FixCommand extends Command
         // Prepare input/output for this command
         $this->prepare($input, $output);
 
-        // Chech the input params
-        if (!$this->isReady()) {
+        // Perform check on given directory path
+        if (!$this->isReady($this->dir, $this->force)) {
             return null;
         }
 

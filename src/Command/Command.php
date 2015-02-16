@@ -80,11 +80,11 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @return bool
      * @throws ErrorException
      */
-    protected function isReady()
+    protected function isReady($dir, $force)
     {
         // Output which directory we are trying to fix right now
         $this->write(PHP_EOL.'<info>We will '.strtolower($this->getDescription()).' in directory:</info>');
-        $this->write('<comment>'.$this->dir.'</comment>'.PHP_EOL);
+        $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
@@ -92,12 +92,12 @@ class Command extends \Symfony\Component\Console\Command\Command
         }
 
         // If this is not server directory and fix is not forced
-        if (!preg_match('/^\/(srv)/i', $this->dir) && !$this->force) {
+        if (!preg_match('/^\/(srv)/i', $dir) && !$force) {
             throw new ErrorException('Working outside srv directory, use --force flag to override.');
         }
 
         // No such directory
-        if (!is_dir($this->dir)) {
+        if (!is_dir($dir)) {
             throw new ErrorException('Directory does not exist.');
         }
 
