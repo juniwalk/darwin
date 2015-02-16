@@ -33,6 +33,16 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
+     * Called when command finishes.
+     */
+    public function __destruct()
+    {
+        // Move pointer to new line
+        $this->write(PHP_EOL);
+    }
+
+
+    /**
      * Dialog to confirm some action.
      *
      * @param InputInterface   $input   Input stream
