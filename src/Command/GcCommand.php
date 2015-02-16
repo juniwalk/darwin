@@ -62,7 +62,7 @@ class GcCommand extends Command
         }
 
         // Chech the input params
-        if (!$this->checkParams()) {
+        if (!$this->isReady()) {
             return null;
         }
 
@@ -77,7 +77,7 @@ class GcCommand extends Command
      * @return bool
      * @throws ErrorException
      */
-    protected function checkParams()
+    protected function isReady()
     {
         // Output which directory we are trying to fix right now
         $this->write(PHP_EOL.'<info>We will look for garbage in this directory:</info>');
@@ -85,12 +85,12 @@ class GcCommand extends Command
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
-            return null;
+            return false;
         }
 
         // If this is not server directory and fix is not forced
         if (!preg_match('/^\/(srv)/i', $this->dir) && !$this->force) {
-            throw new ErrorException('You are not in http server directory.');
+            throw new ErrorException('Working outside srv directory, use --force flag to override.');
         }
 
         // No such directory
