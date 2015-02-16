@@ -88,8 +88,7 @@ class InstallCommand extends Command
     /**
      * Does the link already exist?
      *
-     * @param  string  $path   Path to link
-     * @param  bool    $force  Force the overwrite?
+     * @param  string  $path  Path to link
      * @return bool
      */
     protected function linkExists($path)
