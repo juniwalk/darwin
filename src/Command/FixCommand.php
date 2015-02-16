@@ -102,7 +102,7 @@ class FixCommand extends Command
             // Set appropriate mode to the file / dir
             // and change owner to web server user
             $this->setMode($path, $file->isFile());
-            $this->setOwner($path, $owner);
+            $this->setOwner($path, $this->owner);
 
             // If this is one of the files to be locked from access
             if (preg_match(static::LOCKED_FILES, $file->getFilename())) {
