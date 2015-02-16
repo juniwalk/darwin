@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use ErrorException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputInterface;
