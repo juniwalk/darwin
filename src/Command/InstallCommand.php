@@ -46,7 +46,7 @@ class InstallCommand extends Command
     protected function configure()
     {
         $this->setName('install');
-        $this->setDescription('Install this app into $PATH directory');
+        $this->setDescription('Install into $PATH directory');
 
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Custom installation path', $this->dir);
