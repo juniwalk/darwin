@@ -89,7 +89,7 @@ class FixCommand extends Command
         }
 
         // Iterate over all files we have found and send them for processing
-        $bar = $this->progressIterator($files, [$this, 'process']);
+        $bar = $this->iterate($files, [ $this, 'setPermissions' ]);
         $bar->setMessage('<info>All is fixed now.</info>');
 
         // Move pointer to new line
@@ -103,7 +103,7 @@ class FixCommand extends Command
      * @return bool
      * @throws ErrorException
      */
-    public function process($path, \SplFileInfo $file)
+    public function setPermissions($path, \SplFileInfo $file)
     {
         // Set appropriate mode to the file / dir
         // and change owner to web server user

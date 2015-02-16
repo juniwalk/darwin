@@ -126,7 +126,7 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @return ProgressBar
      * @throws ErrorException
      */
-    protected function progressIterator($files, callable $method)
+    protected function iterate($files, callable $method)
     {
         // Get the count of the items
         $count = iterator_count($files);
