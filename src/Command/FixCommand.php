@@ -80,16 +80,8 @@ class FixCommand extends Command
             return null;
         }
 
-        // Get the files and count them
-        $files = $this->getFiles();
-
-        // If there are no files
-        if (!iterator_count($files)) {
-            throw new ErrorException('No files and/or directories found to fix.');
-        }
-
         // Iterate over all files we have found and send them for processing
-        $bar = $this->iterate($files, [ $this, 'setPermissions' ]);
+        $bar = $this->iterate($this->getFiles(), [ $this, 'setPermissions' ]);
         $bar->setMessage('<info>All is fixed now.</info>');
 
         // Move pointer to new line
