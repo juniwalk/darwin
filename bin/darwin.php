@@ -10,7 +10,7 @@
 
 use JuniWalk\Darwin\Command\FixCommand;
 use JuniWalk\Darwin\Command\GcCommand;
-use JuniWalk\Darwin\Command\SelfInstallCommand;
+use JuniWalk\Darwin\Command\InstallCommand;
 use JuniWalk\Darwin\Darwin;
 
 
@@ -24,7 +24,7 @@ $darwin = new Darwin;
 // Insert available commands
 $darwin->add(new FixCommand);
 $darwin->add(new GcCommand);
-$darwin->add(new SelfInstallCommand);
+$darwin->add(new InstallCommand);
 
 // Run Darwin Application
 $darwin->run();

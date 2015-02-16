@@ -23,7 +23,7 @@ If you do not have composer's /bin dir in $PATH then install Darwin using it's o
 
 ```
 $ cd /root/.composer/vendor/bin
-$ darwin self:install /path/to/dir -f|--force
+$ darwin install /path/to/dir -f|--force
 ```
 
 - `dir`: path to dir, if ommited, `/usr/local/bin` is used.

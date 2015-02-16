@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SelfInstallCommand extends Command
+class InstallCommand extends Command
 {
     /**
      * Path checking.
@@ -38,7 +38,7 @@ class SelfInstallCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('self:install');
+        $this->setName('install');
         $this->setDescription('Install this app into $PATH directory');
 
         // Define arguments and options of this command with default values

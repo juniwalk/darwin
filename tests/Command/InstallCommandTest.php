@@ -10,11 +10,11 @@
 
 namespace JuniWalk\Darwin\Tests;
 
-use JuniWalk\Darwin\Command\SelfInstallCommand;
+use JuniWalk\Darwin\Command\InstallCommand;
 use JuniWalk\Darwin\Darwin;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
+class InstallCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Create symlinks for needed files.
@@ -41,7 +41,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     public function testExecuteAll()
     {
         // Execute install script with custom path
-        $tester = static::execute('self:install', [
+        $tester = static::execute('install', [
             'dir' => __DIR__.'/../../res',
             '--force' => true,
         ]);
@@ -59,7 +59,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     public function testWhenInstalled()
     {
         // Try to install again without forcing
-        $tester = static::execute('self:install', [
+        $tester = static::execute('install', [
             'dir' => __DIR__.'/../../res',
             '--force' => false,
         ]);
@@ -72,7 +72,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     public function testForceInstall()
     {
         // Try to install application again over already installed one
-        $tester = static::execute('self:install', [
+        $tester = static::execute('install', [
             'dir' => __DIR__.'/../../res',
             '--force' => true,
         ]);
@@ -93,7 +93,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Create new Darwin instance
         $darwin = new Darwin();
-        $darwin->add(new SelfInstallCommand);
+        $darwin->add(new InstallCommand);
 
         // Try to find desired command in Darwin
         $command = $darwin->find($name);
