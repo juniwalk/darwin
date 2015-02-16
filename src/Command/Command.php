@@ -175,7 +175,7 @@ class Command extends \Symfony\Component\Console\Command\Command
         }
 
         // The progress has finished
-        $bar->setMessage('<info>Task finished.</info>');
+        $bar->setMessage('<comment>Task finished.</comment>');
         $bar->finish();
 
         // Return progress bar
