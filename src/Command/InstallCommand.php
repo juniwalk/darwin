@@ -26,11 +26,18 @@ class InstallCommand extends Command
     const CONTAINMENT = '/\/(bin)$/i';
 
     /**
-     * Path to default binary.
+     * Installation directory.
      *
      * @var string
      */
-    const PATH = '/usr/local/bin';
+    protected $dir = '/usr/local/bin';
+
+    /**
+     * Force the cleanup?
+     *
+     * @var bool
+     */
+    protected $force;
 
 
     /**
@@ -42,7 +49,7 @@ class InstallCommand extends Command
         $this->setDescription('Install this app into $PATH directory');
 
         // Define arguments and options of this command with default values
-        $this->addArgument('dir', InputArgument::OPTIONAL, 'Custom installation path', static::PATH);
+        $this->addArgument('dir', InputArgument::OPTIONAL, 'Custom installation path', $this->dir);
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the collection');
     }
 
