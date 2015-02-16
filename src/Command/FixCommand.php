@@ -93,7 +93,7 @@ class FixCommand extends Command
         $bar = $this->getProgressBar($count);
 
         // Iterate over found files and fix them
-        foreach ($search as $path => $file) {
+        foreach ($files as $path => $file) {
             // Display path to file in the message
             // and advance progress bar to ne unit
             $bar->setMessage($path);
