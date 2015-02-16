@@ -42,7 +42,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Execute install script with custom path
         $tester = static::execute('self:install', [
-            'path' => __DIR__.'/../../res'
+            'dir' => __DIR__.'/../../res'
         ]);
 
         // Check that the file was successfully created
@@ -59,7 +59,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Try to install again without forcing
         $tester = static::execute('self:install', [
-            'path' => __DIR__.'/../../res',
+            'dir' => __DIR__.'/../../res',
             '--force' => false
         ]);
     }
@@ -72,7 +72,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Try to install application again over already installed one
         $tester = static::execute('self:install', [
-            'path' => __DIR__.'/../../res',
+            'dir' => __DIR__.'/../../res',
             '--force' => true
         ]);
 
