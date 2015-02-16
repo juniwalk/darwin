@@ -89,6 +89,8 @@ class FixCommand extends Command
     /**
      * Process file or directory.
      *
+     * @param  string        $path  Absolute path to file
+     * @param  \SplFileInfo  $file  Information about the file
      * @return bool
      * @throws ErrorException
      */
