@@ -50,7 +50,7 @@ class InstallCommand extends Command
 
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Custom installation path', $this->dir);
-        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the collection');
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force installation over existing files');
     }
 
 
