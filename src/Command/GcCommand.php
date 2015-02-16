@@ -49,7 +49,7 @@ class GcCommand extends Command
         $force = $input->getOption('force');
 
         // Output which directory we are trying to fix right now
-        $output->writeln(PHP_EOL.'<info>We will fix permissions and set owner to <comment>'.$owner.'</comment> for directory:</info>');
+        $output->writeln(PHP_EOL.'<info>We will look for garbage in this directory:</info>');
         $output->writeln('<comment>'.$dir.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
