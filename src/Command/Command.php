@@ -77,6 +77,8 @@ class Command extends \Symfony\Component\Console\Command\Command
     /**
      * Check wether command is ready.
      *
+     * @param  string  $dir    Containment directory
+     * @param  bool    $force  Force the task outside src dir
      * @return bool
      * @throws ErrorException
      */

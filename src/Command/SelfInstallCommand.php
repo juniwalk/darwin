@@ -35,8 +35,8 @@ class SelfInstallCommand extends Command
         $this->setDescription('Install into /bin directory');
 
         // Define arguments and options of this command with default values
-        $this->addArgument('path', InputArgument::OPTIONAL, 'Select custom path', static::PATH);
-        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force installation, overwrite existing files');
+        $this->addArgument('dir', InputArgument::OPTIONAL, 'Custom installation path', static::PATH);
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the collection');
     }
 
 
@@ -49,30 +49,23 @@ class SelfInstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Set input/output streams into instance
-        $this->setInputOutput($input, $output);
+        // Prepare input/output for this command
+        $this->prepare($input, $output);
+
+        // Get application name and build install path
         $name = $this->getApplication()->getName();
+        $path = $this>dir.'/'.strtolower($name);
 
-        // Gather arguments and options of this command
-        $path = $input->getArgument('path');
-        $path = $path.'/'.strtolower($name);
-        $force = $input->getOption('force');
-
-        // Output which directory we are trying to fix right now
-        $output->writeln(PHP_EOL.'<info>'.$name.' will be installed into:</info>');
-        $output->writeln('<comment>'.$path.'</comment>'.PHP_EOL);
-
-        // If the user does not wish to continue
-        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
+        // Perform check on given directory path
+        if (!$this->isReady($name, $this>dir, $this->force)) {
             return null;
         }
 
         // Get the path to the application executable
         $link = realpath(__DIR__.'/../../bin/'.strtolower($name));
 
-        // If destination file exists and
-        // installation was not forced
-        if ($this->linkExists($path, $force)) {
+        // If destination symlink exists
+        if ($this->linkExists($path)) {
             throw new ErrorException($name.' is already installed.');
         }
 
@@ -81,7 +74,7 @@ class SelfInstallCommand extends Command
             throw new ErrorException('Failed to install '.$name.'.');
         }
 
-        $output->writeln(PHP_EOL.'<info>'.$name.' has been successfuly installed.</info>');
+        $this->write(PHP_EOL.'<info>'.$name.' has been successfuly installed.</info>');
     }
 
 
@@ -92,7 +85,7 @@ class SelfInstallCommand extends Command
      * @param  bool    $force  Force the overwrite?
      * @return bool
      */
-    protected function linkExists($path, $force = false)
+    protected function linkExists($path)
     {
         // If there is no such file
         if (!file_exists($path)) {
@@ -100,11 +93,45 @@ class SelfInstallCommand extends Command
         }
 
         // Link does already exist
-        if ($force == false) {
+        if ($this->force == false) {
             return true;
         }
 
         // Remove existing link
         return !unlink($path);
+    }
+
+
+    /**
+     * Check wether command is ready.
+     *
+     * @param  string  $name   Application name
+     * @param  string  $dir    Installation directory
+     * @param  bool    $force  Force the task outside src dir
+     * @return bool
+     * @throws ErrorException
+     */
+    protected function isReady($name, $dir, $force)
+    {
+        // Output which directory we are trying to fix right now
+        $this->write(PHP_EOL.'<info>We will install '.$name.' into directory:</info>');
+        $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
+
+        // If the user does not wish to continue
+        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
+            return false;
+        }
+
+        // If endpoint directory is not /bin directory
+        if (!preg_match('/\/(bin)$/i', $dir) && !$force) {
+            throw new ErrorException('Endpoint directory is not ~/bin, use --force flag to override.');
+        }
+
+        // No such directory
+        if (!is_dir($dir)) {
+            throw new ErrorException('Directory does not exist.');
+        }
+
+        return true;
     }
 }
