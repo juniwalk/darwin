@@ -167,7 +167,6 @@ class Command extends \Symfony\Component\Console\Command\Command
      * @param  \Traversable  $files   Files to iterate over
      * @param  callable      $method  Callback method
      * @return ProgressBar
-     * @throws ErrorException
      */
     protected function iterate(\Traversable $files, callable $method)
     {
@@ -182,9 +181,7 @@ class Command extends \Symfony\Component\Console\Command\Command
             $bar->advance();
 
             // Process current path
-            if (!$method($path, $file)) {
-                throw new ErrorException('Failed to process file or directory.');
-            }
+            $method($path, $file);
         }
 
         // The progress has finished
