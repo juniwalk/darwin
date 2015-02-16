@@ -84,6 +84,37 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
+     * Check wether command is ready.
+     *
+     * @return bool
+     * @throws ErrorException
+     */
+    protected function isReady()
+    {
+        // Output which directory we are trying to fix right now
+        $this->write(PHP_EOL.'<info>We will '.strtolower($this->getDescription()).' in directory:</info>');
+        $this->write('<comment>'.$this->dir.'</comment>'.PHP_EOL);
+
+        // If the user does not wish to continue
+        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
+            return false;
+        }
+
+        // If this is not server directory and fix is not forced
+        if (!preg_match('/^\/(srv)/i', $this->dir) && !$this->force) {
+            throw new ErrorException('Working outside srv directory, use --force flag to override.');
+        }
+
+        // No such directory
+        if (!is_dir($this->dir)) {
+            throw new ErrorException('Directory does not exist.');
+        }
+
+        return true;
+    }
+
+
+    /**
      * Write message/s to console output.
      */
     protected function write($message)

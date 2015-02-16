@@ -39,7 +39,7 @@ class GcCommand extends Command
     protected function configure()
     {
         $this->setName('gc');
-        $this->setDescription('Garbage collector for your project');
+        $this->setDescription('Garbage collect your project');
 
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
@@ -66,36 +66,5 @@ class GcCommand extends Command
 
         // Load config and search for garbage
         $this->write('Looking for garbage ...'.PHP_EOL);
-    }
-
-
-    /**
-     * Check wether command is ready.
-     *
-     * @return bool
-     * @throws ErrorException
-     */
-    protected function isReady()
-    {
-        // Output which directory we are trying to fix right now
-        $this->write(PHP_EOL.'<info>We will look for garbage in this directory:</info>');
-        $this->write('<comment>'.$this->dir.'</comment>'.PHP_EOL);
-
-        // If the user does not wish to continue
-        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
-            return false;
-        }
-
-        // If this is not server directory and fix is not forced
-        if (!preg_match('/^\/(srv)/i', $this->dir) && !$this->force) {
-            throw new ErrorException('Working outside srv directory, use --force flag to override.');
-        }
-
-        // No such directory
-        if (!is_dir($this->dir)) {
-            throw new ErrorException('Directory does not exist.');
-        }
-
-        return true;
     }
 }
