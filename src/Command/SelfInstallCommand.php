@@ -64,7 +64,7 @@ class SelfInstallCommand extends Command
         $path = $this->dir.'/'.strtolower($name);
 
         // Perform check on given directory path
-        if (!$this->isReady($this>dir, $this->force)) {
+        if (!$this->isReady($this->dir, $this->force)) {
             return null;
         }
 
