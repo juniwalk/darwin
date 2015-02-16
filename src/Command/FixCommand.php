@@ -20,6 +20,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FixCommand extends Command
 {
     /**
+     * Path checking.
+     *
+     * @var string
+     */
+    const CONTAINMENT = '/^\/(srv)/i';
+
+    /**
      * Define names of files that should be locked out from Apache user.
      *
      * @var string

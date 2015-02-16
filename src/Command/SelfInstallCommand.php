@@ -19,6 +19,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SelfInstallCommand extends Command
 {
     /**
+     * Path checking.
+     *
+     * @var string
+     */
+    const CONTAINMENT = '/\/(bin)$/i';
+
+    /**
      * Path to default binary.
      *
      * @var string
@@ -32,7 +39,7 @@ class SelfInstallCommand extends Command
     protected function configure()
     {
         $this->setName('self:install');
-        $this->setDescription('Install into /bin directory');
+        $this->setDescription('Install this app into $PATH directory');
 
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Custom installation path', static::PATH);
@@ -57,7 +64,7 @@ class SelfInstallCommand extends Command
         $path = $this>dir.'/'.strtolower($name);
 
         // Perform check on given directory path
-        if (!$this->isReady($name, $this>dir, $this->force)) {
+        if (!$this->isReady($this>dir, $this->force)) {
             return null;
         }
 
@@ -99,39 +106,5 @@ class SelfInstallCommand extends Command
 
         // Remove existing link
         return !unlink($path);
-    }
-
-
-    /**
-     * Check wether command is ready.
-     *
-     * @param  string  $name   Application name
-     * @param  string  $dir    Installation directory
-     * @param  bool    $force  Force the task outside src dir
-     * @return bool
-     * @throws ErrorException
-     */
-    protected function isReady($name, $dir, $force)
-    {
-        // Output which directory we are trying to fix right now
-        $this->write(PHP_EOL.'<info>We will install '.$name.' into directory:</info>');
-        $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
-
-        // If the user does not wish to continue
-        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
-            return false;
-        }
-
-        // If endpoint directory is not /bin directory
-        if (!preg_match('/\/(bin)$/i', $dir) && !$force) {
-            throw new ErrorException('Endpoint directory is not ~/bin, use --force flag to override.');
-        }
-
-        // No such directory
-        if (!is_dir($dir)) {
-            throw new ErrorException('Directory does not exist.');
-        }
-
-        return true;
     }
 }

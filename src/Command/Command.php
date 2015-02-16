@@ -94,8 +94,8 @@ class Command extends \Symfony\Component\Console\Command\Command
         }
 
         // If this is not server directory and fix is not forced
-        if (!preg_match('/^\/(srv)/i', $dir) && !$force) {
-            throw new ErrorException('Working outside srv directory, use --force flag to override.');
+        if (!preg_match(static::CONTAINMENT, $dir) && !$force) {
+            throw new ErrorException('Working outside containment directory, use --force flag to override.');
         }
 
         // No such directory

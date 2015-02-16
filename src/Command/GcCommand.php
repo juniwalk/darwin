@@ -19,6 +19,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GcCommand extends Command
 {
     /**
+     * Path checking.
+     *
+     * @var string
+     */
+    const CONTAINMENT = '/^\/(srv)/i';
+
+    /**
      * Path to the project.
      *
      * @var string
