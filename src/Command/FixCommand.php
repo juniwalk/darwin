@@ -116,7 +116,7 @@ class FixCommand extends Command
     /**
      * Get the list of found fles and directories.
      *
-     * @return IteratorAggregate
+     * @return \Traversable
      */
     protected function getFiles()
     {
@@ -151,8 +151,8 @@ class FixCommand extends Command
     /**
      * Set new permissions mode.
      *
-     * @param  string      $path   Path to file or dir
-     * @param  int|string  $owner  New owner name/id
+     * @param  string  $path   Path to file or dir
+     * @param  string  $owner  New owner name/id
      * @return bool
      */
     protected function setOwner($path, $owner)
