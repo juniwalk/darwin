@@ -46,6 +46,34 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
+     * Prepare command arguments.
+     *
+     * @param InputInterface   $input   Input stream
+     * @param OutputInterface  $output  Output stream
+     */
+    protected function prepare(InputInterface $input, OutputInterface $output)
+    {
+        // Assign Input/Output streams
+        $this->input = $input;
+        $this->output = $output;
+
+        // Iterate over the list of provided options
+        foreach ($input->getOptions() as $key => $value) {
+            // Assign value to property
+            $this->$key = $value;
+        }
+
+        // Iterate over the list of provided arguments
+        foreach ($input->getArguments() as $key => $value) {
+            // Assign value to property
+            $this->$key = $value;
+        }
+
+        return true;
+    }
+
+
+    /**
      * Write message/s to console output.
      */
     protected function write($message)

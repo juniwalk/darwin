@@ -19,6 +19,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GcCommand extends Command
 {
     /**
+     * Path to the project.
+     *
+     * @var string
+     */
+    protected $dir;
+
+    /**
+     * Force the cleanup?
+     *
+     * @var bool
+     */
+    protected $force;
+
+
+    /**
      * Configure this command.
      */
     protected function configure()
@@ -41,12 +56,10 @@ class GcCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Set input/output streams into instance
-        $this->setInputOutput($input, $output);
-
-        // Gather arguments and options of this command
-        $dir = $input->getArgument('dir');
-        $force = $input->getOption('force');
+        // Prepare input/output for this command
+        if (!$this->prepare($input, $output)) {
+            // Handle rror
+        }
 
         // Chech the input params
         if (!$this->checkParams()) {
@@ -66,13 +79,9 @@ class GcCommand extends Command
      */
     protected function checkParams()
     {
-        // Gather arguments and options of this command
-        $dir = $this->input->getArgument('dir');
-        $force = $this->input->getOption('force');
-
         // Output which directory we are trying to fix right now
         $this->write(PHP_EOL.'<info>We will look for garbage in this directory:</info>');
-        $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
+        $this->write('<comment>'.$this->dir.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
@@ -80,12 +89,12 @@ class GcCommand extends Command
         }
 
         // If this is not server directory and fix is not forced
-        if (!preg_match('/^\/(srv)/i', $dir) && !$force) {
+        if (!preg_match('/^\/(srv)/i', $this->dir) && !$this->force) {
             throw new ErrorException('You are not in http server directory.');
         }
 
         // No such directory
-        if (!is_dir($dir)) {
+        if (!is_dir($this->dir)) {
             throw new ErrorException('Directory does not exist.');
         }
 
