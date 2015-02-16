@@ -26,6 +26,27 @@ class FixCommand extends Command
      */
     const LOCKED_FILES = '/(index|config|htaccess|composer)/is';
 
+    /**
+     * Path to the project.
+     *
+     * @var string
+     */
+    protected $dir;
+
+    /**
+     * Owner name for unlocked files.
+     *
+     * @var string
+     */
+    protected $owner;
+
+    /**
+     * Force the cleanup?
+     *
+     * @var bool
+     */
+    protected $force;
+
 
     /**
      * Configure this command.
@@ -51,46 +72,27 @@ class FixCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Set input/output streams into instance
-        $this->setInputOutput($input, $output);
+        // Prepare input/output for this command
+        $this->prepare($input, $output);
 
-        // Gather arguments and options of this command
-        $dir = $input->getArgument('dir');
-        $owner = $input->getOption('owner');
-        $force = $input->getOption('force');
-
-        // Output which directory we are trying to fix right now
-        $output->writeln(PHP_EOL.'<info>We will fix permissions and set owner to <comment>'.$owner.'</comment> for directory:</info>');
-        $output->writeln('<comment>'.$dir.'</comment>'.PHP_EOL);
-
-        // If the user does not wish to continue
-        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
+        // Chech the input params
+        if (!$this->isReady()) {
             return null;
         }
 
-        // If this is not server directory and fix is not forced
-        if (!preg_match('/^\/(srv)/i', $dir) && !$force) {
-            throw new ErrorException('You are not in http server directory.');
-        }
+        // Get the files and count them
+        $files = $this->getFiles();
+        $count = iterator_count($files);
 
-        // No such directory
-        if (!is_dir($dir)) {
-            throw new ErrorException('Directory does not exist.');
-        }
-
-        // Search for files and dirs in the folder
-        $search = Finder::find('*')->from($dir);
-        $sizeof = iterator_count($search);
-
-        // If there are no contents
-        if (empty($sizeof)) {
+        // If there are no files
+        if (empty($count)) {
             throw new ErrorException('No files and/or directories found to fix.');
         }
 
         // Get new progress bar instance
-        $bar = $this->getProgressBar($sizeof);
+        $bar = $this->getProgressBar($count);
 
-        // Search for each file and dir in current project and set privileges
+        // Iterate over found files and fix them
         foreach ($search as $path => $file) {
             // Display path to file in the message
             // and advance progress bar to ne unit
@@ -114,7 +116,50 @@ class FixCommand extends Command
         $bar->finish();
 
         // Move pointer to new line
-        $output->writeln(PHP_EOL);
+        $this->write(PHP_EOL);
+    }
+
+
+    /**
+     * Check wether command is ready.
+     *
+     * @return bool
+     * @throws ErrorException
+     */
+    protected function isReady()
+    {
+        // Output which directory we are trying to fix right now
+        $this->write(PHP_EOL.'<info>We will fix permissions and set owner to <comment>'.$this->owner.'</comment> for directory:</info>');
+        $this->write('<comment>'.$this->dir.'</comment>'.PHP_EOL);
+
+        // If the user does not wish to continue
+        if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
+            return false;
+        }
+
+        // If this is not server directory and fix is not forced
+        if (!preg_match('/^\/(srv)/i', $this->dir) && !$this->force) {
+            throw new ErrorException('Working outside srv directory, use --force flag to override.');
+        }
+
+        // No such directory
+        if (!is_dir($this->dir)) {
+            throw new ErrorException('Directory does not exist.');
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Get the list of found fles and directories.
+     *
+     * @return IteratorAggregate
+     */
+    protected function getFiles()
+    {
+        // Return list of files and directories to fix
+        return Finder::find('*')->from($this->dir);
     }
 
 
