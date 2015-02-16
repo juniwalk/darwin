@@ -22,10 +22,12 @@ $ composer global require juniwalk/darwin
 If you do not have composer's /bin dir in $PATH then install Darwin using it's own command.
 
 ```
-$ /root/.composer/vendor/bin/darwin self:install
+$ cd /root/.composer/vendor/bin
+$ darwin self:install /path/to/dir -f|--force
 ```
 
-This will create symlink to Darwin in `/usr/local/bin` directory.
+- `dir`: path to dir, if ommited, `/usr/local/bin` is used.
+- `--force`: override any existing files.
 
 Updating
 --------
