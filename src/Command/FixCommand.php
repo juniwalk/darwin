@@ -82,7 +82,6 @@ class FixCommand extends Command
 
         // Iterate over all files we have found and send them for processing
         $bar = $this->iterate($this->getFiles(), [ $this, 'setPermissions' ]);
-        $bar->setMessage('<info>All is fixed now.</info>');
 
         // Move to new line after bar
         $this->write(PHP_EOL);
