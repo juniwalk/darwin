@@ -46,6 +46,15 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
+     * Write message/s to console output.
+     */
+    protected function write($message)
+    {
+        $this->output->writeln($message);
+    }
+
+
+    /**
      * Dialog to confirm some action.
      *
      * @param  int  $steps  Maximum steps

@@ -48,9 +48,31 @@ class GcCommand extends Command
         $dir = $input->getArgument('dir');
         $force = $input->getOption('force');
 
+        // Chech the input params
+        if (!$this->checkParams()) {
+            return null;
+        }
+
+        // Load config and search for garbage
+        $this->write('Looking for garbage ...'.PHP_EOL);
+    }
+
+
+    /**
+     * Check directory.
+     *
+     * @return bool
+     * @throws ErrorException
+     */
+    protected function checkParams()
+    {
+        // Gather arguments and options of this command
+        $dir = $this->input->getArgument('dir');
+        $force = $this->input->getOption('force');
+
         // Output which directory we are trying to fix right now
-        $output->writeln(PHP_EOL.'<info>We will look for garbage in this directory:</info>');
-        $output->writeln('<comment>'.$dir.'</comment>'.PHP_EOL);
+        $this->write(PHP_EOL.'<info>We will look for garbage in this directory:</info>');
+        $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
@@ -67,6 +89,6 @@ class GcCommand extends Command
             throw new ErrorException('Directory does not exist.');
         }
 
-        // Load config and search for garbage
+        return true;
     }
 }
