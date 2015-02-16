@@ -156,7 +156,6 @@ class Command extends \Symfony\Component\Console\Command\Command
      *
      * @param  \Traversable  $files   Files to iterate over
      * @param  callable      $method  Callback method
-     * @return ProgressBar
      */
     protected function iterate(\Traversable $files, callable $method)
     {
@@ -177,8 +176,5 @@ class Command extends \Symfony\Component\Console\Command\Command
         // The progress has finished
         $bar->setMessage('<comment>Task finished.</comment>');
         $bar->finish();
-
-        // Return progress bar
-        return $bar;
     }
 }
