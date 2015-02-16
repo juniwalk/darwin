@@ -10,10 +10,6 @@
 
 namespace JuniWalk\Darwin;
 
-use JuniWalk\Darwin\Command\FixCommand;
-use JuniWalk\Darwin\Command\GcCommand;
-use JuniWalk\Darwin\Command\SelfInstallCommand;
-
 class Darwin extends \Symfony\Component\Console\Application
 {
     /**
@@ -65,26 +61,6 @@ class Darwin extends \Symfony\Component\Console\Application
         }
 
         return $version;
-    }
-
-
-    /**
-     * Gets the default commands that should always be available.
-     *
-     * @return array
-     */
-    protected function getDefaultCommands()
-    {
-        // Get default parent commands and add new
-        $cmds = parent::getDefaultCommands();
-        $cmds[] = new FixCommand();
-        $cmds[] = new GcCommand();
-
-        // Self commands
-        $cmds[] = new SelfInstallCommand();
-
-        // Return commands
-        return $cmds;
     }
 
 

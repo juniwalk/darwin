@@ -10,10 +10,22 @@
 
 use JuniWalk\Darwin\Darwin;
 
+use JuniWalk\Darwin\Command\FixCommand;
+use JuniWalk\Darwin\Command\GcCommand;
+use JuniWalk\Darwin\Command\SelfInstallCommand;
+
 
 // Include vendor autoloader to access projects
 include __DIR__.'/../../../autoload.php';
 
 
+// Initialize Darwin
+$darwin = new Darwin;
+
+// Insert available commands
+$darwin->add(new FixCommand);
+$darwin->add(new GcCommand);
+$darwin->add(new SelfInstallCommand);
+
 // Run Darwin Application
-(new Darwin)->run();
+$darwin->run();
