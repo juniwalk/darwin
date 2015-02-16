@@ -72,7 +72,7 @@ class GcCommand extends Command
 
 
     /**
-     * Check directory.
+     * Check wheter command is ready.
      *
      * @return bool
      * @throws ErrorException
