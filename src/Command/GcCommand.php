@@ -57,9 +57,7 @@ class GcCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Prepare input/output for this command
-        if (!$this->prepare($input, $output)) {
-            // Handle rror
-        }
+        $this->prepare($input, $output);
 
         // Chech the input params
         if (!$this->isReady()) {
