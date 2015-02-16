@@ -89,20 +89,6 @@ class FixCommandTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Command - No available files in dir.
-     *
-     * @expectedException \ErrorException
-     */
-    public function testNoFiles()
-    {
-        // Execute Fix test without forcing it
-        $tester = static::execute('fix', [
-            'dir' => __DIR__.'/../../res/empty',
-            '--force' => true
-        ]);
-    }
-
-    /**
      * Execute command in controlled enviroment.
      *
      * @param  string  $name   Command name
