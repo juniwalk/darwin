@@ -170,16 +170,8 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function iterate($files, callable $method)
     {
-        // Get the count of the items
-        $count = iterator_count($files);
-
-        // If there are no files
-        if (empty($count)) {
-            throw new ErrorException('No files and/or directories found.');
-        }
-
-        // Get new progress bar instance
-        $bar = $this->getProgressBar($count);
+        // Get new progress bar instance with count of files
+        $bar = $this->getProgressBar(iterator_count($files));
 
         // Iterate over found files and fix them
         foreach ($files as $path => $file) {
