@@ -43,7 +43,7 @@ class GcCommand extends Command
 
         // Define arguments and options of this command with default values
         $this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
-        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the fix for any directory');
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the collection');
     }
 
 
