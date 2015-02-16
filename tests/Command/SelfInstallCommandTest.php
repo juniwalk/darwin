@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Tests;
 
+use JuniWalk\Darwin\Command\SelfInstallCommand;
 use JuniWalk\Darwin\Darwin;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -91,6 +92,7 @@ class SelfInstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // Create new Darwin instance
         $darwin = new Darwin();
+        $darwin->add(new SelfInstallCommand);
 
         // Try to find desired command in Darwin
         $command = $darwin->find($name);

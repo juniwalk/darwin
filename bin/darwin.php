@@ -8,11 +8,10 @@
  * @license   MIT License
  */
 
-use JuniWalk\Darwin\Darwin;
-
 use JuniWalk\Darwin\Command\FixCommand;
 use JuniWalk\Darwin\Command\GcCommand;
 use JuniWalk\Darwin\Command\SelfInstallCommand;
+use JuniWalk\Darwin\Darwin;
 
 
 // Include vendor autoloader to access projects
