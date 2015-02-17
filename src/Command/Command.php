@@ -169,6 +169,9 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function iterate(\Traversable $files, callable $method, $dir = null)
     {
+        // New line character
+        $this->write(PHP_EOL);
+
         // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(iterator_count($files));
 
@@ -186,5 +189,8 @@ class Command extends \Symfony\Component\Console\Command\Command
         // The progress has finished
         $bar->setMessage('<comment>Task finished.</comment>');
         $bar->finish();
+
+        // New line character
+        $this->write(PHP_EOL);
     }
 }
