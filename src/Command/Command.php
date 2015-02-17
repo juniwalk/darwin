@@ -157,11 +157,11 @@ class Command extends \Symfony\Component\Console\Command\Command
     /**
      * Iterate over found files and execute method.
      *
-     * @param  Finder       $finder  Finder instance
+     * @param  mixed        $finder  Finder instance
      * @param  callable     $method  Callback method
      * @param  string|null  $root    Root directory
      */
-    protected function iterate(Finder $finder, callable $method, $root = null)
+    protected function iterate($finder, callable $method, $root = null)
     {
         // New line character
         $this->write(PHP_EOL.PHP_EOL);
@@ -191,6 +191,46 @@ class Command extends \Symfony\Component\Console\Command\Command
         // The progress has finished
         $bar->setMessage($msg);
         $bar->finish();
+
+        // New line character
+        $this->write(PHP_EOL);
+    }
+
+
+    /**
+     * Run analyzis and store found items in property.
+     *
+     * @param  Finder  $finder  Finder instance
+     * @param  array   $items   Output holder
+     */
+    protected function analyze(Finder $finder, array &$items = null)
+    {
+        // New line character
+        $this->write(PHP_EOL);
+
+        // Get new progress bar instance with count of files
+        $bar = $this->getProgressBar(0, 50, 1);
+        $bar->setMessage('Analyzing directory...');
+        $bar->setFormat(implode(PHP_EOL, array(
+            ' <info>%message%</info>',
+            ' <comment>%current%</comment> items found',
+        )));
+
+        // Iterate over found files and fix them
+        foreach ($finder as $item) {
+            // Store item in the cache
+            $items[] = $item;
+            $bar->advance();
+        }
+
+        // The progress has finished
+        $bar->finish();
+
+        // If items were found
+        if (!empty($items)) {
+            // Reverse the order of items in array
+            $items = array_reverse($items);
+        }
 
         // New line character
         $this->write(PHP_EOL);
