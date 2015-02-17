@@ -1,4 +1,4 @@
-Darwin - work in progress
+Darwin
 ======
 
 [![Travis](https://img.shields.io/travis/juniwalk/Darwin.svg?style=flat-square)](https://travis-ci.org/juniwalk/Darwin)
