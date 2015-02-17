@@ -87,7 +87,7 @@ class Darwin extends \Symfony\Component\Console\Application
     {
         // Load composer.lock and composer.json contents and parse them
         $json = $this->loadJsonFile($this->getHome().'/composer.json');
-        $lock = $this->loadJsonFile($this->getHome().'/../../../composer.lock');
+        $lock = $this->loadJsonFile($this->getHome().'/../../../../composer.lock');
 
         // Filter packages, get just the one with name of this package
         $package = array_filter($lock->packages, function($v) use ($json) {
