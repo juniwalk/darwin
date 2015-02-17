@@ -143,7 +143,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     protected function iterate(\Traversable $files, callable $method, $dir = null)
     {
         // New line character
-        $this->write(PHP_EOL);
+        $this->write(PHP_EOL.PHP_EOL);
 
         // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(iterator_count($files));
