@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 class GcCommand extends Command
 {
@@ -38,6 +39,17 @@ class GcCommand extends Command
      * @var bool
      */
     protected $force;
+
+    /**
+     * Define list of vcs dirs.
+     *
+     * @var array
+     */
+    protected $vcs = [
+        '.svn', '_svn', 'CVS', '_darcs', '.arch-params',
+        '.monotone', '.bzr', '.git', '.hg', 'examples',
+        'tests', 'docs',
+    ];
 
 
     /**
@@ -71,7 +83,64 @@ class GcCommand extends Command
             return null;
         }
 
-        // Load config and search for garbage
-        $this->write('Looking for garbage ...'.PHP_EOL);
+        // Create Finder to search for directories in given dir
+        $finder = (new Finder)->in($this->dir)
+            ->ignoreDotFiles(false) // And include dot files
+            ->ignoreVCS(false);     // Include VCS directories
+
+        // Iterate over names of vcs dirs
+        foreach ($this->vcs as $dir) {
+            // Set vcs dir filter
+            $finder->path($dir);
+        }
+
+        // Analyue given directory
+        $this->analyze($finder, $items);
+
+        // If there are no items
+        if (empty($items)) {
+            return null;
+        }
+
+        // If the user does not wish to continue
+        if (!$this->confirm('<info>Proceed with deletion <comment>[Y,n]</comment>?</info>')) {
+            return null;
+        }
+
+        // Send the items for deletion
+        //foreach ($items as $item) echo $item.PHP_EOL;
+        $this->iterate($items, [$this, 'delete'], $this->dir);
+    }
+
+
+    /**
+     * Process file or directory.
+     *
+     * @param  \SplFileInfo  $file  Information about the file
+     * @return bool
+     * @throws ErrorException
+     */
+    public function delete(\SplFileInfo $file)
+    {
+        // Default function
+        $function = 'rmdir';
+
+        // If this is a file
+        if ($file->isFile()) {
+            // Switch function
+            $function = 'unlink';
+        }
+
+        // Remove the file from disk
+        $report = error_reporting(0);
+        $status = $function($file);
+        $report = error_reporting($report);
+
+        if ($status == false) {
+            $error = error_get_last();
+            throw new ErrorException($error['message']);
+        }
+
+        return true;
     }
 }
