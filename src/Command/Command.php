@@ -157,7 +157,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     /**
      * Iterate over found files and execute method.
      *
-     * @param  Finder       $files   Finder instance
+     * @param  Finder       $finder  Finder instance
      * @param  callable     $method  Callback method
      * @param  string|null  $root    Root directory
      */
