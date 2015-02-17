@@ -47,6 +47,15 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
+     * Write message/s to console output.
+     */
+    protected function write($message)
+    {
+        $this->output->writeln($message);
+    }
+
+
+    /**
      * Prepare command arguments.
      *
      * @param InputInterface   $input   Input stream
@@ -108,42 +117,6 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
-     * Write message/s to console output.
-     */
-    protected function write($message)
-    {
-        $this->output->writeln($message);
-    }
-
-
-    /**
-     * Dialog to confirm some action.
-     *
-     * @param  int  $steps  Maximum steps
-     * @return ProgressBar
-     */
-    protected function getProgressBar($steps = 0)
-    {
-        // Define bar format
-        $format = array(
-            ' %current%/%max% in %elapsed:6s%',
-            ' [%bar%] %percent:3s%%',
-            ' %message%',
-        );
-
-        // Prepare task progress bar
-        $bar = new ProgressBar($this->output, $steps);
-        $bar->setFormat(implode(PHP_EOL, $format));
-        $bar->setBarCharacter('<comment>-</comment>');
-        $bar->setProgressCharacter('<comment>></comment>');
-        $bar->setEmptyBarCharacter(' ');
-        $bar->setRedrawFrequency(50);
-
-        return $bar;
-    }
-
-
-    /**
      * Dialog to confirm some action.
      *
      * @param  string  $message  Dialog message
@@ -192,5 +165,32 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         // New line character
         $this->write(PHP_EOL);
+    }
+
+
+    /**
+     * Dialog to confirm some action.
+     *
+     * @param  int  $steps  Maximum steps
+     * @return ProgressBar
+     */
+    protected function getProgressBar($steps = 0)
+    {
+        // Define bar format
+        $format = array(
+            ' %current%/%max% in %elapsed:6s%',
+            ' [%bar%] %percent:3s%%',
+            ' %message%',
+        );
+
+        // Prepare task progress bar
+        $bar = new ProgressBar($this->output, $steps);
+        $bar->setFormat(implode(PHP_EOL, $format));
+        $bar->setBarCharacter('<comment>-</comment>');
+        $bar->setProgressCharacter('<comment>></comment>');
+        $bar->setEmptyBarCharacter(' ');
+        $bar->setRedrawFrequency(50);
+
+        return $bar;
     }
 }
