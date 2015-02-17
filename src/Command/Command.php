@@ -124,9 +124,16 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function getProgressBar($steps = 0)
     {
+        // Define bar format
+        $format = array(
+            ' %current%/%max% in %elapsed:6s%',
+            ' [%bar%] %percent:3s%%',
+            ' %message%',
+        );
+
         // Prepare task progress bar
         $bar = new ProgressBar($this->output, $steps);
-        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %memory:6s%\n %message%');
+        $bar->setFormat(implode('\n', $format));
         $bar->setBarCharacter('<comment>-</comment>');
         $bar->setProgressCharacter('<comment>></comment>');
         $bar->setEmptyBarCharacter(' ');
