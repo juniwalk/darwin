@@ -173,7 +173,7 @@ class Command extends \Symfony\Component\Console\Command\Command
         foreach ($files as $path => $file) {
             // Display path to file in the message
             // and advance progress bar to next point
-            $bar->setMessage(strtr($path, $dir, null));
+            $bar->setMessage(str_replace($path, '~', $file));
             $bar->advance();
 
             // Use callback invoker to call the method
