@@ -11,11 +11,11 @@
 namespace JuniWalk\Darwin\Command;
 
 use ErrorException;
-use Nette\Utils\Finder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 class FixCommand extends Command
 {
@@ -87,45 +87,36 @@ class FixCommand extends Command
             return null;
         }
 
-        // Iterate over all files we have found and send them for processing
-        $this->iterate($this->getFiles(), [ $this, 'setPermissions' ], $this->dir);
+        // Parse files in directory
+        $this->iterate(
+            (new Finder)->in($this->dir),   // Find files
+            [ $this, 'setPermissions' ],    // Execute method
+            $this->dir                      // Strip root path
+        );
     }
 
 
     /**
      * Process file or directory.
      *
-     * @param  string        $path  Absolute path to file
      * @param  \SplFileInfo  $file  Information about the file
      * @return bool
      * @throws ErrorException
      */
-    public function setPermissions($path, \SplFileInfo $file)
+    public function setPermissions(\SplFileInfo $file)
     {
         // Set appropriate mode to the file / dir
         // and change owner to web server user
-        $this->setMode($path, $file->isFile());
-        $this->setOwner($path, $this->owner);
+        $this->setMode($file, $file->isFile());
+        $this->setOwner($file, $this->owner);
 
         // If this is one of the files to be locked from access
         if (preg_match(static::LOCKED_FILES, $file->getFilename())) {
             // Change owner to root user
-            $this->setOwner($path, 'root');
+            $this->setOwner($file, 'root');
         }
 
         return true;
-    }
-
-
-    /**
-     * Get the list of found fles and directories.
-     *
-     * @return \Traversable
-     */
-    protected function getFiles()
-    {
-        // Return list of files and directories to fix
-        return Finder::find('*')->from($this->dir);
     }
 
 

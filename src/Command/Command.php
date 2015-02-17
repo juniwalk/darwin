@@ -15,6 +15,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 class Command extends \Symfony\Component\Console\Command\Command
 {
@@ -156,28 +157,28 @@ class Command extends \Symfony\Component\Console\Command\Command
     /**
      * Iterate over found files and execute method.
      *
-     * @param  \Traversable  $files   Files to iterate over
-     * @param  callable      $method  Callback method
-     * @param  string|null   $dir     Root directory
+     * @param  Finder       $files   Finder instance
+     * @param  callable     $method  Callback method
+     * @param  string|null  $root    Root directory
      */
-    protected function iterate(\Traversable $files, callable $method, $dir = null)
+    protected function iterate(Finder $finder, callable $method, $root = null)
     {
         // New line character
         $this->write(PHP_EOL.PHP_EOL);
 
         // Get new progress bar instance with count of files
-        $bar = $this->getProgressBar(iterator_count($files));
+        $bar = $this->getProgressBar(count($finder));
         $msg = '<comment>Task has finished.</comment>';
 
         // Iterate over found files and fix them
-        foreach ($files as $path => $file) {
+        foreach ($finder as $path) {
             // Display path to file in the message
             // and advance progress bar to next point
-            $bar->setMessage(str_replace($dir, '~', $path));
+            $bar->setMessage(str_replace($root, '~', $path));
             $bar->advance();
 
             // Use callback invoker to call the method
-            if (!call_user_func($method, $path, $file)) {
+            if (!call_user_func($method, $path)) {
                 // Change the finish status message
                 $msg = '<error>Task has failed.</error>';
                 break;  // break the cycle
