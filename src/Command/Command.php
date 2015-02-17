@@ -32,6 +32,14 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     private $output;
 
+    /**
+     * Sleep between iterations to ease load on server.
+     * The value is in miliseconds.
+     *
+     * @var int
+     */
+    private $sleep = 750;
+
 
     /**
      * Dialog to confirm some action.
@@ -43,6 +51,18 @@ class Command extends \Symfony\Component\Console\Command\Command
     {
         $this->input = $input;
         $this->output = $output;
+    }
+
+
+    /**
+     * Set sleep time between iterations.
+     *
+     * @param int  $time  Time in miliseconds
+     */
+    public function setSleep($time)
+    {
+        // Set sleep time in secodns
+        $this->sleep = (int) $time;
     }
 
 
@@ -162,6 +182,9 @@ class Command extends \Symfony\Component\Console\Command\Command
                 $msg = '<error>Task has failed.</error>';
                 break;  // break the cycle
             }
+
+            // Ease the load a little
+            usleep($this->sleep);
         }
 
         // The progress has finished
