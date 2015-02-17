@@ -126,11 +126,9 @@ class Command extends \Symfony\Component\Console\Command\Command
     {
         // Define bar format
         $format = array(
-            '', // Empty line
             ' %current%/%max% in %elapsed:6s%',
             ' [%bar%] %percent:3s%%',
             ' %message%',
-            '', // Empty line
         );
 
         // Prepare task progress bar
