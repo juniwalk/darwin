@@ -92,7 +92,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     protected static function execute($name, array $input = [])
     {
         // Create new Darwin instance
-        $darwin = new Darwin();
+        $darwin = new Darwin(__DIR__.'/../../bin');
         $darwin->add(new InstallCommand);
 
         // Try to find desired command in Darwin

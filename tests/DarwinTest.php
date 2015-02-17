@@ -39,7 +39,7 @@ class DarwinTest extends \PHPUnit_Framework_TestCase
     public function testBasic()
     {
         // Get the Darwin instance
-        $darwin = new Darwin();
+        $darwin = new Darwin(__DIR__.'/../bin');
 
         // Assert custom added methods of this application
         $this->assertSame('Darwin', $darwin->getName());
