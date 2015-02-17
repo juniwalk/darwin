@@ -89,9 +89,6 @@ class FixCommand extends Command
 
         // Iterate over all files we have found and send them for processing
         $this->iterate($this->getFiles(), [ $this, 'setPermissions' ], $this->dir);
-
-        // Move to new line after bar
-        $this->write(PHP_EOL);
     }
 
 
