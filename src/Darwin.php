@@ -27,11 +27,8 @@ class Darwin extends \Symfony\Component\Console\Application
      */
     public function __construct($home)
     {
-        // If Home is directory
-        if (!is_dir($home)) {
-            // Set Home directory
-            $this->setHome($home);
-        }
+        // Set Home directory
+        $this->setHome($home);
 
         // Set the name of application
         parent::__construct($this->getName(), $this->getVersion());
