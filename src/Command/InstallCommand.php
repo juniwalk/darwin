@@ -67,6 +67,7 @@ class InstallCommand extends Command
         $this->prepare($input, $output);
 
         // Get application name and build install path
+        $home = $this->getApplication()->getHome();
         $name = $this->getApplication()->getName();
         $path = $this->dir.'/'.strtolower($name);
 
@@ -76,7 +77,7 @@ class InstallCommand extends Command
         }
 
         // Get the path to the application executable
-        $link = realpath(__DIR__.'/../../bin/'.strtolower($name));
+        $link = realpath($home.'/bin/'.strtolower($name));
 
         // If destination symlink exists
         if ($this->linkExists($path)) {
