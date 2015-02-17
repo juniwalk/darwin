@@ -193,7 +193,7 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         // Set format of the bar
         $bar->setFormat(implode(PHP_EOL, array(
-            ' %current%/%max% in %elapsed:6s%',
+            ' %current%/%max% items processed in %elapsed%',
             ' [%bar%] %percent:3s%%',
             ' %message%',
         )));
