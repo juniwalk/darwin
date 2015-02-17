@@ -171,25 +171,27 @@ class Command extends \Symfony\Component\Console\Command\Command
     /**
      * Dialog to confirm some action.
      *
-     * @param  int  $steps  Maximum steps
+     * @param  int  $steps      Maximum steps
+     * @param  int  $width      Width in characters
+     * @param  int  $frequency  Stebs before redraw
      * @return ProgressBar
      */
-    protected function getProgressBar($steps = 0)
+    protected function getProgressBar($steps = 0, $width = 50, $frequency = 50)
     {
-        // Define bar format
-        $format = array(
-            ' %current%/%max% in %elapsed:6s%',
-            ' [%bar%] %percent:3s%%',
-            ' %message%',
-        );
-
         // Prepare task progress bar
         $bar = new ProgressBar($this->output, $steps);
-        $bar->setFormat(implode(PHP_EOL, $format));
         $bar->setBarCharacter('<comment>-</comment>');
         $bar->setProgressCharacter('<comment>></comment>');
         $bar->setEmptyBarCharacter(' ');
-        $bar->setRedrawFrequency(50);
+        $bar->setRedrawFrequency($frequency);
+        $bar->setBarWidth($width);
+
+        // Set format of the bar
+        $bar->setFormat(implode(PHP_EOL, array(
+            ' %current%/%max% in %elapsed:6s%',
+            ' [%bar%] %percent:3s%%',
+            ' %message%',
+        )));
 
         return $bar;
     }
