@@ -35,7 +35,8 @@ class Darwin extends \Symfony\Component\Console\Application
         // If there is no app name
         if (!isset($name)) {
             // Get the name from this class without namespaces
-            $name = basename(strtr(__CLASS__, '\\', '/'));
+            $name = get_called_class();
+            $name = basename(strtr($name, '\\', '/'));
             $this->setName($name);
         }
 
