@@ -85,8 +85,8 @@ class Command extends \Symfony\Component\Console\Command\Command
     protected function isReady($dir, $force)
     {
         // Output which directory we are trying to fix right now
-        $this->write('\n<info>We will '.strtolower($this->getDescription()).' in directory:</info>');
-        $this->write('<comment>'.$dir.'</comment>\n');
+        $this->write("\n<info>We will ".strtolower($this->getDescription()).' in directory:</info>');
+        $this->write("<comment>{$dir}</comment>\n");
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
@@ -133,7 +133,7 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         // Prepare task progress bar
         $bar = new ProgressBar($this->output, $steps);
-        $bar->setFormat(implode('\n', $format));
+        $bar->setFormat(implode("\n", $format));
         $bar->setBarCharacter('<comment>-</comment>');
         $bar->setProgressCharacter('<comment>></comment>');
         $bar->setEmptyBarCharacter(' ');
@@ -161,12 +161,13 @@ class Command extends \Symfony\Component\Console\Command\Command
 
 
     /**
-     * Iterate over found filess and execute method.
+     * Iterate over found files and execute method.
      *
      * @param  \Traversable  $files   Files to iterate over
      * @param  callable      $method  Callback method
+     * @param  string|null   $dir     Root directory
      */
-    protected function iterate(\Traversable $files, callable $method)
+    protected function iterate(\Traversable $files, callable $method, $dir = null)
     {
         // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(iterator_count($files));
@@ -175,7 +176,7 @@ class Command extends \Symfony\Component\Console\Command\Command
         foreach ($files as $path => $file) {
             // Display path to file in the message
             // and advance progress bar to next point
-            $bar->setMessage($path);
+            $bar->setMessage(strtr($path, $dir, null));
             $bar->advance();
 
             // Process current path
