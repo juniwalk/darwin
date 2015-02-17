@@ -156,8 +156,8 @@ class Command extends \Symfony\Component\Console\Command\Command
             $bar->setMessage(strtr($path, $dir, null));
             $bar->advance();
 
-            // Process current path
-            if (!$method($path, $file)) {
+            // Use callback invoker to call the method
+            if (!call_user_func($method, $path, $file)) {
                 // Change the finish status message
                 $msg = '<error>Task has failed.</error>';
                 break;  // break the cycle
