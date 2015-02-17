@@ -85,8 +85,8 @@ class Command extends \Symfony\Component\Console\Command\Command
     protected function isReady($dir, $force)
     {
         // Output which directory we are trying to fix right now
-        $this->write("\n<info>We will ".strtolower($this->getDescription()).' in directory:</info>');
-        $this->write("<comment>{$dir}</comment>\n");
+        $this->write('<info>We will '.strtolower($this->getDescription()).' in directory:</info>');
+        $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
 
         // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
@@ -135,7 +135,7 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         // Prepare task progress bar
         $bar = new ProgressBar($this->output, $steps);
-        $bar->setFormat(implode("\n", $format));
+        $bar->setFormat(implode(PHP_EOL, $format));
         $bar->setBarCharacter('<comment>-</comment>');
         $bar->setProgressCharacter('<comment>></comment>');
         $bar->setEmptyBarCharacter(' ');
