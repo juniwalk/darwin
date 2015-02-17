@@ -108,7 +108,6 @@ class GcCommand extends Command
         }
 
         // Send the items for deletion
-        //foreach ($items as $item) echo $item.PHP_EOL;
         $this->iterate($items, [$this, 'delete'], $this->dir);
     }
 
