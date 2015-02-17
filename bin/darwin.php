@@ -19,7 +19,7 @@ include __DIR__.'/../../../autoload.php';
 
 
 // Initialize Darwin
-$darwin = new Darwin;
+$darwin = new Darwin(__DIR__);
 
 // Insert available commands
 $darwin->add(new FixCommand);

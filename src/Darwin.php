@@ -10,13 +10,29 @@
 
 namespace JuniWalk\Darwin;
 
+use \ErrorException;
+
 class Darwin extends \Symfony\Component\Console\Application
 {
     /**
+     * Path to home directory.
+     *
+     * @var string
+     */
+    protected $home;
+
+
+    /**
      * Initialize Darwin application.
      */
-    public function __construct()
+    public function __construct($home)
     {
+        // If Home is directory
+        if (!is_dir($home)) {
+            // Set Home directory
+            $this->setHome($home);
+        }
+
         // Set the name of application
         parent::__construct($this->getName(), $this->getVersion());
     }
@@ -73,8 +89,8 @@ class Darwin extends \Symfony\Component\Console\Application
     protected function getRealVersion()
     {
         // Load composer.lock and composer.json contents and parse them
-        $json = $this->loadJsonFile(__DIR__.'/../composer.json');
-        $lock = $this->loadJsonFile($this->getHome().'/composer.lock');
+        $json = $this->loadJsonFile($this->getHome().'/composer.json');
+        $lock = $this->loadJsonFile($this->getHome().'/../../../composer.lock');
 
         // Filter packages, get just the one with name of this package
         $package = array_filter($lock->packages, function($v) use ($json) {
@@ -96,15 +112,32 @@ class Darwin extends \Symfony\Component\Console\Application
 
 
     /**
+     * Set new Home directory.
+     *
+     * @param  strin  $dir  New home
+     * @return string
+     */
+    public function setHome($dir)
+    {
+        // If there is /bin in the dir name
+        if (preg_match('/\/(bin)$/', $dir)) {
+            // Get parent dir
+            $dir = dirname($dir);
+        }
+
+        // Set new Home directory path
+        $this->home = realpath($dir);
+    }
+
+
+    /**
      * Get path to home directory.
      *
      * @return string
      */
-    protected function getHome()
+    public function getHome()
     {
-        // Return path to home directory which
-        // should be /root/.composer project
-        return realpath(__DIR__.'/../../../..');
+        return $this->home;
     }
 
 
