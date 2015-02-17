@@ -147,6 +147,7 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(iterator_count($files));
+        $msg = '<comment>Task has finished.</comment>';
 
         // Iterate over found files and fix them
         foreach ($files as $path => $file) {
@@ -156,11 +157,15 @@ class Command extends \Symfony\Component\Console\Command\Command
             $bar->advance();
 
             // Process current path
-            $method($path, $file);
+            if (!$method($path, $file)) {
+                // Change the finish status message
+                $msg = '<error>Task has failed.</error>';
+                break;  // break the cycle
+            }
         }
 
         // The progress has finished
-        $bar->setMessage('<comment>Task finished.</comment>');
+        $bar->setMessage($msg);
         $bar->finish();
 
         // New line character
