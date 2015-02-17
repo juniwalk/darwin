@@ -112,8 +112,7 @@ class Darwin extends \Symfony\Component\Console\Application
     /**
      * Set new Home directory.
      *
-     * @param  strin  $dir  New home
-     * @return string
+     * @param strin  $dir  New home
      */
     public function setHome($dir)
     {
