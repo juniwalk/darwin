@@ -111,7 +111,7 @@ class FixCommand extends Command
         $this->setOwner($file, $this->owner);
 
         // If this is one of the files to be locked from access
-        if (preg_match(static::LOCKED_FILES, $file->getFilename())) {
+        if ($file->isFile() && preg_match(static::LOCKED_FILES, $file->getFilename())) {
             // Change owner to root user
             $this->setOwner($file, 'root');
         }
