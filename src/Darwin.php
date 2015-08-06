@@ -16,7 +16,6 @@ class Darwin extends \Symfony\Component\Console\Application
 {
     /**
      * Path to home directory.
-     *
      * @var string
      */
     protected $home;
@@ -24,30 +23,25 @@ class Darwin extends \Symfony\Component\Console\Application
 
     /**
      * Initialize Darwin application.
+     * @param string  $home  Path to home directory
      */
     public function __construct($home)
     {
-        // Set Home directory
         $this->setHome($home);
 
-        // Set the name of application
         parent::__construct($this->getName(), $this->getVersion());
     }
 
 
     /**
      * Name of this application.
-     *
      * @return string
      */
     public function getName()
     {
-        // Get the name from parent
         $name = parent::getName();
 
-        // If there is no app name
         if (!isset($name)) {
-            // Get the name from this class without namespaces
             $name = get_called_class();
             $name = basename(strtr($name, '\\', '/'));
             $this->setName($name);
@@ -59,15 +53,12 @@ class Darwin extends \Symfony\Component\Console\Application
 
     /**
      * Current version.
-     *
      * @return string
      */
     public function getVersion()
     {
-        // Get the version from parent
         $version = parent::getVersion();
 
-        // If the version is unknown
         if (!isset($version)) {
             // Load real version from the composer.lock
             $version = $this->getRealVersion();
@@ -80,7 +71,6 @@ class Darwin extends \Symfony\Component\Console\Application
 
     /**
      * Parse version of the package from composer.lock.
-     *
      * @return string
      */
     protected function getRealVersion()
@@ -91,17 +81,13 @@ class Darwin extends \Symfony\Component\Console\Application
 
         // Filter packages, get just the one with name of this package
         $package = array_filter($lock->packages, function($v) use ($json) {
-            // Compare the name of packages
             return $v->name == $json->name;
         });
 
-        // Get the version of the package
         $package = reset($package);
         $version = $package->version;
 
-        // If the version is one of dev-[branchname]
         if (preg_match('/dev-(\w+)/i', $version)) {
-            // Add first 7 characters of the commit this build references
             $version .= ' '.substr($package->source->reference, 0, 7);
         }
 
@@ -111,25 +97,23 @@ class Darwin extends \Symfony\Component\Console\Application
 
     /**
      * Set new Home directory.
-     *
-     * @param strin  $dir  New home
+     * @param  string  $dir  New home
+     * @return static
      */
     public function setHome($dir)
     {
         // If there is /bin in the dir name
         if (preg_match('/\/(bin)$/', $dir)) {
-            // Get parent dir
             $dir = dirname($dir);
         }
 
-        // Set new Home directory path
         $this->home = realpath($dir);
+        return $this;
     }
 
 
     /**
      * Get path to home directory.
-     *
      * @return string
      */
     public function getHome()
@@ -140,7 +124,6 @@ class Darwin extends \Symfony\Component\Console\Application
 
     /**
      * Decode JSON file.
-     *
      * @param  string  $file   Path to JSON file
      * @param  bool    $assoc  Return array?
      * @return stdClass|array

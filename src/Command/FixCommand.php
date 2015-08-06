@@ -21,35 +21,30 @@ class FixCommand extends Command
 {
     /**
      * Path checking.
-     *
      * @var string
      */
     const CONTAINMENT = '/^\/(srv)/i';
 
     /**
      * Define names of files that should be locked out from Apache user.
-     *
      * @var string
      */
     const LOCKED_FILES = '/(index|config|htaccess|composer)/is';
 
     /**
      * Path to the project.
-     *
      * @var string
      */
     protected $dir;
 
     /**
      * Owner name for unlocked files.
-     *
      * @var string
      */
     protected $owner;
 
     /**
      * Force the cleanup?
-     *
      * @var bool
      */
     protected $force;
@@ -72,22 +67,18 @@ class FixCommand extends Command
 
     /**
      * Command's entry point.
-     *
      * @param  InputInterface   $input   Input stream
      * @param  OutputInterface  $output  Output stream
      * @throws ErrorException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Prepare input/output for this command
         $this->prepare($input, $output);
 
-        // Perform check on given directory path
         if (!$this->isReady($this->dir, $this->force)) {
             return null;
         }
 
-        // Parse files in directory
         $this->iterate(
             (new Finder)->in($this->dir),   // Find files
             [ $this, 'setPermissions' ],    // Execute method
@@ -98,7 +89,6 @@ class FixCommand extends Command
 
     /**
      * Process file or directory.
-     *
      * @param  \SplFileInfo  $file  Information about the file
      * @return bool
      * @throws ErrorException
@@ -110,9 +100,7 @@ class FixCommand extends Command
         $this->setMode($file, $file->isFile());
         $this->setOwner($file, $this->owner);
 
-        // If this is one of the files to be locked from access
         if ($file->isFile() && preg_match(static::LOCKED_FILES, $file->getFilename())) {
-            // Change owner to root user
             $this->setOwner($file, 'root');
         }
 
@@ -122,30 +110,18 @@ class FixCommand extends Command
 
     /**
      * Set new permissions mode.
-     *
      * @param  string  $path    Path to file or dir
      * @param  bool    $isFile  Is this file?
      * @return bool
      */
     protected function setMode($path, $isFile = true)
     {
-        // Directory mode
-        $mode = 0755;
-
-        // If this is file
-        if ($isFile == true) {
-            // Use file mode
-            $mode = 0644;
-        }
-
-        // Set appropriate mode
-        return chmod($path, $mode);
+        return chmod($path, $isFile == true ? 0644 : 0755);
     }
 
 
     /**
      * Set new permissions mode.
-     *
      * @param  string  $path   Path to file or dir
      * @param  string  $owner  New owner name/id
      * @return bool

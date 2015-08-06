@@ -20,83 +20,61 @@ use Symfony\Component\Finder\Finder;
 abstract class Command extends \Symfony\Component\Console\Command\Command
 {
     /**
-     * Input stream.
-     *
+     * Input stream instance.
      * @var InputInterface
      */
     private $input;
 
     /**
-     * Output stream.
-     *
+     * Output stream instance.
      * @var OutputInterface
      */
     private $output;
 
-    /**
-     * Sleep between iterations to ease load on server.
-     * The value is in miliseconds.
-     *
-     * @var int
-     */
-    private $sleep = 750;
-
 
     /**
      * Dialog to confirm some action.
-     *
-     * @param InputInterface   $input   Input stream
-     * @param OutputInterface  $output  Output stream
+     * @param  InputInterface   $input   Input stream
+     * @param  OutputInterface  $output  Output stream
+     * @return static
      */
     protected function setInputOutput(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;
         $this->output = $output;
-    }
 
-
-    /**
-     * Set sleep time between iterations.
-     *
-     * @param int  $time  Time in miliseconds
-     */
-    public function setSleep($time)
-    {
-        // Set sleep time in secodns
-        $this->sleep = (int) $time;
+        return $this;
     }
 
 
     /**
      * Write message/s to console output.
+     * @param  string  $message  Message to output
+     * @return static
      */
     protected function write($message)
     {
         $this->output->writeln($message);
+        return $this;
     }
 
 
     /**
      * Prepare command arguments.
-     *
-     * @param InputInterface   $input   Input stream
-     * @param OutputInterface  $output  Output stream
+     * @param  InputInterface   $input   Input stream
+     * @param  OutputInterface  $output  Output stream
+     * @return bool
      */
     protected function prepare(InputInterface $input, OutputInterface $output)
     {
-        // Assign Input/Output streams
         $this->input = $input;
         $this->output = $output;
 
-        // Iterate over the list of provided options
         foreach ($input->getOptions() as $key => $value) {
-            // Assign value to property
             $this->$key = $value;
         }
 
-        // Iterate over the list of provided arguments
         foreach ($input->getArguments() as $key => $value) {
-            // Assign value to property
             $this->$key = $value;
         }
 
@@ -106,7 +84,6 @@ abstract class Command extends \Symfony\Component\Console\Command\Command
 
     /**
      * Check wether command is ready.
-     *
      * @param  string  $dir    Containment directory
      * @param  bool    $force  Force the task outside src dir
      * @return bool
@@ -114,21 +91,17 @@ abstract class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function isReady($dir, $force)
     {
-        // Output which directory we are trying to fix right now
         $this->write('<info>We will '.strtolower($this->getDescription()).' in directory:</info>');
         $this->write('<comment>'.$dir.'</comment>'.PHP_EOL);
 
-        // If the user does not wish to continue
         if (!$this->confirm('<info>Is this correct path <comment>[Y,n]</comment>?</info>')) {
             return false;
         }
 
-        // If this is not server directory and fix is not forced
         if (!preg_match(static::CONTAINMENT, $dir) && !$force) {
             throw new ErrorException('Working outside containment directory, use --force flag to override.');
         }
 
-        // No such directory
         if (!is_dir($dir)) {
             throw new ErrorException('Directory does not exist.');
         }
@@ -139,76 +112,61 @@ abstract class Command extends \Symfony\Component\Console\Command\Command
 
     /**
      * Dialog to confirm some action.
-     *
      * @param  string  $message  Dialog message
      * @param  bool    $default  Default outcome
      * @return bool
      */
     protected function confirm($message, $default = true)
     {
-        // Build confirmation question with the given message
         $question = new ConfirmationQuestion($message, $default);
 
-        // Ask user for confirmation and then return the outcome user has decided
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
     }
 
 
     /**
      * Iterate over found files and execute method.
-     *
      * @param  mixed        $finder  Finder instance
      * @param  callable     $method  Callback method
      * @param  string|null  $root    Root directory
+     * @return static
      */
     protected function iterate($finder, callable $method, $root = null)
     {
-        // New line character
         $this->write(PHP_EOL.PHP_EOL);
 
-        // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(count($finder));
         $msg = '<comment>Task has finished.</comment>';
 
-        // Iterate over found files and fix them
         foreach ($finder as $path) {
             // Display path to file in the message
             // and advance progress bar to next point
             $bar->setMessage(str_replace($root, '~', $path));
             $bar->advance();
 
-            // Use callback invoker to call the method
             if (!call_user_func($method, $path)) {
-                // Change the finish status message
                 $msg = '<error>Task has failed.</error>';
-                break;  // break the cycle
+                break;
             }
-
-            // Ease the load a little
-            usleep($this->sleep);
         }
 
-        // The progress has finished
         $bar->setMessage($msg);
         $bar->finish();
 
-        // New line character
-        $this->write(PHP_EOL);
+        return $this->write(PHP_EOL);
     }
 
 
     /**
      * Run analyzis and store found items in property.
-     *
      * @param  Finder  $finder  Finder instance
      * @param  array   $items   Output holder
+     * @return static
      */
     protected function analyze(Finder $finder, array &$items = null)
     {
-        // New line character
         $this->write(PHP_EOL);
 
-        // Get new progress bar instance with count of files
         $bar = $this->getProgressBar(0, 50, 1);
         $bar->setMessage('Analyzing directory...');
         $bar->setFormat(implode(PHP_EOL, array(
@@ -216,30 +174,23 @@ abstract class Command extends \Symfony\Component\Console\Command\Command
             ' <comment>%current%</comment> items found',
         )));
 
-        // Iterate over found files and fix them
         foreach ($finder as $item) {
-            // Store item in the cache
             $items[] = $item;
             $bar->advance();
         }
 
-        // The progress has finished
         $bar->finish();
 
-        // If items were found
         if (!empty($items)) {
-            // Reverse the order of items in array
             $items = array_reverse($items);
         }
 
-        // New line character
-        $this->write(PHP_EOL);
+        return $this->write(PHP_EOL);
     }
 
 
     /**
      * Dialog to confirm some action.
-     *
      * @param  int  $steps      Maximum steps
      * @param  int  $width      Width in characters
      * @param  int  $frequency  Stebs before redraw

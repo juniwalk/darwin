@@ -20,21 +20,18 @@ class InstallCommand extends Command
 {
     /**
      * Path checking.
-     *
      * @var string
      */
     const CONTAINMENT = '/\/(bin)$/i';
 
     /**
      * Installation directory.
-     *
      * @var string
      */
     protected $dir = '/usr/local/bin';
 
     /**
      * Force the cleanup?
-     *
      * @var bool
      */
     protected $force;
@@ -56,14 +53,12 @@ class InstallCommand extends Command
 
     /**
      * Command's entry point.
-     *
      * @param  InputInterface   $input   Input stream
      * @param  OutputInterface  $output  Output stream
      * @throws ErrorException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Prepare input/output for this command
         $this->prepare($input, $output);
 
         // Get application name and build install path
@@ -71,7 +66,6 @@ class InstallCommand extends Command
         $name = $this->getApplication()->getName();
         $path = $this->dir.'/'.strtolower($name);
 
-        // Perform check on given directory path
         if (!$this->isReady($this->dir, $this->force)) {
             return null;
         }
@@ -79,12 +73,10 @@ class InstallCommand extends Command
         // Get the path to the application executable
         $link = realpath($home.'/bin/'.strtolower($name));
 
-        // If destination symlink exists
         if ($this->linkExists($path)) {
             throw new ErrorException($name.' is already installed.');
         }
 
-        // Create link to app executable
         if (!symlink($link, $path)) {
             throw new ErrorException('Failed to install '.$name.'.');
         }
@@ -95,23 +87,19 @@ class InstallCommand extends Command
 
     /**
      * Does the link already exist?
-     *
      * @param  string  $path  Path to link
      * @return bool
      */
     protected function linkExists($path)
     {
-        // If there is no such file
         if (!file_exists($path)) {
             return false;
         }
 
-        // Link does already exist
         if ($this->force == false) {
             return true;
         }
 
-        // Remove existing link
         return !unlink($path);
     }
 }
