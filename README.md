@@ -50,8 +50,3 @@ $ darwin fix /path/to/dir -o|--owner="name" -f|--force
 - `dir`: path to dir, if ommited, current dir is used.
 - `--owner`: owner for found files and dirs, if ommited, www-data is used.
 - `--force`: force the fix without checks.
-
-Garbage collector
------------------
-
-*work in progress*
