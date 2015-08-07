@@ -79,11 +79,14 @@ class FixCommand extends Command
             return null;
         }
 
-        $this->iterate(
-            (new Finder)->in($this->dir),   // Find files
-            [ $this, 'setPermissions' ],    // Execute method
-            $this->dir                      // Strip root path
-        );
+        // Create Finder in given directory exclude
+        // some directories which would cause problems
+        $finder = (new Finder)->in($this->dir)
+            ->exclude('bin')
+            ->exclude('vendor');
+
+        // Iterate over the found files from the created Finder instance
+        $this->iterate($finder, [$this, 'setPermissions'], $this->dir);
     }
 
 
