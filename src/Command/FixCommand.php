@@ -40,7 +40,15 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$question = new ConfirmationQuestion('Continue with this action?', true);
+		$dir = $input->getArgument('dir');
+
+		if (!is_dir($dir)) {
+			throw new \LogicException('Invalid directory: '.$dir);
+		}
+
+		$output->writeln('<info>Changin working directory to: <comment>'.$dir.'</comment></info>'.PHP_EOL);
+
+		$question = new ConfirmationQuestion('Continue with this action <comment>[Y,n]</comment>? ', true);
 		$helper = $this->getHelper('question');
 
 		if (!$helper->ask($input, $output, $question)) {
