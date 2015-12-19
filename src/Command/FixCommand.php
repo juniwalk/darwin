@@ -79,8 +79,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			}
 		}
 
-		$bar->setMessage(PHP_EOL);
 		$bar->finish();
+
 		return 1;
 	}
 
