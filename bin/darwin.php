@@ -8,7 +8,7 @@
  * @license   MIT License
  */
 
-use JuniWalk\Darwin\Command\FixCommand;
+use JuniWalk\Darwin\FixCommand;
 use Symfony\Component\Console\Application;
 
 
