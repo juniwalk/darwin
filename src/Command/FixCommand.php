@@ -46,8 +46,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			throw new \LogicException('Invalid directory: '.$dir);
 		}
 
-		$output->writeln('<info>Changin working directory to: <comment>'.$dir.'</comment></info>'.PHP_EOL);
-
+		$output->writeln('<info>Changin working directory to: <comment>'.$dir.'</comment></info>');
 		$question = new ConfirmationQuestion('Continue with this action <comment>[Y,n]</comment>? ', true);
 		$helper = $this->getHelper('question');
 
@@ -80,6 +79,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			}
 		}
 
+		$bar->setMessage(PHP_EOL);
 		$bar->finish();
 		return 1;
 	}
