@@ -8,14 +8,16 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin;
+namespace JuniWalk\Darwin\Command;
 
+use JuniWalk\Darwin\Exception\TerminateException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Finder\Finder;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -32,8 +34,9 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 
 	/**
-	 * @param InputInterface   $input
-	 * @param OutputInterface  $output
+	 * @param  InputInterface   $input
+	 * @param  OutputInterface  $output
+	 * @throws TerminateException
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
@@ -41,7 +44,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$helper = $this->getHelper('question');
 
 		if (!$helper->ask($input, $output, $question)) {
-			throw new \Exception('Konec');
+			throw new TerminateException;
 		}
 	}
 

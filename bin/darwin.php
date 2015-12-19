@@ -9,13 +9,13 @@
  */
 
 use JuniWalk\Darwin\Command\FixCommand;
-use Symfony\Component\Console\Application;
+use JuniWalk\Darwin\Darwin;
 
 
 // Include vendor autoloader to access projects
 include __DIR__.'/../../../autoload.php';
 
 
-$darwin = new Application('Darwin');
+$darwin = new Darwin;
 $darwin->add(new FixCommand);
 $darwin->run();
