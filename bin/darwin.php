@@ -9,20 +9,13 @@
  */
 
 use JuniWalk\Darwin\Command\FixCommand;
-use JuniWalk\Darwin\Command\InstallCommand;
-use JuniWalk\Darwin\Darwin;
+use Symfony\Component\Console\Application;
 
 
 // Include vendor autoloader to access projects
 include __DIR__.'/../../../autoload.php';
 
 
-// Initialize Darwin
-$darwin = new Darwin(__DIR__);
-
-// Insert available commands
+$darwin = new Application('Darwin');
 $darwin->add(new FixCommand);
-$darwin->add(new InstallCommand);
-
-// Run Darwin Application
 $darwin->run();
