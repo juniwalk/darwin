@@ -32,9 +32,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	/** @var string */
 	private $dir;
 
-	/** @var bool */
-	private $force = false;
-
 
 	protected function configure()
 	{
@@ -56,7 +53,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
 		$this->dir = $dir = $input->getArgument('dir');
-		$this->force = $input->getOption('force');
+		$force = (bool) $input->getOption('force');
 
 		$output->writeln('<info>Changed current directory to <comment>'.$dir.'</comment></info>');
 
@@ -64,8 +61,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			throw new InvalidArgumentException('Unable to fix permissions in given directory');
 		}
 
-        if (!$this->force && !preg_match(static::CONTAINMENT, $dir)) {
-            throw new ErrorException('Working outside containment directory, use --force flag to override.');
+        if (!$force && !preg_match(static::CONTAINMENT, $dir)) {
+            throw new InvalidArgumentException('Directory containment breach, use --force flag to override');
         }
 	}
 
@@ -98,6 +95,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 		$bar = new ProgressBar($output, sizeof($finder));
         $bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
+		$bar->setMessage('<info>Preparing...</info>');
 		$bar->start();
 
 		foreach ($finder as $file) {
@@ -111,7 +109,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			usleep(250);
 		}
 
-		$bar->setMessage('<comment>Permissions were fixed</comment>');
+		$bar->setMessage('<info>Permissions were fixed</info>');
 		$bar->finish();
 	}
 
