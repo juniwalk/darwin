@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use JuniWalk\Darwin\Config;
 use JuniWalk\Darwin\Exception\InvalidArgumentException;
 use JuniWalk\Darwin\Exception\TerminateException;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -31,6 +32,9 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 	/** @var string */
 	private $dir;
+
+	/** @var Config */
+	private $rules;
 
 
 	protected function configure()
@@ -63,6 +67,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
         if (!$force && !preg_match(static::CONTAINMENT, $dir)) {
             throw new InvalidArgumentException('Directory containment breach, use --force flag to override');
         }
+
+		$this->rules = new Config(__DIR__.'/../../config/fix-rules.yml');
 	}
 
 
@@ -99,7 +105,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		foreach ($finder as $file) {
 			$bar->setMessage(str_replace($this->dir, '.', $file));
 
-			if (!$this->processPath($file)) {
+			if (!$this->applyRules($file)) {
 				break;
 			}
 
@@ -109,6 +115,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 		$bar->setMessage('<info>Permissions were fixed</info>');
 		$bar->finish();
+
+		print_r($this->rules);
 	}
 
 
@@ -116,7 +124,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 * @param  SplFileInfo  $file
 	 * @return bool
 	 */
-	private function processPath(\SplFileInfo $file)
+	private function applyRules(\SplFileInfo $file)
 	{
 		chmod($file, $file->isFile() ? 0644 : 0755);
 		chown($file, 'www-data');
