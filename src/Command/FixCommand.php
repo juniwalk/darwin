@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use JuniWalk\Darwin\Exception\InvalidArgumentException;
 use JuniWalk\Darwin\Exception\TerminateException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +22,7 @@ use Symfony\Component\Finder\Finder;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
+	/** @var string */
 	private $dir;
 
 
@@ -32,18 +34,22 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		// Define arguments and options of this command with default values
 		$this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
 		$this->addOption('owner', 'o', InputOption::VALUE_REQUIRED, 'Define owner for files', 'www-data');
-		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the fix for any directory');
 	}
 
 
 	/**
 	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
-	 * @throws TerminateException
+	 * @throws InvalidArgumentException
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
 		$this->dir = $input->getArgument('dir');
+		$output->writeln('<info>Changed current directory to <comment>'.$this->dir.'</comment></info>');
+
+		if (!$this->dir || !is_dir($this->dir)) {
+			throw new InvalidArgumentException('Unable to fix permissions in given directory');
+		}
 	}
 
 
@@ -54,20 +60,13 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$output->writeln('<info>Changed current directory to <comment>'.$this->dir.'</comment></info>');
+		$question = new ConfirmationQuestion('Continue with this directory <comment>[Y,n]</comment>? ', true);
 
-		if (!is_dir($this->dir)) {
-			throw new \LogicException('Invalid directory: '.$this->dir);
-		}
-
-		$question = new ConfirmationQuestion('Continue with this action <comment>[Y,n]</comment>? ', true);
-		$helper = $this->getHelper('question');
-
-		if (!$helper->ask($input, $output, $question)) {
+		if (!$this->getHelper('question')->ask($input, $output, $question)) {
 			throw new TerminateException;
 		}
 
-		$output->writeln(PHP_EOL);
+		$output->writeln('');
 	}
 
 
@@ -90,6 +89,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			if (!$this->processPath($file)) {
 				break;
 			}
+
+			usleep(250);
 		}
 
 		$bar->finish();
