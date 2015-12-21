@@ -97,11 +97,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
 
 		$bar = new ProgressBar($output, sizeof($finder));
-        $bar->setFormat(implode(PHP_EOL, array(
-            ' %current%/%max% items processed in %elapsed%',
-            ' [%bar%] %percent:3s%%',
-            ' %message%',
-        )));
+        $bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
 		$bar->start();
 
 		foreach ($finder as $file) {
