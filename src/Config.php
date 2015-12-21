@@ -31,10 +31,11 @@ final class Config extends \ArrayObject
 		$this->setFlags($this::ARRAY_AS_PROPS | $this::STD_PROP_LIST);
 		$this->file = $file;
 
-		if (!$content = file_get_contents($file)) {
-			return;
-			//throw new ParseException('File not found');
+		if (!file_exists($file) && !touch($file)) {
+			throw new \Exception;
 		}
+
+		$content = file_get_contents($file);
 
 		try {
 			$this->exchangeArray(Yaml::parse($content));
@@ -70,6 +71,12 @@ final class Config extends \ArrayObject
 	 */
 	public function save()
 	{
-		// save changes to the config
+		$content = Yaml::dump($this->toArray());
+
+		if (!$content) {
+			throw new \Exception;
+		}
+
+		return file_put_contents($this->file, $content);
 	}
 }
