@@ -10,7 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Config;
+use JuniWalk\Darwin\Helpers\Rule;
 use JuniWalk\Darwin\Exception\InvalidArgumentException;
 use JuniWalk\Darwin\Exception\TerminateException;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -20,6 +20,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -33,8 +35,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	/** @var string */
 	private $dir;
 
-	/** @var Config */
-	private $rules;
+	/** @var Rule[] */
+	private $rules = [];
 
 
 	protected function configure()
@@ -68,7 +70,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
             throw new InvalidArgumentException('Directory containment breach, use --force flag to override');
         }
 
-		$this->rules = new Config(__DIR__.'/../../config/fix-rules.yml');
+		$this->loadRules();
 	}
 
 
@@ -134,5 +136,31 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		}
 
 		return true;
+	}
+
+
+	/**
+	 *
+	 */
+	private function loadRules()
+	{
+		$config = __DIR__.'/../../config/fix-rules.yml';
+
+		if (!file_exists($config) && !touch($config)) {
+			throw new \Exception;
+		}
+
+		$config = file_get_contents($config);
+
+		try {
+			$this->rules = (array) Yaml::parse($config);
+
+		} catch (ParseException $e) {
+			throw $e; // for now
+		}
+
+		foreach ($this->rules as $i => $rule) {
+			$this->rules[$i] = new Rule();
+		}
 	}
 }
