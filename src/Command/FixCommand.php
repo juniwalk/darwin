@@ -160,7 +160,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		}
 
 		foreach ($this->rules as $i => $rule) {
-			$this->rules[$i] = new Rule();
+			$this->rules[$i] = new Rule($rule['pattern'], $rule['type'], $rule['owner'], $rule['mode']);
 		}
 	}
 }
