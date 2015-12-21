@@ -21,6 +21,9 @@ use Symfony\Component\Finder\Finder;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
+	private $dir;
+
+
 	protected function configure()
 	{
 		$this->setDescription('Fix permissions of the files and dirs');
@@ -38,21 +41,33 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 * @param  OutputInterface  $output
 	 * @throws TerminateException
 	 */
+	protected function initialize(InputInterface $input, OutputInterface $output)
+	{
+		$this->dir = $input->getArgument('dir');
+	}
+
+
+	/**
+	 * @param  InputInterface   $input
+	 * @param  OutputInterface  $output
+	 * @throws TerminateException
+	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$dir = $input->getArgument('dir');
+		$output->writeln('<info>Changed current directory to <comment>'.$this->dir.'</comment></info>');
 
-		if (!is_dir($dir)) {
-			throw new \LogicException('Invalid directory: '.$dir);
+		if (!is_dir($this->dir)) {
+			throw new \LogicException('Invalid directory: '.$this->dir);
 		}
 
-		$output->writeln('<info>Changin working directory to: <comment>'.$dir.'</comment></info>');
 		$question = new ConfirmationQuestion('Continue with this action <comment>[Y,n]</comment>? ', true);
 		$helper = $this->getHelper('question');
 
 		if (!$helper->ask($input, $output, $question)) {
 			throw new TerminateException;
 		}
+
+		$output->writeln(PHP_EOL);
 	}
 
 
@@ -63,15 +78,13 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$dir = $input->getArgument('dir');
-
-		$finder = (new Finder)->in($dir)->exclude('vendor')->exclude('bin');
+		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
 
 		$bar = new ProgressBar($output, sizeof($finder));
 		$bar->start();
 
 		foreach ($finder as $file) {
-			$bar->setMessage(str_replace($dir, '.', $file));
+			$bar->setMessage(str_replace($this->dir, '.', $file));
 			$bar->advance();
 
 			if (!$this->processPath($file)) {
