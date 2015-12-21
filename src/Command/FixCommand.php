@@ -79,8 +79,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		if (!$this->getHelper('question')->ask($input, $output, $question)) {
 			throw new TerminateException;
 		}
-
-		$output->writeln(PHP_EOL);
 	}
 
 
@@ -94,7 +92,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
 
 		$bar = new ProgressBar($output, sizeof($finder));
-        $bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
+        $bar->setFormat("\n %current%/%max% [%bar%] %percent:3s%%\n %message%\n");
 		$bar->setMessage('<info>Preparing...</info>');
 		$bar->start();
 
