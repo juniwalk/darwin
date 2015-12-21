@@ -41,7 +41,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		// Define arguments and options of this command with default values
 		$this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
 		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Bypass container directory');
-		$this->addOption('owner', 'o', InputOption::VALUE_REQUIRED, 'Define owner for files', 'www-data');
 	}
 
 
@@ -79,8 +78,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		if (!$this->getHelper('question')->ask($input, $output, $question)) {
 			throw new TerminateException;
 		}
-
-		$output->writeln(PHP_EOL);
 	}
 
 
@@ -92,6 +89,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
+		$output->writeln(PHP_EOL);
 
 		$bar = new ProgressBar($output, sizeof($finder));
         $bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
