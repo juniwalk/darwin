@@ -22,17 +22,28 @@ use Symfony\Component\Finder\Finder;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
+    /**
+	 * Default working directory.
+	 * @var string
+	 */
+    const CONTAINMENT = '/^\/(srv)/i';
+
+
 	/** @var string */
 	private $dir;
+
+	/** @var bool */
+	private $force = false;
 
 
 	protected function configure()
 	{
-		$this->setDescription('Fix permissions of the files and dirs');
+		$this->setDescription('Fix website permissions in given directory');
 		$this->setName('fix');
 
 		// Define arguments and options of this command with default values
 		$this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Bypass container directory');
 		$this->addOption('owner', 'o', InputOption::VALUE_REQUIRED, 'Define owner for files', 'www-data');
 	}
 
@@ -44,12 +55,18 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
-		$this->dir = $input->getArgument('dir');
-		$output->writeln('<info>Changed current directory to <comment>'.$this->dir.'</comment></info>');
+		$this->dir = $dir = $input->getArgument('dir');
+		$this->force = $input->getOption('force');
 
-		if (!$this->dir || !is_dir($this->dir)) {
+		$output->writeln('<info>Changed current directory to <comment>'.$dir.'</comment></info>');
+
+		if (!$dir || !is_dir($dir)) {
 			throw new InvalidArgumentException('Unable to fix permissions in given directory');
 		}
+
+        if (!$this->force && !preg_match(static::CONTAINMENT, $dir)) {
+            throw new ErrorException('Working outside containment directory, use --force flag to override.');
+        }
 	}
 
 
@@ -80,16 +97,21 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
 
 		$bar = new ProgressBar($output, sizeof($finder));
+        $bar->setFormat(implode(PHP_EOL, array(
+            ' %current%/%max% items processed in %elapsed%',
+            ' [%bar%] %percent:3s%%',
+            ' %message%',
+        )));
 		$bar->start();
 
 		foreach ($finder as $file) {
 			$bar->setMessage(str_replace($this->dir, '.', $file));
-			$bar->advance();
 
 			if (!$this->processPath($file)) {
 				break;
 			}
 
+			$bar->advance();
 			usleep(250);
 		}
 
