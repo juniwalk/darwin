@@ -31,4 +31,47 @@ final class Rule
 		$this->owner = $owner;
 		$this->modes = $modes;
 	}
+
+
+	/**
+	 * @param  SplFileInfo  $file
+	 * @return bool
+	 */
+	public function apply(\SplFileInfo $file)
+	{
+		if (!$this->checkType($file)) {
+			return false;
+		}
+
+		if (!preg_match($this->pattern, $file->getFilename())) {
+			return false;
+		}
+
+		chmod($file, $file->isFile() ? $this->modes[0] : $this->modes[1]);
+		chown($file, $this->owner);
+
+		return true;
+	}
+
+
+	/**
+	 * @param  SplFileInfo  $file
+	 * @return bool
+	 */
+	private checkType(\SplFileInfo $file)
+	{
+		if ($this->type == 'any') {
+			return true;
+		}
+
+		if ($file->isFile() && $this->type == 'file') {
+			return true;
+		}
+
+		if ($file->isDir() && $this->type == 'dir') {
+			return true;
+		}
+
+		return false;
+	}
 }

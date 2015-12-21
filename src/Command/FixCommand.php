@@ -107,8 +107,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		foreach ($finder as $file) {
 			$bar->setMessage(str_replace($this->dir, '.', $file));
 
-			if (!$this->applyRules($file)) {
-				break;
+			foreach ($this->rules as $rule) {
+				$rule->apply($file);
 			}
 
 			$bar->advance();
@@ -117,25 +117,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 		$bar->setMessage('<info>Permissions were fixed</info>');
 		$bar->finish();
-
-		print_r($this->rules);
-	}
-
-
-	/**
-	 * @param  SplFileInfo  $file
-	 * @return bool
-	 */
-	private function applyRules(\SplFileInfo $file)
-	{
-		chmod($file, $file->isFile() ? 0644 : 0755);
-		chown($file, 'www-data');
-
-		if ($file->isFile() && preg_match('/(index|config|htaccess|composer)/i', $file->getFilename())) {
-			chown($file, 'root');
-		}
-
-		return true;
 	}
 
 
@@ -160,7 +141,12 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		}
 
 		foreach ($this->rules as $i => $rule) {
-			$this->rules[$i] = new Rule($rule['pattern'], $rule['type'], $rule['owner'], $rule['mode']);
+			$this->rules[$i] = new Rule(
+				$rule['pattern'],
+				$rule['type'],
+				$rule['owner'],
+				$rule['mode']
+			);
 		}
 	}
 }
