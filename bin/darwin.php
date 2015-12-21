@@ -21,7 +21,7 @@ include __DIR__.'/../../../autoload.php';
 
 $dispatcher = new EventDispatcher();
 $dispatcher->addListener(ConsoleEvents::TERMINATE, function (ConsoleTerminateEvent $event) {
-	//$event->getOutput()->writeln(PHP_EOL);
+	$event->getOutput()->writeln(PHP_EOL);
 });
 
 
