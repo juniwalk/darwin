@@ -83,7 +83,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			throw new TerminateException;
 		}
 
-		$output->writeln('');
+		$output->writeln(PHP_EOL);
 	}
 
 
@@ -111,12 +111,15 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			usleep(250);
 		}
 
+		$bar->setMessage('<comment>Permissions were fixed</comment>');
 		$bar->finish();
-
-		return 1;
 	}
 
 
+	/**
+	 * @param  SplFileInfo  $file
+	 * @return bool
+	 */
 	private function processPath(\SplFileInfo $file)
 	{
 		chmod($file, $file->isFile() ? 0644 : 0755);
