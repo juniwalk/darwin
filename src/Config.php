@@ -38,7 +38,7 @@ final class Config extends \ArrayObject
 		$content = file_get_contents($file);
 
 		try {
-			$this->exchangeArray(Yaml::parse($content));
+			$this->exchangeArray((array) Yaml::parse($content));
 
 		} catch (ParseException $e) {
 			throw $e; // for now
