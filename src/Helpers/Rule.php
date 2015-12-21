@@ -58,7 +58,7 @@ final class Rule
 	 * @param  SplFileInfo  $file
 	 * @return bool
 	 */
-	private checkType(\SplFileInfo $file)
+	private function checkType(\SplFileInfo $file)
 	{
 		if ($this->type == 'any') {
 			return true;
