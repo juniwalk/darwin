@@ -10,7 +10,7 @@
 
 namespace JuniWalk\Darwin\Helpers;
 
-final class Darwin
+final class Rule
 {
 	private $pattern;
 	private $type;
