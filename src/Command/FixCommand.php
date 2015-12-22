@@ -12,7 +12,6 @@ namespace JuniWalk\Darwin\Command;
 
 use JuniWalk\Darwin\Helpers\Rule;
 use JuniWalk\Darwin\Exception\InvalidArgumentException;
-use JuniWalk\Darwin\Exception\TerminateException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,17 +74,11 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 
 	/**
-	 * @param  InputInterface   $input
-	 * @param  OutputInterface  $output
-	 * @throws TerminateException
+	 * @param InputInterface   $input
+	 * @param OutputInterface  $output
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$question = new ConfirmationQuestion('Continue with this directory <comment>[Y,n]</comment>? ', true);
-
-		if (!$this->getHelper('question')->ask($input, $output, $question)) {
-			throw new TerminateException;
-		}
 	}
 
 
@@ -96,6 +89,12 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$question = new ConfirmationQuestion('Continue with this directory <comment>[Y,n]</comment>? ');
+
+		if (!$this->getHelper('question')->ask($input, $output, $question)) {
+			return;
+		}
+
 		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
 		$output->writeln(PHP_EOL);
 
