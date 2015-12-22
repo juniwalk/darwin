@@ -10,10 +10,6 @@
 
 namespace JuniWalk\Darwin;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Console\Event\ConsoleTerminateEvent;
-use Symfony\Component\Console\ConsoleEvents;
-
 final class Darwin extends \Symfony\Component\Console\Application
 {
     /**
@@ -22,19 +18,6 @@ final class Darwin extends \Symfony\Component\Console\Application
      */
     public function __construct($name = 'Darwin', $version = 'UNKNOWN')
     {
-		$dispatcher = new EventDispatcher;
-		$dispatcher->addListener(ConsoleEvents::TERMINATE, [$this, 'onTerminate']);
-
     	parent::__construct($name, $version);
-		$this->setDispatcher($dispatcher);
     }
-
-
-	/**
-	 * @param ConsoleTerminateEvent $event
-	 */
-	public function onTerminate(ConsoleTerminateEvent $event)
-	{
-		$event->getOutput()->writeln(PHP_EOL);
-	}
 }

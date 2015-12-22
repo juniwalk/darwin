@@ -19,7 +19,6 @@
     "require": {
         "php": ">=5.4",
         "symfony/yaml": "~3.0",
-        "symfony/event-dispatcher": "~3.0",
         "symfony/console": "~3.0",
         "symfony/finder": "~3.0"
     },

@@ -116,6 +116,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 		$bar->setMessage('<info>Permissions were fixed</info>');
 		$bar->finish();
+
+		$output->writeln(PHP_EOL);
 	}
 
 
