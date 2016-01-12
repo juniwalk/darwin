@@ -10,8 +10,8 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Helpers\Rule;
 use JuniWalk\Darwin\Exception\InvalidArgumentException;
+use JuniWalk\Darwin\Tools\Rule;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -116,7 +116,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	private function loadRules()
 	{
 		$config = $this->getHelper('config');
-		$rules = $config->load('fix.yml');
+		$rules = $config->load('fix.neon');
 
 		foreach ($rules as $i => $rule) {
 			$this->rules[$i] = new Rule(

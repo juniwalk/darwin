@@ -18,9 +18,9 @@
 
     "require": {
         "php": ">=5.4",
-        "symfony/yaml": "~3.0",
         "symfony/console": "~3.0",
-        "symfony/finder": "~3.0"
+        "symfony/finder": "~3.0",
+        "nette/neon": "~2.3"
     },
 
     "bin": ["bin/darwin", "bin/darwin.php"],

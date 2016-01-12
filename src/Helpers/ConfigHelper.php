@@ -13,8 +13,7 @@ namespace JuniWalk\Darwin\Helpers;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
+use Nette\Neon\Neon;
 
 final class ConfigHelper implements HelperInterface
 {
@@ -55,6 +54,15 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @return string
 	 */
+	public function getHome()
+	{
+		return $this->application->getHome();
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return 'config';
@@ -67,20 +75,13 @@ final class ConfigHelper implements HelperInterface
 	 */
 	public function load($fileName)
 	{
-		$config = $this->application->getHome() .'/'. $fileName;
+		$file = $this->getHome().'/'.$fileName;
 
-		if (!file_exists($config) && !touch($config)) {
+		if (!file_exists($file) && !touch($file)) {
 			throw new \Exception;
 		}
 
-		$config = file_get_contents($config);
-
-		try {
-			return (array) Yaml::parse($config);
-
-		} catch (ParseException $e) {
-			throw $e; // for now
-		}
+		return (array) Neon::decode(file_get_contents($file));
 	}
 
 
