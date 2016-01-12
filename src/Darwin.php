@@ -10,14 +10,43 @@
 
 namespace JuniWalk\Darwin;
 
+use JuniWalk\Darwin\Helpers\ConfigHelper;
+
 final class Darwin extends \Symfony\Component\Console\Application
 {
-    /**
-     * @param string $name    The name of the application
-     * @param string $version The version of the application
-     */
-    public function __construct($name = 'Darwin', $version = 'UNKNOWN')
+	/**
+	 * Home directory of this application.
+	 * @var string
+	 */
+	private $home;
+
+
+	/**
+	 * @param string  $path
+	 */
+	public function setHome($path)
+	{
+		$this->home = str_replace('~', $_SERVER['HOME'], $path);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getHome()
+	{
+		return $this->home;
+	}
+
+
+	/**
+	 * @return HelperSet
+	 */
+    protected function getDefaultHelperSet()
     {
-    	parent::__construct($name, $version);
+    	$helpers = parent::getDefaultHelperSet();
+		$helpers->set(new ConfigHelper($this));
+
+		return $helpers;
     }
 }

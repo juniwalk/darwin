@@ -19,8 +19,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -126,22 +124,10 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	private function loadRules()
 	{
-		$config = __DIR__.'/../../config/fix-rules.yml';
+		$config = $this->getHelper('config');
+		$rules = $config->load('fix-rules.yml');
 
-		if (!file_exists($config) && !touch($config)) {
-			throw new \Exception;
-		}
-
-		$config = file_get_contents($config);
-
-		try {
-			$this->rules = (array) Yaml::parse($config);
-
-		} catch (ParseException $e) {
-			throw $e; // for now
-		}
-
-		foreach ($this->rules as $i => $rule) {
+		foreach ($rules as $i => $rule) {
 			$this->rules[$i] = new Rule(
 				$rule['pattern'],
 				$rule['type'],
@@ -149,5 +135,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 				$rule['mode']
 			);
 		}
+
+		return NULL;
 	}
 }

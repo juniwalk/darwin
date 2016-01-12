@@ -8,9 +8,19 @@
  * @license   MIT License
  */
 
-// Include vendor autoloader to access projects
-include __DIR__.'/../../../autoload.php';
+namespace JuniWalk\Binary;
 
-$darwin = new JuniWalk\Darwin\Darwin;
-$darwin->add(new JuniWalk\Darwin\Command\FixCommand);
+use JuniWalk\Darwin\Darwin;
+use JuniWalk\Darwin\Command\FixCommand;
+
+// Include vendor autoloader to access projects
+if (!@include __DIR__.'/../../../autoload.php') {
+	throw new \Exception('Composer autoloader not found.');
+}
+
+$darwin = new Darwin('Darwin');
+$darwin->setHome('~/.config/darwin');
+
+$darwin->add(new FixCommand);
+
 $darwin->run();
