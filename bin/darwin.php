@@ -18,7 +18,7 @@ if (!@include __DIR__.'/../../../autoload.php') {
 	throw new \Exception('Composer autoloader not found.');
 }
 
-$darwin = new Darwin('Darwin');
+$darwin = new Darwin('Darwin', 'dev-master');
 $darwin->setHome('~/.config/darwin');
 
 $darwin->add(new FixCommand);

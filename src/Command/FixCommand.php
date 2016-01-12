@@ -72,15 +72,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 
 	/**
-	 * @param InputInterface   $input
-	 * @param OutputInterface  $output
-	 */
-	protected function interact(InputInterface $input, OutputInterface $output)
-	{
-	}
-
-
-	/**
 	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
 	 * @return int
@@ -125,7 +116,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	private function loadRules()
 	{
 		$config = $this->getHelper('config');
-		$rules = $config->load('fix-rules.yml');
+		$rules = $config->load('fix.yml');
 
 		foreach ($rules as $i => $rule) {
 			$this->rules[$i] = new Rule(
