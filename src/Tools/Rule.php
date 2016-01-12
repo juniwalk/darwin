@@ -8,7 +8,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin\Helpers;
+namespace JuniWalk\Darwin\Tools;
 
 final class Rule
 {
@@ -20,7 +20,7 @@ final class Rule
 
 	/**
 	 * @param string  $pattern
-	 * @param string  $tyoe
+	 * @param string  $type
 	 * @param string  $owner
 	 * @param array   $modes
 	 */
@@ -30,6 +30,15 @@ final class Rule
 		$this->type = $type;
 		$this->owner = $owner;
 		$this->modes = $modes;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return get_object_vars($this);
 	}
 
 
