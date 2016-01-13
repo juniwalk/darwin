@@ -56,10 +56,35 @@ final class Rule
 			return false;
 		}
 
-		chmod($file, $file->isFile() ? $this->modes[0] : $this->modes[1]);
-		chown($file, $this->owner);
+		chmod($file, $this->getMode($file));
+		chown($file, $this->getOwner());
 
 		return true;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getOwner()
+	{
+		return $this->owner;
+	}
+
+
+	/**
+	 * @param  SplFileInfo  $file
+	 * @return int
+	 */
+	public function getMode(\SplFileInfo $file)
+	{
+		$mode = $this->modes[1];
+
+		if ($file->isFile()) {
+			$mode = $this->modes[0];
+		}
+
+		return octdec($mode);
 	}
 
 
