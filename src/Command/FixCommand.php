@@ -118,8 +118,10 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$config = $this->getHelper('config');
 		$rules = $config->load('fix.neon');
 
-		foreach ($rules as $i => $rule) {
-			$this->rules[$i] = new Rule(
+		$class = $rules['className'];
+
+		foreach ($rules['rules'] as $i => $rule) {
+			$this->rules[$i] = new $class(
 				$rule['pattern'],
 				$rule['type'],
 				$rule['owner'],
