@@ -90,6 +90,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$bar = new ProgressBar($output, sizeof($finder));
         $bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
 		$bar->setMessage('<info>Preparing...</info>');
+		$bar->setRedrawFrequency(100);
 		$bar->start();
 
 		foreach ($finder as $file) {
