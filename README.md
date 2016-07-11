@@ -13,34 +13,14 @@ This is tiny CLI application which will help you manage your projects.
 Installation
 ------------
 
-Best way to install Darwin is using global composer.
+Darwin requires composer for its functionality, install it using this command:
 
 ```
 $ composer global require juniwalk/darwin
 ```
 
-If you do not have composer's /bin dir in $PATH then install Darwin using it's own command.
-
-```
-$ cd /root/.composer/vendor/bin
-$ darwin install /path/to/dir -f|--force
-```
-
-- `dir`: path to dir, if ommited, `/usr/local/bin` is used.
-- `--force`: override any existing files.
-
-Updating
---------
-
-To update Darwin, just use composer's update command.
-
-```
-$ composer global update juniwalk/darwin
-```
-
-Fix permissions
----------------
-
+file:permission | fix
+---------------------
 Fix permissions of files and dirs on given path. If dir param is ommited, current working dir is used instead.
 
 ```
@@ -50,3 +30,23 @@ $ darwin fix /path/to/dir -o|--owner="name" -f|--force
 - `dir`: path to dir, if ommited, current dir is used.
 - `--owner`: owner for found files and dirs, if ommited, www-data is used.
 - `--force`: force the fix without checks.
+
+image:shring | shring
+---------------------
+Use this command to shring all images that ale larger than given size option.
+
+```
+$ darwin shring --size=SIZE --quality=QUALITY --backup
+```
+
+- `---size`: size to which the image will be fitted.
+- `---quality`: quality of resulting image.
+- `---backup`: backup image before resizing.
+
+image:restore | restore
+-----------------------
+Restore all modified images *(any image with suffix .backup)*.
+
+```
+$ darwin restore
+```
