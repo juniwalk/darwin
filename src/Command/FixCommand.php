@@ -22,11 +22,8 @@ use Symfony\Component\Finder\Finder;
 
 final class FixCommand extends \Symfony\Component\Console\Command\Command
 {
-    /**
-	 * Default working directory.
-	 * @var string
-	 */
-    const CONTAINMENT = '/^\/(srv)/i';
+	/** @var string */
+	const CONTAINMENT = '/^\/(srv)/i';
 
 
 	/** @var string */
@@ -41,7 +38,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$this->setDescription('Fix website permissions in given directory');
 		$this->setName('fix');
 
-		// Define arguments and options of this command with default values
 		$this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
 		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Bypass container directory');
 	}
@@ -63,9 +59,9 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			throw new InvalidArgumentException('Unable to fix permissions in given directory');
 		}
 
-        if (!$force && !preg_match(static::CONTAINMENT, $dir)) {
-            throw new InvalidArgumentException('Directory containment breach, use --force flag to override');
-        }
+		if (!$force && !preg_match(static::CONTAINMENT, $dir)) {
+			throw new InvalidArgumentException('Directory containment breach, use --force flag to override');
+		}
 
 		$this->loadRules();
 	}
@@ -88,7 +84,7 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 		$output->writeln(PHP_EOL);
 
 		$bar = new ProgressBar($output, sizeof($finder));
-        $bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
+		$bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
 		$bar->setMessage('<info>Preparing...</info>');
 		$bar->setRedrawFrequency(100);
 		$bar->start();
@@ -111,9 +107,6 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 	}
 
 
-	/**
-	 *
-	 */
 	private function loadRules()
 	{
 		$config = $this->getHelper('config');
@@ -129,7 +122,5 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 				$rule['mode']
 			);
 		}
-
-		return NULL;
 	}
 }

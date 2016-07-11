@@ -33,19 +33,19 @@ final class ConfigHelper implements HelperInterface
 	}
 
 
-    /**
-     * @param HelperSet  $helperSet
-     */
-    public function setHelperSet(HelperSet $helperSet = NULL)
+	/**
+	 * @param HelperSet  $helperSet
+	 */
+	public function setHelperSet(HelperSet $helperSet = NULL)
 	{
 		$this->helperSet = $helperSet;
 	}
 
 
-    /**
-     * @return HelperSet
-     */
-    public function getHelperSet()
+	/**
+	 * @return HelperSet
+	 */
+	public function getHelperSet()
 	{
 		return $this->helperSet;
 	}

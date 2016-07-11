@@ -14,10 +14,7 @@ use JuniWalk\Darwin\Helpers\ConfigHelper;
 
 final class Darwin extends \Symfony\Component\Console\Application
 {
-	/**
-	 * Home directory of this application.
-	 * @var string
-	 */
+	/** @var string */
 	private $home;
 
 
@@ -42,11 +39,11 @@ final class Darwin extends \Symfony\Component\Console\Application
 	/**
 	 * @return HelperSet
 	 */
-    protected function getDefaultHelperSet()
-    {
-    	$helpers = parent::getDefaultHelperSet();
+	protected function getDefaultHelperSet()
+	{
+		$helpers = parent::getDefaultHelperSet();
 		$helpers->set(new ConfigHelper($this));
 
 		return $helpers;
-    }
+	}
 }
