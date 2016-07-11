@@ -27,8 +27,8 @@ final class ImageShringCommand extends \Symfony\Component\Console\Command\Comman
 		$this->setDescription('Process all images that do not meet given criteria');
 		$this->setName('image:shring')->setAliases(['shring']);
 
-		$this->addOption('size', NULL, InputOption::VALUE_REQUIRED, 'Maximum size of each image side', 512);
-		$this->addOption('quality', NULL, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 85);
+		$this->addOption('size', NULL, InputOption::VALUE_REQUIRED, 'Maximum size of each image side', 1024);
+		$this->addOption('quality', NULL, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 75);
 		$this->addOption('backup', NULL, InputOption::VALUE_NONE, 'Backup image before resizing');
 	}
 
