@@ -8,12 +8,10 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Binary;
-
 use JuniWalk\Darwin\Darwin;
-use JuniWalk\Darwin\Command\FixCommand;
+use JuniWalk\Darwin\Command\FilePermissionCommand;
+use JuniWalk\Darwin\Command\ImageShringCommand;
 
-// Include vendor autoloader to access projects
 if (!@include __DIR__.'/../../../autoload.php') {
 	throw new \Exception('Composer autoloader not found.');
 }
@@ -21,6 +19,7 @@ if (!@include __DIR__.'/../../../autoload.php') {
 $darwin = new Darwin('Darwin', 'dev-master');
 $darwin->setHome('~/.config/darwin');
 
-$darwin->add(new FixCommand);
+$darwin->add(new FilePermissionCommand);
+$darwin->add(new ImageShringCommand);
 
 $darwin->run();

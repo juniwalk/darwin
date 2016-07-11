@@ -11,8 +11,8 @@
 namespace JuniWalk\Darwin\Command;
 
 use JuniWalk\Darwin\Exception\InvalidArgumentException;
+use JuniWalk\Darwin\Tools\ProgressIterator;
 use JuniWalk\Darwin\Tools\Rule;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class FixCommand extends \Symfony\Component\Console\Command\Command
+final class FilePermissionCommand extends \Symfony\Component\Console\Command\Command
 {
 	/** @var string */
 	const CONTAINMENT = '/^\/(srv)/i';
@@ -35,8 +35,8 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 
 	protected function configure()
 	{
-		$this->setDescription('Fix website permissions in given directory');
-		$this->setName('fix');
+		$this->setDescription('Fix file permissions in given directory');
+		$this->setName('file:permission')->setAliases(['fix']);
 
 		$this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
 		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Bypass container directory');
@@ -80,16 +80,13 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			return;
 		}
 
-		$finder = (new Finder)->in($this->dir)->exclude('vendor')->exclude('bin');
-		$output->writeln(PHP_EOL);
+		$finder = (new Finder)
+			->in($this->dir)
+			->exclude('vendor')
+			->exclude('bin');
 
-		$bar = new ProgressBar($output, sizeof($finder));
-		$bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
-		$bar->setMessage('<info>Preparing...</info>');
-		$bar->setRedrawFrequency(100);
-		$bar->start();
-
-		foreach ($finder as $file) {
+		$progress = new ProgressIterator($output, $finder);
+		$progress->onSingleStep[] = function ($bar, $file) {
 			$bar->setMessage(str_replace($this->dir, '.', $file));
 
 			foreach ($this->rules as $rule) {
@@ -97,13 +94,9 @@ final class FixCommand extends \Symfony\Component\Console\Command\Command
 			}
 
 			$bar->advance();
-			usleep(250);
-		}
+		};
 
-		$bar->setMessage('<info>Permissions were fixed</info>');
-		$bar->finish();
-
-		$output->writeln(PHP_EOL);
+		$progress->execute();
 	}
 
 
