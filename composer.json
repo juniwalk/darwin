@@ -1,33 +1,33 @@
 {
-    "name": "juniwalk/darwin",
-    "type": "library",
-    "description": "Set of tools to help you with your project.",
-    "license": "MIT",
+	"name": "juniwalk/darwin",
+	"type": "library",
+	"description": "Set of tools to help you with your projects.",
+	"license": "MIT",
 
-    "authors": [
-        {
-            "name": "Martin Procházka",
-            "email": "juniwalk@outlook.cz",
-            "role": "Developer"
-        }
-    ],
+	"authors": [
+		{
+			"name": "Martin Procházka",
+			"email": "juniwalk@outlook.cz",
+			"role": "Developer"
+		}
+	],
 
-    "support": {
-        "issues": "https://github.com/juniwalk/darwin/issues"
-    },
+	"support": {
+		"issues": "https://github.com/juniwalk/darwin/issues"
+	},
 
-    "require": {
-        "php": ">=5.4",
-        "symfony/console": "~3.0",
-        "symfony/finder": "~3.0",
-        "nette/neon": "~2.3"
-    },
+	"require": {
+		"php": ">=5.4",
+		"symfony/console": "^3.0",
+		"symfony/finder": "^3.0",
+		"nette/neon": "^2.0"
+	},
 
-    "bin": ["bin/darwin", "bin/darwin.php"],
-    "autoload": {
-        "psr-4": {"JuniWalk\\Darwin\\": "src/"}
-    },
-    "autoload-dev": {
-        "psr-4": {"JuniWalk\\Darwin\\Tests\\": "tests/"}
-    }
+	"bin": ["bin/darwin", "bin/darwin.php"],
+	"autoload": {
+		"psr-4": {"JuniWalk\\Darwin\\": "src/"}
+	},
+	"autoload-dev": {
+		"psr-4": {"JuniWalk\\Darwin\\Tests\\": "tests/"}
+	}
 }
