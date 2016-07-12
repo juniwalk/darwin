@@ -19,11 +19,17 @@ final class Darwin extends \Symfony\Component\Console\Application
 
 
 	/**
-	 * @param string  $path
+	 * @param string  $home
 	 */
-	public function setHome($path)
+	public function setHome($home)
 	{
-		$this->home = str_replace('~', $_SERVER['HOME'], $path);
+		$serverHome = NULL;
+
+		if (isset($_SERVER['HOME'])) {
+			$serverHome = $_SERVER['HOME'];
+		}
+
+		$this->home = str_replace('~', $serverHome, $home);
 	}
 
 
