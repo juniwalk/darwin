@@ -46,7 +46,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	/**
 	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
-	 * @return int
+	 * @return integer|NULL
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
@@ -56,7 +56,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 			->exclude('bin');
 
 		if (!$rules = $this->loadRules()) {
-			return;
+			return 0;
 		}
 
 		$progress = new ProgressIterator($output, $finder);
@@ -83,6 +83,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 			->load('fix.neon');
 
 		$class = $config['className'];
+		$rules = [];
 
 		foreach ($config['rules'] as $i => $rule) {
 			$rules[$i] = new $class(

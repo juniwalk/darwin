@@ -32,7 +32,7 @@ final class ImageRestoreCommand extends \Symfony\Component\Console\Command\Comma
 	/**
 	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
-	 * @return int
+	 * @return integer|NULL
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{

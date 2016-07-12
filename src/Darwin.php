@@ -43,7 +43,7 @@ final class Darwin extends \Symfony\Component\Console\Application
 
 
 	/**
-	 * @return HelperSet
+	 * @inheritDoc
 	 */
 	protected function getDefaultHelperSet()
 	{

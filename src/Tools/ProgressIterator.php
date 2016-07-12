@@ -13,6 +13,11 @@ namespace JuniWalk\Darwin\Tools;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @method void onBeforeStart(ProgressBar $bar)
+ * @method void onBeforeFinish(ProgressBar $bar)
+ * @method void onSingleStep(ProgressBar $bar, mixed $value)
+ */
 final class ProgressIterator extends \Nette\Object
 {
 	/** @var OutputInterface */
@@ -34,7 +39,7 @@ final class ProgressIterator extends \Nette\Object
 
 	/**
 	 * @param OutputInterface  $output
-	 * @param Traversable      $values
+	 * @param \Traversable     $values
 	 */
 	public function __construct(OutputInterface $output, \Traversable $values)
 	{

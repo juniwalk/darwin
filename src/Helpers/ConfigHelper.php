@@ -34,7 +34,7 @@ final class ConfigHelper implements HelperInterface
 
 
 	/**
-	 * @param HelperSet  $helperSet
+	 * @param HelperSet|NULL  $helperSet
 	 */
 	public function setHelperSet(HelperSet $helperSet = NULL)
 	{
@@ -72,6 +72,7 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @param  string  $fileName
 	 * @return array
+	 * @throws Exception
 	 */
 	public function load($fileName)
 	{
@@ -82,20 +83,5 @@ final class ConfigHelper implements HelperInterface
 		}
 
 		return (array) Neon::decode(file_get_contents($file));
-	}
-
-
-	public function save($fileName, array $data)
-	{
-
-	}
-
-
-	/**
-	 *
-	 */
-	private function createFolder()
-	{
-		mkdir($this->application->getHome());
 	}
 }

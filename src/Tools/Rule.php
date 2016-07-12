@@ -43,7 +43,7 @@ final class Rule
 
 
 	/**
-	 * @param  SplFileInfo  $file
+	 * @param  \SplFileInfo  $file
 	 * @return bool
 	 */
 	public function apply(\SplFileInfo $file)
@@ -73,8 +73,8 @@ final class Rule
 
 
 	/**
-	 * @param  SplFileInfo  $file
-	 * @return int
+	 * @param  \SplFileInfo  $file
+	 * @return integer
 	 */
 	public function getMode(\SplFileInfo $file)
 	{
@@ -89,23 +89,23 @@ final class Rule
 
 
 	/**
-	 * @param  SplFileInfo  $file
+	 * @param  \SplFileInfo  $file
 	 * @return bool
 	 */
 	private function checkType(\SplFileInfo $file)
 	{
 		if ($this->type == 'any') {
-			return true;
+			return TRUE;
 		}
 
 		if ($file->isFile() && $this->type == 'file') {
-			return true;
+			return TRUE;
 		}
 
 		if ($file->isDir() && $this->type == 'dir') {
-			return true;
+			return TRUE;
 		}
 
-		return false;
+		return FALSE;
 	}
 }
