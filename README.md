@@ -21,15 +21,11 @@ $ composer global require juniwalk/darwin
 
 file:permission | fix
 ---------------------
-Fix permissions of files and dirs on given path. If dir param is ommited, current working dir is used instead.
+Fix permissions of files and dirs on current working directory.
 
 ```
-$ darwin fix /path/to/dir -o|--owner="name" -f|--force
+$ darwin fix
 ```
-
-- `dir`: path to dir, if ommited, current dir is used.
-- `--owner`: owner for found files and dirs, if ommited, www-data is used.
-- `--force`: force the fix without checks.
 
 image:shring | shring
 ---------------------
@@ -41,7 +37,7 @@ $ darwin shring --size=SIZE --quality=QUALITY --backup
 
 - `---size`: size to which the image will be fitted.
 - `---quality`: quality of resulting image.
-- `---backup`: backup image before resizing.
+- `---backup`: backup image before resizing *(adds .backup suffix to filename)*.
 
 image:restore | restore
 -----------------------

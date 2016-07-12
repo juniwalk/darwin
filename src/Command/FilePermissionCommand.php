@@ -10,60 +10,36 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Exception\InvalidArgumentException;
 use JuniWalk\Darwin\Tools\ProgressIterator;
-use JuniWalk\Darwin\Tools\Rule;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
 final class FilePermissionCommand extends \Symfony\Component\Console\Command\Command
 {
-	/** @var string */
-	const CONTAINMENT = '/^\/(srv)/i';
-
-
-	/** @var string */
-	private $dir;
-
-	/** @var Rule[] */
-	private $rules = [];
-
-
 	protected function configure()
 	{
 		$this->setDescription('Fix file permissions in given directory');
 		$this->setName('file:permission')->setAliases(['fix']);
-
-		$this->addArgument('dir', InputArgument::OPTIONAL, 'Path to the project', getcwd());
-		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Bypass container directory');
 	}
 
 
 	/**
 	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
-	 * @throws InvalidArgumentException
 	 */
-	protected function initialize(InputInterface $input, OutputInterface $output)
+	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$this->dir = $dir = $input->getArgument('dir');
-		$force = (bool) $input->getOption('force');
+		$question = new ConfirmationQuestion('Continue with current directory <comment>[Y,n]</comment>? ');
 
-		$output->writeln('<info>Changed current directory to <comment>'.$dir.'</comment></info>');
-
-		if (!$dir || !is_dir($dir)) {
-			throw new InvalidArgumentException('Unable to fix permissions in given directory');
+		if ($this->getHelper('question')->ask($input, $output, $question)) {
+			return;
 		}
 
-		if (!$force && !preg_match(static::CONTAINMENT, $dir)) {
-			throw new InvalidArgumentException('Directory containment breach, use --force flag to override');
-		}
-
-		$this->loadRules();
+		$this->setCode(function () {
+			return 0;
+		});
 	}
 
 
@@ -74,22 +50,20 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$question = new ConfirmationQuestion('Continue with this directory <comment>[Y,n]</comment>? ');
-
-		if (!$this->getHelper('question')->ask($input, $output, $question)) {
-			return;
-		}
-
 		$finder = (new Finder)
-			->in($this->dir)
+			->in($folder = getcwd())
 			->exclude('vendor')
 			->exclude('bin');
 
-		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) {
-			$bar->setMessage(str_replace($this->dir, '.', $file));
+		if (!$rules = $this->loadRules()) {
+			return;
+		}
 
-			foreach ($this->rules as $rule) {
+		$progress = new ProgressIterator($output, $finder);
+		$progress->onSingleStep[] = function ($bar, $file) use ($rules, $folder) {
+			$bar->setMessage(str_replace($folder, '.', $file));
+
+			foreach ($rules as $rule) {
 				$rule->apply($file);
 			}
 
@@ -100,20 +74,25 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	}
 
 
+	/**
+	 * @return Rule[]
+	 */
 	private function loadRules()
 	{
-		$config = $this->getHelper('config');
-		$rules = $config->load('fix.neon');
+		$config = $this->getHelper('config')
+			->load('fix.neon');
 
-		$class = $rules['className'];
+		$class = $config['className'];
 
-		foreach ($rules['rules'] as $i => $rule) {
-			$this->rules[$i] = new $class(
+		foreach ($config['rules'] as $i => $rule) {
+			$rules[$i] = new $class(
 				$rule['pattern'],
 				$rule['type'],
 				$rule['owner'],
 				$rule['mode']
 			);
 		}
+
+		return $rules;
 	}
 }
