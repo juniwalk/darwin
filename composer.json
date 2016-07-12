@@ -24,11 +24,20 @@
 		"nette/neon": "^2.0"
 	},
 
-	"bin": ["bin/darwin", "bin/darwin.php"],
+	"require-dev": {
+		"nette/tester": "^1.0"
+	},
+
 	"autoload": {
 		"psr-4": {"JuniWalk\\Darwin\\": "src/"}
 	},
+
 	"autoload-dev": {
 		"psr-4": {"JuniWalk\\Darwin\\Tests\\": "tests/"}
-	}
+	},
+
+	"bin": [
+		"bin/darwin",
+		"bin/darwin.php"
+	]
 }
