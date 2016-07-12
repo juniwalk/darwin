@@ -49,17 +49,17 @@ final class Rule
 	public function apply(\SplFileInfo $file)
 	{
 		if (!$this->checkType($file)) {
-			return false;
+			return FALSE;
 		}
 
 		if (!preg_match($this->pattern, $file->getFilename())) {
-			return false;
+			return FALSE;
 		}
 
 		chmod($file, $this->getMode($file));
 		chown($file, $this->getOwner());
 
-		return true;
+		return TRUE;
 	}
 
 
