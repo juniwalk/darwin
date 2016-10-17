@@ -2,8 +2,8 @@
 
 /**
  * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Form
- * @link      https://github.com/juniwalk/form
+ * @package   Darwin
+ * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
