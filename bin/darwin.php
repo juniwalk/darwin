@@ -10,7 +10,7 @@
 
 use JuniWalk\Darwin\Darwin;
 use JuniWalk\Darwin\Command\FilePermissionCommand;
-use JuniWalk\Darwin\Command\ImageShringCommand;
+use JuniWalk\Darwin\Command\ImageShrinkCommand;
 use JuniWalk\Darwin\Command\ImageRestoreCommand;
 
 if (!@include __DIR__.'/../../../autoload.php') {
@@ -21,7 +21,7 @@ $darwin = new Darwin('Darwin', 'dev-master');
 $darwin->setHome('~/.config/darwin');
 
 $darwin->add(new FilePermissionCommand);
-$darwin->add(new ImageShringCommand);
+$darwin->add(new ImageShrinkCommand);
 $darwin->add(new ImageRestoreCommand);
 
 $darwin->run();

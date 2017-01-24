@@ -15,8 +15,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Nette\Utils\Image;
+use Nette\Utils\ImageException;
 
-final class ImageShringCommand extends \Symfony\Component\Console\Command\Command
+final class ImageShrinkCommand extends \Symfony\Component\Console\Command\Command
 {
 	/** @var string */
 	const IMAGES = '/\.(jpe?g|png|gif)$/i';
@@ -24,8 +26,8 @@ final class ImageShringCommand extends \Symfony\Component\Console\Command\Comman
 
 	protected function configure()
 	{
-		$this->setDescription('Shring all images that ale larger than given size');
-		$this->setName('image:shring')->setAliases(['shring']);
+		$this->setDescription('Shrink all images that ale larger than given size');
+		$this->setName('image:shrink')->setAliases(['shrink']);
 
 		$this->addOption('size', NULL, InputOption::VALUE_REQUIRED, 'Size to which the image will be fitted', 1024);
 		$this->addOption('quality', NULL, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 75);
@@ -48,14 +50,22 @@ final class ImageShringCommand extends \Symfony\Component\Console\Command\Comman
 		$progress->onSingleStep[] = function ($bar, $file) use ($input, $folder) {
 			$bar->setMessage(str_replace($folder, '.', $file));
 
-			if (!$this->resizeImage($input, $file)) {
-				// Failed conversion
+			try {
+				$status = $this->resizeImage($input, $file);
+
+			} catch (ImageException $e) {
+				$status = FALSE;
 			}
+
+			// TODO: Store failed image
 
 			$bar->advance();
 		};
 
 		$progress->execute();
+
+		// TODO: Print table with failed images
+		// limit the list to X entries
 	}
 
 
@@ -69,7 +79,7 @@ final class ImageShringCommand extends \Symfony\Component\Console\Command\Comman
 		$size = $input->getOption('size');
 		$path = $file->getPathname();
 
-		$image = \Nette\Utils\Image::fromFile($path, $format);
+		$image = Image::fromFile($path, $format);
 
 		if ($image->getWidth() <= $size && $image->getHeight() <= $size) {
 			return TRUE;
