@@ -27,12 +27,12 @@ Fix permissions of files and dirs on current working directory.
 $ darwin fix
 ```
 
-image:shring | shring
+image:shrink | shrink
 ---------------------
-Use this command to shring all images that ale larger than given size option.
+Use this command to shrink all images that ale larger than given size option.
 
 ```
-$ darwin shring --size=SIZE --quality=QUALITY --backup
+$ darwin shrink --size=SIZE --quality=QUALITY --backup
 ```
 
 - `---size`: size to which the image will be fitted.
