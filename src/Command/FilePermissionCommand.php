@@ -71,7 +71,11 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$question = new ConfirmationQuestion('Continue with current directory <comment>[Y,n]</comment>? ');
+		$folder = $this->folder !== NULL
+			? $this->folder
+			: 'current';
+
+		$question = new ConfirmationQuestion('Continue with <info>'.$folder.'</info> directory <comment>[Y,n]</comment>? ');
 
 		if ($this->getHelper('question')->ask($input, $output, $question)) {
 			return;
