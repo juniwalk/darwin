@@ -78,7 +78,7 @@ final class Rule
 	 */
 	public function apply(File $file)
 	{
-		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $file->getFilename())) {
+		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $file->getPathname())) {
 			return FALSE;
 		}
 
