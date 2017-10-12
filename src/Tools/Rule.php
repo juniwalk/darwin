@@ -10,11 +10,28 @@
 
 namespace JuniWalk\Darwin\Tools;
 
+use SplFileInfo as File;
+
 final class Rule
 {
+	/**
+	 * @var string
+	 */
 	private $pattern;
+
+	/**
+	 * @var string
+	 */
 	private $type;
+
+	/**
+	 * @var string
+	 */
 	private $owner;
+
+	/**
+	 * @var int[]
+	 */
 	private $modes;
 
 
@@ -22,7 +39,7 @@ final class Rule
 	 * @param string  $pattern
 	 * @param string  $type
 	 * @param string  $owner
-	 * @param array   $modes
+	 * @param int[]  $modes
 	 */
 	public function __construct($pattern, $type, $owner, array $modes)
 	{
@@ -34,65 +51,10 @@ final class Rule
 
 
 	/**
-	 * @return array
-	 */
-	public function toArray()
-	{
-		return get_object_vars($this);
-	}
-
-
-	/**
-	 * @param  \SplFileInfo  $file
+	 * @param  File  $file
 	 * @return bool
 	 */
-	public function apply(\SplFileInfo $file)
-	{
-		if (!$this->checkType($file)) {
-			return FALSE;
-		}
-
-		if (!preg_match($this->pattern, $file->getFilename())) {
-			return FALSE;
-		}
-
-		chmod($file, $this->getMode($file));
-		chown($file, $this->getOwner());
-
-		return TRUE;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getOwner()
-	{
-		return $this->owner;
-	}
-
-
-	/**
-	 * @param  \SplFileInfo  $file
-	 * @return integer
-	 */
-	public function getMode(\SplFileInfo $file)
-	{
-		$mode = $this->modes[1];
-
-		if ($file->isFile()) {
-			$mode = $this->modes[0];
-		}
-
-		return octdec($mode);
-	}
-
-
-	/**
-	 * @param  \SplFileInfo  $file
-	 * @return bool
-	 */
-	private function checkType(\SplFileInfo $file)
+	private function isDesiredType(File $file)
 	{
 		if ($this->type == 'any') {
 			return TRUE;
@@ -107,5 +69,29 @@ final class Rule
 		}
 
 		return FALSE;
+	}
+
+
+	/**
+	 * @param  File  $file
+	 * @return bool
+	 */
+	public function apply(File $file)
+	{
+		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $file->getFilename())) {
+			return FALSE;
+		}
+
+		chown($file, $this->owner);
+
+		if ($file->isFile()) {
+			chmod($file, octdec($this->modes[0]));
+		}
+
+		if ($file->isDir()) {
+			chmod($file, octdec($this->modes[1]));
+		}
+
+		return TRUE;
 	}
 }
