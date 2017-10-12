@@ -16,7 +16,7 @@ final class ConfigNotFoundException extends DarwinException
 	 * @param  string  $fileName
 	 * @return static
 	 */
-	public static function fromFileName(string $fileName) : self
+	public static function fromFileName($fileName)
 	{
 		return new static('Unable to find configuration with name '.$fileName, 500);
 	}

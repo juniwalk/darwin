@@ -79,7 +79,7 @@ final class ConfigHelper implements HelperInterface
 	 * @return string[]
 	 * @throws Exception
 	 */
-	public function load(string $fileName) : iterable
+	public function load($fileName)
 	{
 		$file = $this->getHome().'/'.$fileName.'.neon';
 

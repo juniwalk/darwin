@@ -37,7 +37,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	/**
 	 * @return string
 	 */
-	public function getFolder() : string
+	public function getFolder()
 	{
 		return $this->folder ?: getcwd();
 	}
