@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use JuniWalk\Darwin\Tools\ProgressIterator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,8 +59,9 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
-		$this->rules = $this->loadRules($input->getOption('config'));
 		$this->folder = $input->getArgument('folder');
+		$this->rules = $this->getHelper('config')
+			->load($input->getOption('config'));
 	}
 
 
@@ -92,15 +94,11 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 			->exclude('vendor')
 			->exclude('bin');
 
-		if (!$rules = $this->loadRules()) {
-			return 0;
-		}
-
 		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) use ($rules) {
+		$progress->onSingleStep[] = function ($bar, $file) {
 			$bar->setMessage(str_replace($this->getFolder(), '.', $file));
 
-			foreach ($rules as $rule) {
+			foreach ($this->rules as $rule) {
 				$rule->apply($file);
 			}
 
@@ -108,30 +106,5 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 		};
 
 		$progress->execute();
-	}
-
-
-	/**
-	 * @param  string  $file
-	 * @return Rule[]
-	 */
-	private function loadRules(string $file)
-	{
-		$config = $this->getHelper('config')
-			->load($file.'.neon');
-
-		$class = $config['className'];
-		$rules = [];
-
-		foreach ($config['rules'] as $i => $rule) {
-			$rules[$i] = new $class(
-				$rule['pattern'],
-				$rule['type'],
-				$rule['owner'],
-				$rule['mode']
-			);
-		}
-
-		return $rules;
 	}
 }

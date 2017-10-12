@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Helpers;
 
+use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -17,10 +18,14 @@ use Nette\Neon\Neon;
 
 final class ConfigHelper implements HelperInterface
 {
-	/** @var Application */
+	/**
+	 * @var Application
+	 */
 	private $application;
 
-	/** @var HelperSet */
+	/**
+	 * @var HelperSet
+	 */
 	private $helperSet;
 
 
@@ -71,17 +76,31 @@ final class ConfigHelper implements HelperInterface
 
 	/**
 	 * @param  string  $fileName
-	 * @return array
+	 * @return string[]
 	 * @throws Exception
 	 */
-	public function load($fileName)
+	public function load(string $fileName) : iterable
 	{
-		$file = $this->getHome().'/'.$fileName;
+		$file = $this->getHome().'/'.$fileName.'.neon';
 
 		if (!file_exists($file) && !touch($file)) {
-			throw new \Exception;
+			throw ConfigNotFoundException::fromFileName($fileName);
 		}
 
-		return (array) Neon::decode(file_get_contents($file));
+		$config = (array) Neon::decode(file_get_contents($file));
+
+		$class = $config['className'];
+		$rules = [];
+
+		foreach ($config['rules'] as $i => $rule) {
+			$rules[$i] = new $class(
+				$rule['pattern'],
+				$rule['type'],
+				$rule['owner'],
+				$rule['mode']
+			);
+		}
+
+		return $rules;
 	}
 }
