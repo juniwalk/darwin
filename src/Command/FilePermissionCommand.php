@@ -94,13 +94,18 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$finder = (new Finder)->in($this->getFolder())
+		$folder = new \SplFileInfo($this->getFolder());
+		$finder = (new Finder)->in($folder->getPathname())
 			->exclude('vendor')
 			->exclude('bin');
 
+		foreach ($this->rules as $rule) {
+			$rule->apply($folder);
+		}
+
 		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) {
-			$bar->setMessage(str_replace($this->getFolder(), '.', $file));
+		$progress->onSingleStep[] = function ($bar, $file) use ($folder) {
+			$bar->setMessage(str_replace($folder, '.', $file));
 
 			foreach ($this->rules as $rule) {
 				$rule->apply($file);
