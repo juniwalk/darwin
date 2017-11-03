@@ -96,9 +96,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	{
 		$folder = new \SplFileInfo($this->getFolder());
 		$finder = (new Finder)->in($folder->getPathname())
-			->ignoreDotFiles(FALSE)
-			->exclude('vendor')
-			->exclude('bin');
+			->ignoreDotFiles(FALSE);
 
 		foreach ($this->rules as $rule) {
 			$rule->apply($folder);
