@@ -10,7 +10,6 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use JuniWalk\Darwin\Tools\ProgressIterator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,9 +58,8 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
+		$this->getHelper('config')->load($input->getOption('config'));
 		$this->folder = $input->getArgument('folder');
-		$this->rules = $this->getHelper('config')
-			->load($input->getOption('config'));
 	}
 
 
@@ -94,19 +92,22 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$folder = new \SplFileInfo($this->getFolder());
-		$finder = (new Finder)->in($folder->getPathname())
-			->ignoreDotFiles(FALSE);
+		$config = $this->getHelper('config');
 
-		foreach ($this->rules as $rule) {
+		$folder = new \SplFileInfo($this->getFolder());
+		$finder = (new Finder)->ignoreDotFiles(FALSE)
+			->exclude($config->getExcludeFolders())
+			->in($folder->getPathname());
+
+		foreach ($config->getRules() as $rule) {
 			$rule->apply($folder);
 		}
 
 		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) use ($folder) {
+		$progress->onSingleStep[] = function ($bar, $file) use ($folder, $config) {
 			$bar->setMessage(str_replace($folder, '.', $file));
 
-			foreach ($this->rules as $rule) {
+			foreach ($config->getRules() as $rule) {
 				$rule->apply($file);
 			}
 

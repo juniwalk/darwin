@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Darwin\Helpers;
 
+use JuniWalk\Darwin\Exception\ConfigInvalidException;
 use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use JuniWalk\Darwin\Tools\Rule;
 use Symfony\Component\Console\Application;
@@ -28,6 +29,16 @@ final class ConfigHelper implements HelperInterface
 	 * @var HelperSet
 	 */
 	private $helperSet;
+
+	/**
+	 * @var string[]
+	 */
+	private $exclude = [];
+
+	/**
+	 * @var Rule[]
+	 */
+	private $rules = [];
 
 
 	/**
@@ -76,28 +87,54 @@ final class ConfigHelper implements HelperInterface
 
 
 	/**
-	 * @param  string  $fileName
 	 * @return string[]
+	 */
+	public function getExcludeFolders()
+	{
+		return $this->exclude;
+	}
+
+
+	/**
+	 * @return Rule[]
+	 */
+	public function getRules()
+	{
+		return $this->rules;
+	}
+
+
+	/**
+	 * @param  string  $fileName
+	 * @return bool
+	 * @throws ConfigInvalidException
 	 * @throws ConfigNotFoundException
 	 */
 	public function load($fileName)
 	{
 		$file = $this->getHome().'/'.$fileName.'.neon';
-		$rules = [];
 
 		if (!is_file($file) || !$content = file_get_contents($file)) {
 			throw ConfigNotFoundException::fromFileName($fileName);
 		}
 
-		foreach ((array) Neon::decode($content) as $i => $rule) {
-			$rules[$i] = new Rule(
-				$rule['pattern'],
-				$rule['type'],
-				$rule['owner'],
-				$rule['mode']
+		$config = (array) Neon::decode($content);
+
+		if (!isset($config['excludeFolders']) || !isset($config['rules'])) {
+			throw ConfigInvalidException::fromFileName($fileName);
+		}
+
+		$this->exclude = $config['excludeFolders'];
+
+		foreach ($config['rules'] as $rule => $data) {
+			$this->rules[$rule] = new Rule(
+				$data['pattern'],
+				$data['type'],
+				$data['owner'],
+				$data['mode']
 			);
 		}
 
-		return $rules;
+		return TRUE;
 	}
 }
