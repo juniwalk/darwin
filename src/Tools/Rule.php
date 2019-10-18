@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
@@ -14,24 +11,16 @@ use SplFileInfo as File;
 
 final class Rule
 {
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $pattern;
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $type;
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $owner;
 
-	/**
-	 * @var int[]
-	 */
+	/** @var int[] */
 	private $modes;
 
 
@@ -41,8 +30,12 @@ final class Rule
 	 * @param string  $owner
 	 * @param int[]  $modes
 	 */
-	public function __construct($pattern, $type, $owner, array $modes)
-	{
+	public function __construct(
+		string $pattern,
+		string $type,
+		string $owner,
+		iterable $modes
+	) {
 		$this->pattern = $pattern;
 		$this->type = $type;
 		$this->owner = $owner;
@@ -54,21 +47,21 @@ final class Rule
 	 * @param  File  $file
 	 * @return bool
 	 */
-	private function isDesiredType(File $file)
+	private function isDesiredType(File $file): bool
 	{
 		if ($this->type == 'any') {
-			return TRUE;
+			return true;
 		}
 
 		if ($file->isFile() && $this->type == 'file') {
-			return TRUE;
+			return true;
 		}
 
 		if ($file->isDir() && $this->type == 'dir') {
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 
@@ -76,10 +69,10 @@ final class Rule
 	 * @param  File  $file
 	 * @return bool
 	 */
-	public function apply(File $file)
+	public function apply(File $file): bool
 	{
 		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $file->getPathname())) {
-			return FALSE;
+			return false;
 		}
 
 		chown($file, $this->owner);
@@ -92,6 +85,6 @@ final class Rule
 			chmod($file, octdec($this->modes[1]));
 		}
 
-		return TRUE;
+		return true;
 	}
 }

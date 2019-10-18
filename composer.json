@@ -4,36 +4,26 @@
 	"description": "Set of tools to help you with your projects.",
 	"license": "MIT",
 
-	"authors": [
-		{
-			"name": "Martin Procházka",
-			"email": "juniwalk@outlook.cz",
-			"role": "Developer"
-		}
-	],
+	"authors": [{
+		"name": "Martin Procházka",
+		"email": "juniwalk@outlook.cz",
+		"role": "Developer"
+	}],
 
 	"support": {
 		"issues": "https://github.com/juniwalk/darwin/issues"
-	},
-
-	"require": {
-		"php": ">=5.5",
-		"symfony/console": "^3.0",
-		"symfony/finder": "^3.0",
-		"nette/utils": "^2.0",
-		"nette/neon": "^2.0"
-	},
-
-	"require-dev": {
-		"nette/tester": "^1.0"
 	},
 
 	"autoload": {
 		"psr-4": {"JuniWalk\\Darwin\\": "src/"}
 	},
 
-	"autoload-dev": {
-		"psr-4": {"JuniWalk\\Darwin\\Tests\\": "tests/"}
+	"require": {
+		"php": ">=7.1",
+		"symfony/console": "^4.0",
+		"symfony/finder": "^4.0",
+		"nette/utils": "^3.0",
+		"nette/neon": "^3.0"
 	},
 
 	"bin": [

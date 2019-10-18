@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
@@ -20,24 +17,16 @@ use Nette\Neon\Neon;
 
 final class ConfigHelper implements HelperInterface
 {
-	/**
-	 * @var Application
-	 */
+	/** @var Application */
 	private $application;
 
-	/**
-	 * @var HelperSet
-	 */
+	/** @var HelperSet */
 	private $helperSet;
 
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	private $exclude = [];
 
-	/**
-	 * @var Rule[]
-	 */
+	/** @var Rule[] */
 	private $rules = [];
 
 
@@ -51,9 +40,10 @@ final class ConfigHelper implements HelperInterface
 
 
 	/**
-	 * @param HelperSet|NULL  $helperSet
+	 * @param  HelperSet|null  $helperSet
+	 * @return void
 	 */
-	public function setHelperSet(HelperSet $helperSet = NULL)
+	public function setHelperSet(HelperSet $helperSet = null): void
 	{
 		$this->helperSet = $helperSet;
 	}
@@ -62,7 +52,7 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @return HelperSet
 	 */
-	public function getHelperSet()
+	public function getHelperSet(): HelperSet
 	{
 		return $this->helperSet;
 	}
@@ -71,7 +61,7 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @return string
 	 */
-	public function getHome()
+	public function getHome(): string
 	{
 		return $this->application->getHome();
 	}
@@ -80,7 +70,7 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName(): string
 	{
 		return 'config';
 	}
@@ -89,7 +79,7 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @return string[]
 	 */
-	public function getExcludeFolders()
+	public function getExcludeFolders(): iterable
 	{
 		return $this->exclude;
 	}
@@ -98,7 +88,7 @@ final class ConfigHelper implements HelperInterface
 	/**
 	 * @return Rule[]
 	 */
-	public function getRules()
+	public function getRules(): iterable
 	{
 		return $this->rules;
 	}
@@ -110,7 +100,7 @@ final class ConfigHelper implements HelperInterface
 	 * @throws ConfigInvalidException
 	 * @throws ConfigNotFoundException
 	 */
-	public function load($fileName)
+	public function load(string $fileName): bool
 	{
 		$file = $this->getHome().'/'.$fileName.'.neon';
 
@@ -135,6 +125,6 @@ final class ConfigHelper implements HelperInterface
 			);
 		}
 
-		return TRUE;
+		return true;
 	}
 }

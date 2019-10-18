@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
@@ -11,19 +8,21 @@
 namespace JuniWalk\Darwin;
 
 use JuniWalk\Darwin\Helpers\ConfigHelper;
+use Symfony\Component\Console\Application;
 
-final class Darwin extends \Symfony\Component\Console\Application
+final class Darwin extends Application
 {
 	/** @var string */
 	private $home;
 
 
 	/**
-	 * @param string  $home
+	 * @param  string  $home
+	 * @return void
 	 */
-	public function setHome($home)
+	public function setHome(string $home): void
 	{
-		$serverHome = NULL;
+		$serverHome = null;
 
 		if (isset($_SERVER['HOME'])) {
 			$serverHome = $_SERVER['HOME'];
@@ -36,7 +35,7 @@ final class Darwin extends \Symfony\Component\Console\Application
 	/**
 	 * @return string
 	 */
-	public function getHome()
+	public function getHome(): string
 	{
 		return $this->home;
 	}

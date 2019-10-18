@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
@@ -13,6 +10,7 @@ namespace JuniWalk\Darwin\Tools;
 use Nette\SmartObject;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
+use Traversable;
 
 /**
  * @method void onBeforeStart(ProgressBar $bar)
@@ -23,13 +21,11 @@ final class ProgressIterator
 {
 	use SmartObject;
 
-
 	/** @var OutputInterface */
 	private $output;
 
-	/** @var \Traversable */
+	/** @var Traversable */
 	private $values;
-
 
 	/** @var callable[] */
 	public $onBeforeStart = [];
@@ -43,34 +39,37 @@ final class ProgressIterator
 
 	/**
 	 * @param OutputInterface  $output
-	 * @param \Traversable     $values
+	 * @param Traversable  $values
 	 */
-	public function __construct(OutputInterface $output, \Traversable $values)
+	public function __construct(OutputInterface $output, Traversable $values)
 	{
 		$this->output = $output;
 		$this->values = $values;
 
-		$this->onBeforeStart[] = function ($bar) use ($output) {
+		$this->onBeforeStart[] = function($bar) use ($output) {
 			$bar->setMessage('<info>Preparing...</info>');
 			$output->write(PHP_EOL);
 		};
 
-		$this->onBeforeFinish[] = function ($bar) {
+		$this->onBeforeFinish[] = function($bar) {
 			$bar->setMessage('<info>Process has finished</info>');
 		};
 	}
 
 
 	/**
-	 * @return \Traversable
+	 * @return Traversable
 	 */
-	public function getValues()
+	public function getValues(): Traversable
 	{
 		return $this->values;
 	}
 
 
-	public function execute()
+	/**
+	 * @return void
+	 */
+	public function execute(): void
 	{
 		$bar = new ProgressBar($this->output, iterator_count($this->values));
 		$bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");

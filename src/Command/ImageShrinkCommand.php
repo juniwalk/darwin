@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
@@ -11,6 +8,8 @@
 namespace JuniWalk\Darwin\Command;
 
 use JuniWalk\Darwin\Tools\ProgressIterator;
+use SplFileInfo;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +17,7 @@ use Symfony\Component\Finder\Finder;
 use Nette\Utils\Image;
 use Nette\Utils\ImageException;
 
-final class ImageShrinkCommand extends \Symfony\Component\Console\Command\Command
+final class ImageShrinkCommand extends Command
 {
 	/** @var string */
 	const IMAGES = '/\.(jpe?g|png|gif)$/i';
@@ -29,16 +28,16 @@ final class ImageShrinkCommand extends \Symfony\Component\Console\Command\Comman
 		$this->setDescription('Shrink all images that ale larger than given size');
 		$this->setName('image:shrink')->setAliases(['shrink']);
 
-		$this->addOption('size', NULL, InputOption::VALUE_REQUIRED, 'Size to which the image will be fitted', 1024);
-		$this->addOption('quality', NULL, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 75);
-		$this->addOption('backup', NULL, InputOption::VALUE_NONE, 'Backup image before resizing');
+		$this->addOption('size', null, InputOption::VALUE_REQUIRED, 'Size to which the image will be fitted', 1024);
+		$this->addOption('quality', null, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 75);
+		$this->addOption('backup', null, InputOption::VALUE_NONE, 'Backup image before resizing');
 	}
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
-	 * @return integer|NULL
+	 * @return int|null
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
@@ -47,14 +46,14 @@ final class ImageShrinkCommand extends \Symfony\Component\Console\Command\Comman
 			->in($folder = getcwd());
 
 		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) use ($input, $folder) {
+		$progress->onSingleStep[] = function($bar, $file) use ($input, $folder) {
 			$bar->setMessage(str_replace($folder, '.', $file));
 
 			try {
 				$status = $this->resizeImage($input, $file);
 
 			} catch (ImageException $e) {
-				$status = FALSE;
+				$status = false;
 			}
 
 			// TODO: Store failed image
@@ -71,10 +70,10 @@ final class ImageShrinkCommand extends \Symfony\Component\Console\Command\Comman
 
 	/**
 	 * @param  InputInterface  $input
-	 * @param  \SplFileInfo    $file
+	 * @param  SplFileInfo  $file
 	 * @return bool
 	 */
-	private function resizeImage(InputInterface $input, \SplFileInfo $file)
+	private function resizeImage(InputInterface $input, SplFileInfo $file): bool
 	{
 		$size = $input->getOption('size');
 		$path = $file->getPathname();
@@ -82,7 +81,7 @@ final class ImageShrinkCommand extends \Symfony\Component\Console\Command\Comman
 		$image = Image::fromFile($path, $format);
 
 		if ($image->getWidth() <= $size && $image->getHeight() <= $size) {
-			return TRUE;
+			return true;
 		}
 
 		$image->resize($size, $size, $image::FIT | $image::SHRINK_ONLY);

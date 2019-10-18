@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
@@ -11,6 +8,8 @@
 namespace JuniWalk\Darwin\Command;
 
 use JuniWalk\Darwin\Tools\ProgressIterator;
+use SplFileInfo;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,25 +17,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class FilePermissionCommand extends \Symfony\Component\Console\Command\Command
+final class FilePermissionCommand extends Command
 {
-	/**
-	 * Working directory for the permission fixing.
-	 * @var string
-	 */
+	/** @var string */
 	private $folder;
-
-	/**
-	 * List of rules for permission fixer.
-	 * @var Rule[]
-	 */
-	private $rules;
 
 
 	/**
 	 * @return string
 	 */
-	public function getFolder()
+	public function getFolder(): string
 	{
 		return $this->folder ?: getcwd();
 	}
@@ -53,7 +43,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
@@ -64,14 +54,12 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
 	{
-		$folder = $this->folder !== NULL
-			? $this->folder
-			: 'current';
+		$folder = $this->folder ?? 'current';
 
 		$question = new ConfirmationQuestion('Continue with <info>'.$folder.'</info> directory <comment>[Y,n]</comment>? ');
 
@@ -79,14 +67,14 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 			return;
 		}
 
-		$this->setCode(function () {
+		$this->setCode(function() {
 			return 0;
 		});
 	}
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 * @return integer|NULL
 	 */
@@ -94,8 +82,8 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 	{
 		$config = $this->getHelper('config');
 
-		$folder = new \SplFileInfo($this->getFolder());
-		$finder = (new Finder)->ignoreDotFiles(FALSE)
+		$folder = new SplFileInfo($this->getFolder());
+		$finder = (new Finder)->ignoreDotFiles(false)
 			->exclude($config->getExcludeFolders())
 			->in($folder->getPathname());
 
@@ -104,7 +92,7 @@ final class FilePermissionCommand extends \Symfony\Component\Console\Command\Com
 		}
 
 		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) use ($folder, $config) {
+		$progress->onSingleStep[] = function($bar, $file) use ($folder, $config) {
 			$bar->setMessage(str_replace($folder, '.', $file));
 
 			foreach ($config->getRules() as $rule) {
