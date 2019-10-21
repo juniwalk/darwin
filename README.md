@@ -1,7 +1,6 @@
 Darwin
 ======
 
-[![Travis](https://img.shields.io/travis/juniwalk/darwin.svg?style=flat-square)](https://travis-ci.org/juniwalk/darwin)
 [![GitHub Releases](https://img.shields.io/github/release/juniwalk/darwin.svg?style=flat-square)](https://github.com/juniwalk/darwin/releases)
 [![Total Donwloads](https://img.shields.io/packagist/dt/juniwalk/darwin.svg?style=flat-square)](https://packagist.org/packages/juniwalk/darwin)
 [![Code Quality](https://img.shields.io/scrutinizer/g/juniwalk/darwin.svg?style=flat-square)](https://scrutinizer-ci.com/g/juniwalk/darwin/)
@@ -48,3 +47,15 @@ Restore all modified images *(any image with suffix .backup)*.
 ```
 $ darwin restore
 ```
+
+backup:clean
+------------
+Clear out backups using defined parameters.
+
+```
+$ darwin backup:clean [folder] --force --keep-count=KEEP-COUNT --keep-time=KEEP-TIME
+```
+
+- `--force`: command runs in dry-run as default. Use -f to perform deletions.
+- `--keep-count`: minimum number of backups to be kept per project.
+- `--keep-time`: keep backups that are no older than keep-time.

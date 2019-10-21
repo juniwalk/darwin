@@ -44,7 +44,7 @@ final class BackupCleanCommand extends Command
 		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for backup cleaning.', getcwd());
 		$this->addOption('keep-count', 'c', InputOption::VALUE_REQUIRED, 'Minimum number of backups to be kept per project.', 3);
 		$this->addOption('keep-time', 't', InputOption::VALUE_REQUIRED, 'Keep backups that are no older than keep-time.', '-7 days');
-		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'This commands runs in dry-run as default. User -f to perform deletions.');
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'This command runs in dry-run as default. Use -f to perform deletions.');
 	}
 
 
