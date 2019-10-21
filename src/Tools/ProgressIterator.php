@@ -24,7 +24,7 @@ final class ProgressIterator
 	/** @var OutputInterface */
 	private $output;
 
-	/** @var Traversable */
+	/** @var iterable */
 	private $values;
 
 	/** @var callable[] */
@@ -39,9 +39,9 @@ final class ProgressIterator
 
 	/**
 	 * @param OutputInterface  $output
-	 * @param Traversable  $values
+	 * @param iterable  $values
 	 */
-	public function __construct(OutputInterface $output, Traversable $values)
+	public function __construct(OutputInterface $output, iterable $values)
 	{
 		$this->output = $output;
 		$this->values = $values;
@@ -58,9 +58,9 @@ final class ProgressIterator
 
 
 	/**
-	 * @return Traversable
+	 * @return iterable
 	 */
-	public function getValues(): Traversable
+	public function getValues(): iterable
 	{
 		return $this->values;
 	}
@@ -71,15 +71,19 @@ final class ProgressIterator
 	 */
 	public function execute(): void
 	{
-		$bar = new ProgressBar($this->output, iterator_count($this->values));
+		$sizeof = $this->values instanceof Traversable
+			? iterator_count($this->values)
+			: sizeof($this->values);
+
+		$bar = new ProgressBar($this->output, $sizeof);
 		$bar->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
 		$bar->setRedrawFrequency(100);
 
 		$this->onBeforeStart($bar);
 		$bar->start();
 
-		foreach ($this->values as $value) {
-			$this->onSingleStep($bar, $value);
+		foreach ($this->values as $key => $value) {
+			$this->onSingleStep($bar, $value, $key);
 			usleep(250);
 		}
 

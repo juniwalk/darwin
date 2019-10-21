@@ -8,6 +8,8 @@
 namespace JuniWalk\Darwin\Command;
 
 use JuniWalk\Darwin\Tools\ProgressIterator;
+use Nette\Utils\DateTime;
+use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,16 +21,19 @@ use Symfony\Component\Finder\Finder;
 final class BackupCleanCommand extends Command
 {
 	/** @var string */
+	const DATE_FORMAT = '/(\d{14})/';
+
+	/** @var DateTime */
+	private $keepTime;
+
+	/** @var int */
+	private $keepCount;
+
+	/** @var bool */
+	private $isForced;
+
+	/** @var string */
 	private $folder;
-
-
-	/**
-	 * @return string
-	 */
-	public function getFolder()
-	{
-		return $this->folder ?: getcwd();
-	}
 
 
 	protected function configure()
@@ -36,29 +41,35 @@ final class BackupCleanCommand extends Command
 		$this->setDescription('Clear out backups using defined parameters.');
 		$this->setName('backup:clean');
 
-		//$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for permission fixer');
-		//$this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Name of configuration file', 'default');
+		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for backup cleaning.', getcwd());
+		$this->addOption('keep-count', 'c', InputOption::VALUE_REQUIRED, 'Minimum number of backups to be kept per project.', 3);
+		$this->addOption('keep-time', 't', InputOption::VALUE_REQUIRED, 'Keep backups that are no older than keep-time.', '-7 days');
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'This commands runs in dry-run as default. User -f to perform deletions.');
 	}
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
-		//$this->getHelper('config')->load($input->getOption('config'));
-		//$this->folder = $input->getArgument('folder');
+		$keepTime = strtotime($input->getOption('keep-time'));
+
+		$this->keepTime = DateTime::from($keepTime)->setTime(0, 0, 0);
+		$this->keepCount = $input->getOption('keep-count');
+		$this->folder = $input->getArgument('folder');
+		$this->isForced = $input->getOption('force');
 	}
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output)
-	{/*
-		$folder = $this->folder !== NULL
+	{
+		$folder = $this->folder != getcwd()
 			? $this->folder
 			: 'current';
 
@@ -68,41 +79,117 @@ final class BackupCleanCommand extends Command
 			return;
 		}
 
-		$this->setCode(function () {
+		$this->setCode(function() {
 			return 0;
-		});*/
+		});
 	}
 
 
 	/**
-	 * @param  InputInterface   $input
+	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
-	 * @return integer|NULL
+	 * @return int|null
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
-	{/*
-		$config = $this->getHelper('config');
+	{
+		$folder = new SplFileInfo($this->folder);
+		$files = (new Finder)->in($folder->getPathname())
+			->name('*.files.tgz')
+			->name('*.db.tgz')
+			->files();
 
-		$folder = new \SplFileInfo($this->getFolder());
-		$finder = (new Finder)->ignoreDotFiles(FALSE)
-			->exclude($config->getExcludeFolders())
-			->in($folder->getPathname());
-
-		foreach ($config->getRules() as $rule) {
-			$rule->apply($folder);
+		if (!$files->hasResults()) {
+			$output->writeln('No files found.');
+			return 0;
 		}
 
-		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function ($bar, $file) use ($folder, $config) {
-			$bar->setMessage(str_replace($folder, '.', $file));
+		$files = $this->categorize($files);
+		$count = 0;
 
-			foreach ($config->getRules() as $rule) {
-				$rule->apply($file);
-			}
+		$progress = new ProgressIterator($output, $files);
+		$progress->onSingleStep[] = function($bar, $backups, $project) use (&$count) {
+			$bar->setMessage($project);
+
+			$backups = $this->avoidActiveBackups($backups);
+			$count += $this->clearBackups($backups);
 
 			$bar->advance();
 		};
 
-		$progress->execute();*/
+		$progress->execute();
+
+		$output->writeln('Number of files cleared: '.$count);
+	}
+
+
+	/**
+	 * @param  string[]  $files
+	 * @return string[]
+	 */
+	private function categorize(iterable $files): iterable
+	{
+		$backups = [];
+
+		foreach ($files as $file) {
+			$path = $file->getPathname();
+			$project = basename(dirname($path));
+
+			if (!preg_match(static::DATE_FORMAT, $path, $matches)) {
+				continue;
+			}
+
+			$timestamp = DateTime::createFromFormat('YmdHis', $matches[0])->getTimestamp();
+			$backups[$project][$timestamp][] = $path;
+		}
+
+		return $backups;
+	}
+
+
+	/**
+	 * @param  string[]  $files
+	 * @return string[]
+	 */
+	private function avoidActiveBackups(iterable $backups): iterable
+	{
+		$backups = array_slice($backups, $this->keepCount, null, true);
+
+		foreach ($backups as $time => $backup) {
+			$date = DateTime::from($time)->setTime(0, 0, 0);
+
+			if ($this->keepTime >= $date) {
+				continue;
+			}
+
+			unset($backups[$time]);
+		}
+
+		return $backups;
+	}
+
+
+	/**
+	 * @param  string[]  $files
+	 * @return int
+	 */
+	private function clearBackups(iterable $backups): int
+	{
+		$files = [];
+
+		foreach ($backups as $backup) {
+			$files = array_merge($files, $backup);
+		}
+
+		$count = sizeof($files);
+
+		foreach ($files as $file) {
+			if (!$this->isForced) {
+				continue;
+			}
+
+			unlink($file);
+		}
+
+		return $count;
 	}
 }
