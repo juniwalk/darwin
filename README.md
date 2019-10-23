@@ -4,7 +4,6 @@ Darwin
 [![GitHub Releases](https://img.shields.io/github/release/juniwalk/darwin.svg?style=flat-square)](https://github.com/juniwalk/darwin/releases)
 [![Total Donwloads](https://img.shields.io/packagist/dt/juniwalk/darwin.svg?style=flat-square)](https://packagist.org/packages/juniwalk/darwin)
 [![Code Quality](https://img.shields.io/scrutinizer/g/juniwalk/darwin.svg?style=flat-square)](https://scrutinizer-ci.com/g/juniwalk/darwin/)
-[![Tests Coverage](https://img.shields.io/scrutinizer/coverage/g/juniwalk/darwin.svg?style=flat-square)](https://scrutinizer-ci.com/g/juniwalk/darwin/)
 [![License](https://img.shields.io/packagist/l/juniwalk/darwin.svg?style=flat-square)](https://mit-license.org)
 
 This is tiny CLI application which will help you manage your projects.
