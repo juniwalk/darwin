@@ -71,18 +71,20 @@ final class Rule
 	 */
 	public function apply(File $file): bool
 	{
-		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $file->getPathname())) {
+		$path = $file->getPathname();
+
+		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $path)) {
 			return false;
 		}
 
-		chown($file, $this->owner);
+		chown($path, $this->owner);
 
 		if ($file->isFile()) {
-			chmod($file, octdec($this->modes[0]));
+			chmod($path, octdec($this->modes[0]));
 		}
 
 		if ($file->isDir()) {
-			chmod($file, octdec($this->modes[1]));
+			chmod($path, octdec($this->modes[1]));
 		}
 
 		return true;
