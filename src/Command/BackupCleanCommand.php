@@ -34,6 +34,12 @@ final class BackupCleanCommand extends Command
 	/** @var string */
 	private $folder;
 
+	/** @var int */
+	private $count = 0;
+
+	/** @var int */
+	private $size = 0;
+
 
 	protected function configure()
 	{
@@ -99,26 +105,24 @@ final class BackupCleanCommand extends Command
 			->reverseSorting();
 
 		if (!$files->hasResults()) {
-			$output->writeln('No files were found.');
+			$output->writeln('Error, no files were found.');
 			return 0;
 		}
 
-		$files = $this->categorize($files);
-		$count = 0;
-
-		$progress = new ProgressIterator($output, $files);
-		$progress->onSingleStep[] = function($bar, $backups, $project) use (&$count) {
+		$progress = new ProgressIterator($output, $this->categorize($files));
+		$progress->onSingleStep[] = function($bar, $backups, $project) {
 			$bar->setMessage($project);
 
 			$backups = $this->avoidActiveBackups($backups);
-			$count += $this->clearBackups($backups);
+			$this->clearBackups($backups);
 
 			$bar->advance();
 		};
 
 		$progress->execute();
 
-		$output->writeln('Number of files cleared: '.$count);
+		$message = 'Success, <info>%d files</info> cleared and <comment>%s saved</comment>.';
+		$output->writeln(sprintf($message, $this->count, $this->formatSize($this->size)));
 	}
 
 
@@ -171,9 +175,9 @@ final class BackupCleanCommand extends Command
 
 	/**
 	 * @param  string[]  $files
-	 * @return int
+	 * @return void
 	 */
-	private function clearBackups(iterable $backups): int
+	private function clearBackups(iterable $backups): void
 	{
 		$files = [];
 
@@ -181,16 +185,36 @@ final class BackupCleanCommand extends Command
 			$files = array_merge($files, $backup);
 		}
 
-		$count = sizeof($files);
+		$this->count += sizeof($files);
 
 		foreach ($files as $file) {
 			if (!$this->isForced) {
 				continue;
 			}
 
+			$this->size += filesize($file);
 			unlink($file);
 		}
+	}
 
-		return $count;
+
+	/**
+	 * @param  float  $bytes
+	 * @param  int  $decimals
+	 * @return string
+	 */
+	private function formatSize(float $bytes, int $decimals = 2): string
+	{
+	    $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+	    $factor = floor((strlen((string) $bytes) - 1) / 3);
+
+		if ($factor <= 0) {
+			$decimals = 0;
+		}
+
+	    return sprintf(
+			'%.'.$decimals.'f '.$size[$factor],
+			$bytes / pow(1024, $factor)
+		);
 	}
 }
