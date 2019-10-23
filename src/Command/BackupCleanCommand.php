@@ -199,11 +199,11 @@ final class BackupCleanCommand extends Command
 
 
 	/**
-	 * @param  float  $bytes
+	 * @param  int  $bytes
 	 * @param  int  $decimals
 	 * @return string
 	 */
-	private function formatSize(float $bytes, int $decimals = 2): string
+	private function formatSize(int $bytes, int $decimals = 2): string
 	{
 	    $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 	    $factor = floor((strlen((string) $bytes) - 1) / 3);
