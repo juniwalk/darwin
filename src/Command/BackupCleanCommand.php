@@ -9,7 +9,6 @@ namespace JuniWalk\Darwin\Command;
 
 use JuniWalk\Darwin\Tools\ProgressIterator;
 use Nette\Utils\DateTime;
-use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -92,14 +91,15 @@ final class BackupCleanCommand extends Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$folder = new SplFileInfo($this->folder);
-		$files = (new Finder)->in($folder->getPathname())
+		$files = (new Finder)->files()
+			->in($this->folder)
 			->name('*.files.tgz')
 			->name('*.db.tgz')
-			->files();
+			->sortByName()
+			->reverseSorting();
 
 		if (!$files->hasResults()) {
-			$output->writeln('No files found.');
+			$output->writeln('No files were found.');
 			return 0;
 		}
 
@@ -132,14 +132,15 @@ final class BackupCleanCommand extends Command
 
 		foreach ($files as $file) {
 			$path = $file->getPathname();
-			$project = basename(dirname($path));
 
 			if (!preg_match(static::DATE_FORMAT, $path, $matches)) {
 				continue;
 			}
 
-			$timestamp = DateTime::createFromFormat('YmdHis', $matches[0])->getTimestamp();
-			$backups[$project][$timestamp][] = $path;
+			$time = DateTime::createFromFormat('YmdHis', $matches[0])->getTimestamp();
+			$project = basename(dirname($path));
+
+			$backups[$project][$time][] = $path;
 		}
 
 		return $backups;
@@ -157,7 +158,7 @@ final class BackupCleanCommand extends Command
 		foreach ($backups as $time => $backup) {
 			$date = DateTime::from($time)->setTime(0, 0, 0);
 
-			if ($this->keepTime >= $date) {
+			if ($date <= $this->keepTime) {
 				continue;
 			}
 
