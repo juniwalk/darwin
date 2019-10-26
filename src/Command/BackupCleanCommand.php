@@ -188,11 +188,12 @@ final class BackupCleanCommand extends Command
 		$this->count += sizeof($files);
 
 		foreach ($files as $file) {
+			$this->size += filesize($file);
+
 			if (!$this->isForced) {
 				continue;
 			}
 
-			$this->size += filesize($file);
 			unlink($file);
 		}
 	}
