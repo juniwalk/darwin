@@ -49,15 +49,7 @@ final class ImageShrinkCommand extends Command
 		$progress->onSingleStep[] = function($bar, $file) use ($input, $folder) {
 			$bar->setMessage(str_replace($folder, '.', $file));
 
-			try {
-				$status = $this->resizeImage($input, $file);
-
-			} catch (ImageException $e) {
-				$status = false;
-			}
-
-			// TODO: Store failed image
-
+			$this->resizeImage($input, $file);
 			$bar->advance();
 		};
 
@@ -71,9 +63,9 @@ final class ImageShrinkCommand extends Command
 	/**
 	 * @param  InputInterface  $input
 	 * @param  SplFileInfo  $file
-	 * @return bool
+	 * @return void
 	 */
-	private function resizeImage(InputInterface $input, SplFileInfo $file): bool
+	private function resizeImage(InputInterface $input, SplFileInfo $file): void
 	{
 		$quality = (int) $input->getOption('quality') ?: null;
 		$size = $input->getOption('size');
@@ -89,6 +81,6 @@ final class ImageShrinkCommand extends Command
 			copy($path, $path.'.backup');
 		}
 
-		return $image->save($path, $quality, $format);
+		$image->save($path, $quality, $format);
 	}
 }
