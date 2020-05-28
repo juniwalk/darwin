@@ -28,7 +28,7 @@ final class ImageShrinkCommand extends Command
 		$this->setDescription('Shrink all images that ale larger than given size');
 		$this->setName('image:shrink')->setAliases(['shrink']);
 
-		$this->addOption('size', null, InputOption::VALUE_REQUIRED, 'Size to which the image will be fitted', 1024);
+		$this->addOption('size', null, InputOption::VALUE_REQUIRED, 'Size to which the image will be fitted', null);
 		$this->addOption('quality', null, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 75);
 		$this->addOption('backup', null, InputOption::VALUE_NONE, 'Backup image before resizing');
 	}
@@ -75,21 +75,20 @@ final class ImageShrinkCommand extends Command
 	 */
 	private function resizeImage(InputInterface $input, SplFileInfo $file): bool
 	{
+		$quality = (int) $input->getOption('quality') ?: null;
 		$size = $input->getOption('size');
 		$path = $file->getPathname();
 
 		$image = Image::fromFile($path, $format);
 
-		if ($image->getWidth() <= $size && $image->getHeight() <= $size) {
-			return true;
+		if ($size && ($image->getWidth() > $size || $image->getHeight() > $size)) {
+			$image->resize($size, $size, $image::FIT | $image::SHRINK_ONLY);
 		}
-
-		$image->resize($size, $size, $image::FIT | $image::SHRINK_ONLY);
 
 		if ($input->getOption('backup')) {
 			copy($path, $path.'.backup');
 		}
 
-		return $image->save($path, $input->getOption('quality'), $format);
+		return $image->save($path, $quality, $format);
 	}
 }
