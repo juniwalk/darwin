@@ -114,7 +114,43 @@ final class ConfigHelper implements HelperInterface
 			throw ConfigInvalidException::fromFileName($fileName);
 		}
 
-		$this->exclude = $config['excludeFolders'];
+		$this->exclude = array_merge($this->exclude, $config['excludeFolders']);
+		$this->exclude = array_unique($this->exclude);
+
+		foreach ($config['rules'] as $rule => $data) {
+			$this->rules[$rule] = new Rule(
+				$data['pattern'],
+				$data['type'],
+				$data['owner'],
+				$data['mode']
+			);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @param  string  $path
+	 * @return bool
+	 * @throws ConfigInvalidException
+	 */
+	public function loadCurrent(string $path): bool
+	{
+		$file = $path.'/.darwinrc';
+
+		if (!is_file($file) || !$content = file_get_contents($file)) {
+			return false;
+		}
+
+		$config = (array) Neon::decode($content);
+
+		if (!isset($config['excludeFolders']) || !isset($config['rules'])) {
+			throw ConfigInvalidException::fromFileName($fileName);
+		}
+
+		$this->exclude = array_merge($this->exclude, $config['excludeFolders']);
+		$this->exclude = array_unique($this->exclude);
 
 		foreach ($config['rules'] as $rule => $data) {
 			$this->rules[$rule] = new Rule(

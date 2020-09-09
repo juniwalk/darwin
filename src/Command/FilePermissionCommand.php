@@ -81,6 +81,7 @@ final class FilePermissionCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$config = $this->getHelper('config');
+		$config->loadCurrent($this->getFolder());
 
 		$folder = new SplFileInfo($this->getFolder());
 		$finder = (new Finder)->ignoreDotFiles(false)
