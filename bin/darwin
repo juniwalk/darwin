@@ -1,5 +1,2 @@
 #!/usr/bin/env php
-<?php
-
-// Load Darwin bootstrap
-include 'darwin.php';
+<?php include 'darwin.php';
