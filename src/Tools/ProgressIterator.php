@@ -84,7 +84,6 @@ final class ProgressIterator
 
 		foreach ($this->values as $key => $value) {
 			$this->onSingleStep($bar, $value, $key);
-			usleep(250);
 		}
 
 		$this->onBeforeFinish($bar);
