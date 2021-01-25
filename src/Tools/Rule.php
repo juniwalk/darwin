@@ -71,7 +71,7 @@ final class Rule
 	 */
 	public function apply(File $file): bool
 	{
-		$path = $file->getPathname();
+		$path = $file->getRealPath();
 
 		if (!$this->isDesiredType($file) || !preg_match($this->pattern, $path)) {
 			return false;
