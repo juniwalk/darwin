@@ -7,6 +7,8 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use JuniWalk\Darwin\Tools\ProgressBar;
+use Nette\Utils\DateTime;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,49 +77,38 @@ final class GitChangelogCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$finder = (new Finder)->in(getcwd())
-			->name('/changelog\.md$/i');
+		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/changelog.md$/i');
+		$file = current(iterator_to_array($files->getIterator()));
 
-		// if (!$finder->hasResults()) {
-		// 	throw new \Exception('changelog not found');
-		// }
+		$command = 'git --no-pager log '.$this->range.' --format=\'"%cd","%s"\' --date=short';
 
-		$file = $finder->getIterator()->current();
-		$commits = [];
-		$result = null;
-
-		$output = exec('git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'', $commits, $result);
-
-		var_dump($commits);
-		var_dump($result);
-		var_dump($output);
-
-		if ($result > 0 || !$commits) {
+		if (!exec($command, $commits) || !$commits) {
 			throw new \Exception('no commits found');
 		}
-
-		exit;
 
 		$changelog = $changes = $lastDate = null;
 
 		if ($file && $this->range != null) {
-			$changelog = file_get_contents($file);
+			$changelog = $file->getContents();
 		}
 
-		foreach ($commits as $commit) {
+		$progress = new ProgressBar($output, false);
+		$progress->execute($commits, function($progress, $commit) use (&$changes, &$lastDate) {
+			$progress->setMessage('Backup project <comment>'.$project->getName().'</comment>.');
+			$progress->advance();
+
 			[$date, $message] = str_getcsv($commit);
 
 			if ($lastDate !== $date) {
-				$changes .= PHP_EOL.'### '.$date.PHP_EOL;
+				$changes .= PHP_EOL.'### '.(DateTime::from($date)->format('d.m.Y')).PHP_EOL;
 			}
 
 			$changes .= '- '.$message.PHP_EOL;
 			$lastDate = $date;
-		}
+		});
 
-		$changelog = ltrim($changes).PHP_EOL.$changelog;
-		file_put_contents($file, $changelog);
-
+		$filename = $file ? $file->getPathname() : './changelog.md';
+		file_put_contents($filename, ltrim($changes).$changelog);
 
 		// give message to check the generated output?
 
