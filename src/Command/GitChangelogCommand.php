@@ -111,8 +111,7 @@ final class GitChangelogCommand extends AbstractCommand
 		$filename = $file ? $file->getPathname() : './changelog.md';
 		file_put_contents($filename, ltrim($changes).$changelog);
 
-		// give message to check the generated output?
-
+		$output->writeln(PHP_EOL.'Changelog generated from '.sizeof($commits).' commits.');
 		return Command::SUCCESS;
 	}
 }
