@@ -24,7 +24,18 @@ Fix permissions of files and dirs on current working directory.
 $ darwin fix [folder] --config=CONFIG
 ```
 
+- `[folder]`: path to directory to fix
 - `--config`: name of configuration file.
+
+git:changelog | changelog
+---------------------
+Create changelog from git log output.
+
+```
+$ darwin changelog [range]
+```
+
+- `[range]`: range of the logs to include
 
 image:shrink | shrink
 ---------------------
@@ -48,12 +59,13 @@ $ darwin restore
 
 backup:clean
 ------------
-Clear out backups using defined parameters.
+Clean out backups using defined parameters.
 
 ```
 $ darwin backup:clean [folder] --force --keep-count=KEEP-COUNT --keep-time=KEEP-TIME
 ```
 
+- `[folder]`: path to directory to clean
 - `--force`: command runs in dry-run as default. Use -f to perform deletions.
 - `--keep-count`: minimum number of backups to be kept per project.
 - `--keep-time`: keep backups that are no older than keep-time.
