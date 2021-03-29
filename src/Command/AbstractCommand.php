@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 /**
- * @copyright Martin Procházka (c) 2020
+ * @copyright Martin Procházka (c) 2021
  * @license   MIT License
  */
 
-namespace App\Commands;
+namespace JuniWalk\Darwin\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
