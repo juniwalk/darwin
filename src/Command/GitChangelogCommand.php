@@ -78,20 +78,23 @@ final class GitChangelogCommand extends AbstractCommand
 		$finder = (new Finder)->in(getcwd())
 			->name('/changelog\.md$/i');
 
-		if (!$finder->hasResults()) {
-			// changelog not found
-			throw new \Exception;
-		}
+		// if (!$finder->hasResults()) {
+		// 	throw new \Exception('changelog not found');
+		// }
 
-		$cmd = 'git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'';
 		$file = $finder->getIterator()->current();
+		$commits = [];
+		$result = null;
 
-		if (!exec($cmd, $commits) || !$commits) {
-			// no commits found
-			throw new \Exception;
-		}
+		exec('git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'', $commits, $result);
 
 		var_dump($commits);
+		var_dump($result);
+
+		if ($result > 0 || !$commits) {
+			throw new \Exception('no commits found');
+		}
+
 		exit;
 
 		$changelog = $changes = $lastDate = null;
