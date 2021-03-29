@@ -77,15 +77,14 @@ final class GitChangelogCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/changelog.md$/i');
-		$file = current(iterator_to_array($files->getIterator()));
-
 		$command = 'git --no-pager log '.$this->range.' --format=\'"%cd","%s"\' --date=short';
 
 		if (!exec($command, $commits) || !$commits) {
 			throw new \Exception('no commits found');
 		}
 
+		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/changelog.md$/i');
+		$file = current(iterator_to_array($files->getIterator()));
 		$changelog = $changes = $lastDate = null;
 
 		if ($file && $this->range != null) {
@@ -94,10 +93,9 @@ final class GitChangelogCommand extends AbstractCommand
 
 		$progress = new ProgressBar($output, false);
 		$progress->execute($commits, function($progress, $commit) use (&$changes, &$lastDate) {
-			$progress->setMessage('Backup project <comment>'.$project->getName().'</comment>.');
-			$progress->advance();
-
 			[$date, $message] = str_getcsv($commit);
+
+			$progress->setMessage('Processing <comment>'.$message.'</comment>.');
 
 			if ($lastDate !== $date) {
 				$changes .= PHP_EOL.'### '.(DateTime::from($date)->format('d.m.Y')).PHP_EOL;
@@ -105,6 +103,7 @@ final class GitChangelogCommand extends AbstractCommand
 
 			$changes .= '- '.$message.PHP_EOL;
 			$lastDate = $date;
+			$progress->advance();
 		});
 
 		$filename = $file ? $file->getPathname() : './changelog.md';
