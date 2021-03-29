@@ -8,6 +8,7 @@
 use JuniWalk\Darwin\Darwin;
 use JuniWalk\Darwin\Command\BackupCleanCommand;
 use JuniWalk\Darwin\Command\FilePermissionCommand;
+use JuniWalk\Darwin\Command\GitChangelogCommand;
 use JuniWalk\Darwin\Command\ImageShrinkCommand;
 use JuniWalk\Darwin\Command\ImageRestoreCommand;
 
@@ -20,6 +21,7 @@ $darwin->setHome('~/.config/darwin');
 
 $darwin->add(new BackupCleanCommand);
 $darwin->add(new FilePermissionCommand);
+$darwin->add(new GitChangelogCommand);
 $darwin->add(new ImageShrinkCommand);
 $darwin->add(new ImageRestoreCommand);
 
