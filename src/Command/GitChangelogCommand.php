@@ -86,10 +86,11 @@ final class GitChangelogCommand extends AbstractCommand
 		$commits = [];
 		$result = null;
 
-		exec('git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'', $commits, $result);
+		$output = exec('git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'', $commits, $result);
 
 		var_dump($commits);
 		var_dump($result);
+		var_dump($output);
 
 		if ($result > 0 || !$commits) {
 			throw new \Exception('no commits found');
