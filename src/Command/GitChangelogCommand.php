@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
+use JuniWalk\Darwin\Exception\GitNoCommitsException;
 use JuniWalk\Darwin\Tools\ProgressBar;
 use Nette\Utils\DateTime;
 use Symfony\Component\Console\Command\Command;
@@ -74,13 +75,14 @@ final class GitChangelogCommand extends AbstractCommand
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 * @return int
+	 * @throws GitNoCommitsException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$command = 'git --no-pager log '.$this->range.' --format=\'"%cd","%s"\' --date=short';
 
 		if (!exec($command, $commits) || !$commits) {
-			throw new \Exception('no commits found');
+			throw GitNoCommitsException::fromRange($this->range);
 		}
 
 		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/changelog.md$/i');
