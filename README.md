@@ -24,7 +24,7 @@ Fix permissions of files and dirs on current working directory.
 $ darwin fix [folder] --config=CONFIG
 ```
 
-- `[folder]`: path to directory to fix
+- `[folder]`: path to directory to fix.
 - `--config`: name of configuration file.
 
 git:changelog | changelog
@@ -35,7 +35,7 @@ Create changelog from git log output.
 $ darwin changelog [range]
 ```
 
-- `[range]`: range of the logs to include
+- `[range]`: range of the logs to include *("rebuild" or sha..sha)*.
 
 image:shrink | shrink
 ---------------------
