@@ -32,10 +32,11 @@ git:changelog | changelog
 Create changelog from git log output.
 
 ```
-$ darwin changelog [range]
+$ darwin changelog [range] --branch=BRANCH
 ```
 
 - `[range]`: range of the logs to include *("rebuild" or sha..sha)*.
+- `--branch`: name of working branch.
 
 image:shrink | shrink
 ---------------------

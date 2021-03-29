@@ -32,6 +32,7 @@ final class GitChangelogCommand extends AbstractCommand
 		$this->setName('git:changelog')->setAliases(['changelog']);
 
 		$this->addArgument('range', InputArgument::OPTIONAL, 'Range of the logs to include', null);
+		$this->addOption('branch', 'b', InputOption::VALUE_REQUIRED, 'Name of working branch', 'master');
 	}
 
 
@@ -43,9 +44,10 @@ final class GitChangelogCommand extends AbstractCommand
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		$range = $input->getArgument('range');
+		$branch = $input->getOption('branch');
 
 		if ($range == null) {
-			$this->range = 'origin/HEAD..HEAD';
+			$this->range = "origin/{$branch}..{$branch}";
 		}
 
 		if ($range == 'rebuild') {
