@@ -83,16 +83,16 @@ final class GitChangelogCommand extends AbstractCommand
 			throw new \Exception;
 		}
 
+		$cmd = 'git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'';
 		$file = $finder->getIterator()->current();
 
-		$commits = $this->exec('git --no-pager log '.$this->range.' --format=\'"%cd","%s"\'');
-		$commits = explode(PHP_EOL, $commits);
-		$commits = array_filter($commits);
-
-		if (!$commits) {
+		if (!exec($cmd, $commits) || !$commits) {
 			// no commits found
 			throw new \Exception;
 		}
+
+		var_dump($commits);
+		exit;
 
 		$changelog = $changes = $lastDate = null;
 
