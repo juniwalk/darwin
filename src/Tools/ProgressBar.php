@@ -64,6 +64,10 @@ final class ProgressBar
 	 */
 	public function execute(iterable $values, callable $callback): void
 	{
+		// Make sure there is right amount of padding
+		// before progress bar is shown
+		$this->output->writeln(PHP_EOL);
+
 		$progress = new Helper\ProgressBar($this->output, sizeof($values));
 		$progress->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
 		$progress->setMessage('<info>Preparing...</info>');
