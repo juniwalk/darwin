@@ -89,8 +89,8 @@ final class FilePermissionCommand extends AbstractCommand
 		}
 
 		$progress = new ProgressBar($output, false);
-		$progress->execute($finder, function($progress, $file) use ($folder, $config) {
-			$progress->setMessage(str_replace($folder, '.', $file));
+		$progress->execute($finder, function($progress, $file) use ($config) {
+			$progress->setMessage(str_replace($this->folder, '.', $file->getPathname()));
 			$progress->advance();
 
 			foreach ($config->getRules() as $rule) {

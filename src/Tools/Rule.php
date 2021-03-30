@@ -80,11 +80,11 @@ final class Rule
 		chown($path, $this->owner);
 
 		if ($file->isFile()) {
-			chmod($path, octdec($this->modes[0]));
+			chmod($path, octdec((string) $this->modes[0]));
 		}
 
 		if ($file->isDir()) {
-			chmod($path, octdec($this->modes[1]));
+			chmod($path, octdec((string) $this->modes[1]));
 		}
 
 		return true;
