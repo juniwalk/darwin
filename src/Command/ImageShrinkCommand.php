@@ -7,7 +7,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Tools\ProgressIterator;
+use JuniWalk\Darwin\Tools\ProgressBar;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,13 +17,25 @@ use Symfony\Component\Finder\Finder;
 use Nette\Utils\Image;
 use Nette\Utils\ImageException;
 
-final class ImageShrinkCommand extends Command
+final class ImageShrinkCommand extends AbstractCommand
 {
 	/** @var string */
 	const IMAGES = '/\.(jpe?g|png|gif)$/i';
 
+	/** @var int|null */
+	private $quality;
 
-	protected function configure()
+	/** @var int */
+	private $size;
+
+	/** @var bool */
+	private $backup;
+
+
+	/**
+	 * @return void
+	 */
+	protected function configure(): void
 	{
 		$this->setDescription('Shrink all images that ale larger than given size');
 		$this->setName('image:shrink')->setAliases(['shrink']);
@@ -37,50 +49,60 @@ final class ImageShrinkCommand extends Command
 	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
-	 * @return int|null
+	 * @return void
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
-		$finder = (new Finder)->files()
-			->name($this::IMAGES)
-			->in($folder = getcwd());
+		$this->quality = (int) $input->getOption('quality') ?: null;
+		$this->size = (int) $input->getOption('size');
+		$this->backup = (bool) $input->getOption('backup');
 
-		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function($bar, $file) use ($input, $folder) {
-			$bar->setMessage(str_replace($folder, '.', $file));
-
-			$this->resizeImage($input, $file);
-			$bar->advance();
-		};
-
-		$progress->execute();
-
-		// TODO: Print table with failed images
-		// limit the list to X entries
+		parent::initialize($input, $output);
 	}
 
 
 	/**
 	 * @param  InputInterface  $input
+	 * @param  OutputInterface  $output
+	 * @return int
+	 */
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$files = (new Finder)->in($folder = getcwd())
+			->files()->name($this::IMAGES);
+
+		$progress = new ProgressBar($output, false);
+		$progress->execute($files, function($progress, $file) use ($folder) {
+			$progress->setMessage(str_replace($folder, '.', $file));
+			$progress->advance();
+
+			$this->resizeImage($file);
+		});
+
+		// TODO: Print table with failed images
+		// limit the list to X entries
+
+		return Command::SUCCESS;
+	}
+
+
+	/**
 	 * @param  SplFileInfo  $file
 	 * @return void
 	 */
-	private function resizeImage(InputInterface $input, SplFileInfo $file): void
+	private function resizeImage(SplFileInfo $file): void
 	{
-		$quality = (int) $input->getOption('quality') ?: null;
-		$size = $input->getOption('size');
 		$path = $file->getPathname();
-
 		$image = Image::fromFile($path, $format);
 
-		if ($size && ($image->getWidth() > $size || $image->getHeight() > $size)) {
-			$image->resize($size, $size, $image::FIT | $image::SHRINK_ONLY);
+		if ($this->size && ($image->getWidth() > $this->size || $image->getHeight() > $this->size)) {
+			$image->resize($this->size, $this->size, $image::FIT | $image::SHRINK_ONLY);
 		}
 
-		if ($input->getOption('backup')) {
+		if ($this->backup == true) {
 			copy($path, $path.'.backup');
 		}
 
-		$image->save($path, $quality, $format);
+		$image->save($path, $this->quality, $format);
 	}
 }

@@ -66,6 +66,7 @@ final class ProgressBar
 	{
 		$progress = new Helper\ProgressBar($this->output, sizeof($values));
 		$progress->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
+		$progress->setMessage('<info>Preparing...</info>');
 		$progress->start();
 
 		$renderer = new ExceptionRenderer($this->output);

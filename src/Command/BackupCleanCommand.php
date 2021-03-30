@@ -7,7 +7,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Tools\ProgressIterator;
+use JuniWalk\Darwin\Tools\ProgressBar;
 use Nette\Utils\DateTime;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class BackupCleanCommand extends Command
+final class BackupCleanCommand extends AbstractCommand
 {
 	/** @var string */
 	const DATE_FORMAT = '/(\d{14})/';
@@ -41,7 +41,10 @@ final class BackupCleanCommand extends Command
 	private $size = 0;
 
 
-	protected function configure()
+	/**
+	 * @return void
+	 */
+	protected function configure(): void
 	{
 		$this->setDescription('Clear out backups using defined parameters.');
 		$this->setName('backup:clean');
@@ -56,8 +59,9 @@ final class BackupCleanCommand extends Command
 	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
+	 * @return void
 	 */
-	protected function initialize(InputInterface $input, OutputInterface $output)
+	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		$keepTime = strtotime($input->getOption('keep-time'));
 
@@ -65,28 +69,27 @@ final class BackupCleanCommand extends Command
 		$this->keepCount = $input->getOption('keep-count');
 		$this->folder = $input->getArgument('folder');
 		$this->isForced = $input->getOption('force');
+
+		parent::initialize($input, $output);
 	}
 
 
 	/**
-	 * @param  InputInterface  $input
+	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
+	 * @return void
 	 */
-	protected function interact(InputInterface $input, OutputInterface $output)
+	protected function interact(InputInterface $input, OutputInterface $output): void
 	{
-		$folder = $this->folder != getcwd()
+		$folder = $this->folder !== getcwd()
 			? $this->folder
 			: 'current';
 
-		$question = new ConfirmationQuestion('Continue with <info>'.$folder.'</info> directory <comment>[Y,n]</comment>? ');
-
-		if ($this->getHelper('question')->ask($input, $output, $question)) {
-			return;
-		}
-
-		$this->setCode(function() {
-			return 0;
+		$this->addQuestion(function($cli) use ($folder) {
+			return $cli->confirm('Continue with <info>'.$folder.'</> directory?');
 		});
+
+		parent::interact($input, $output);
 	}
 
 
@@ -109,20 +112,19 @@ final class BackupCleanCommand extends Command
 			return 0;
 		}
 
-		$progress = new ProgressIterator($output, $this->categorize($files));
-		$progress->onSingleStep[] = function($bar, $backups, $project) {
-			$bar->setMessage($project);
+		$files = $this->categorize($files);
+
+		$progress = new ProgressBar($output, false);
+		$progress->execute($files, function($progress, $backups, $project) {
+			$progress->setMessage($project);
+			$progress->advance();
 
 			$backups = $this->avoidActiveBackups($backups);
 			$this->clearBackups($backups);
+		});
 
-			$bar->advance();
-		};
-
-		$progress->execute();
-
-		$message = 'Success, <info>%d files</info> cleared and <comment>%s saved</comment>.';
-		$output->writeln(sprintf($message, $this->count, $this->formatSize($this->size)));
+		$output->writeln(PHP_EOL.'Success, <info>'.$this->count.' files</> cleared and <comment>'.$this->formatSize($this->size).'</> saved.');
+		return Command::SUCCESS;
 	}
 
 
@@ -206,14 +208,14 @@ final class BackupCleanCommand extends Command
 	 */
 	private function formatSize(int $bytes, int $decimals = 2): string
 	{
-	    $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-	    $factor = floor((strlen((string) $bytes) - 1) / 3);
+		$size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+		$factor = floor((strlen((string) $bytes) - 1) / 3);
 
 		if ($factor <= 0) {
 			$decimals = 0;
 		}
 
-	    return sprintf(
+		return sprintf(
 			'%.'.$decimals.'f '.$size[$factor],
 			$bytes / pow(1024, $factor)
 		);

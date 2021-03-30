@@ -100,6 +100,7 @@ final class GitChangelogCommand extends AbstractCommand
 			[$date, $message] = str_getcsv($commit);
 
 			$progress->setMessage('Processing <comment>'.$message.'</comment>.');
+			$progress->advance();
 
 			if ($lastDate !== $date) {
 				$changes .= PHP_EOL.'### '.(DateTime::from($date)->format('d.m.Y')).PHP_EOL;
@@ -107,11 +108,10 @@ final class GitChangelogCommand extends AbstractCommand
 
 			$changes .= '- '.$message.PHP_EOL;
 			$lastDate = $date;
-			$progress->advance();
 		});
 
 		$filename = $file ? $file->getPathname() : './changelog.md';
-		file_put_contents($filename, ltrim($changes).$changelog);
+		file_put_contents($filename, ltrim($changes).PHP_EOL.$changelog);
 
 		$output->writeln(PHP_EOL.'Changelog generated from '.sizeof($commits).' commits.');
 		return Command::SUCCESS;

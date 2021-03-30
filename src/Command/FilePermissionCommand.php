@@ -7,7 +7,7 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Tools\ProgressIterator;
+use JuniWalk\Darwin\Tools\ProgressBar;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,22 +17,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class FilePermissionCommand extends Command
+final class FilePermissionCommand extends AbstractCommand
 {
 	/** @var string */
 	private $folder;
 
 
 	/**
-	 * @return string
+	 * @return void
 	 */
-	public function getFolder(): string
-	{
-		return $this->folder ?: getcwd();
-	}
-
-
-	protected function configure()
+	protected function configure(): void
 	{
 		$this->setDescription('Fix file permissions in given directory');
 		$this->setName('file:permission')->setAliases(['fix']);
@@ -45,45 +39,47 @@ final class FilePermissionCommand extends Command
 	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
+	 * @return void
 	 */
-	protected function initialize(InputInterface $input, OutputInterface $output)
+	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		$this->getHelper('config')->load($input->getOption('config'));
-		$this->folder = $input->getArgument('folder');
+		$this->folder = $input->getArgument('folder') ?: getcwd();
+
+		parent::initialize($input, $output);
 	}
 
 
 	/**
-	 * @param  InputInterface  $input
+	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
+	 * @return void
 	 */
-	protected function interact(InputInterface $input, OutputInterface $output)
+	protected function interact(InputInterface $input, OutputInterface $output): void
 	{
-		$folder = $this->folder ?? 'current';
+		$folder = $this->folder !== getcwd()
+			? $this->folder
+			: 'current';
 
-		$question = new ConfirmationQuestion('Continue with <info>'.$folder.'</info> directory <comment>[Y,n]</comment>? ');
-
-		if ($this->getHelper('question')->ask($input, $output, $question)) {
-			return;
-		}
-
-		$this->setCode(function() {
-			return 0;
+		$this->addQuestion(function($cli) use ($folder) {
+			return $cli->confirm('Continue with <info>'.$folder.'</> directory?');
 		});
+
+		parent::interact($input, $output);
 	}
 
 
 	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
-	 * @return integer|NULL
+	 * @return int
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$config = $this->getHelper('config');
-		$config->loadCurrent($this->getFolder());
+		$config->loadCurrent($this->folder);
 
-		$folder = new SplFileInfo($this->getFolder());
+		$folder = new SplFileInfo($this->folder);
 		$finder = (new Finder)->ignoreDotFiles(false)
 			->exclude($config->getExcludeFolders())
 			->in($folder->getPathname());
@@ -92,17 +88,16 @@ final class FilePermissionCommand extends Command
 			$rule->apply($folder);
 		}
 
-		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function($bar, $file) use ($folder, $config) {
-			$bar->setMessage(str_replace($folder, '.', $file));
+		$progress = new ProgressBar($output, false);
+		$progress->execute($finder, function($progress, $file) use ($folder, $config) {
+			$progress->setMessage(str_replace($folder, '.', $file));
+			$progress->advance();
 
 			foreach ($config->getRules() as $rule) {
 				$rule->apply($file);
 			}
+		});
 
-			$bar->advance();
-		};
-
-		$progress->execute();
+		return Command::SUCCESS;
 	}
 }

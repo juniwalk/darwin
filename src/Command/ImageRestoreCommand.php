@@ -7,20 +7,23 @@
 
 namespace JuniWalk\Darwin\Command;
 
-use JuniWalk\Darwin\Tools\ProgressIterator;
+use JuniWalk\Darwin\Tools\ProgressBar;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-final class ImageRestoreCommand extends Command
+final class ImageRestoreCommand extends AbstractCommand
 {
 	/** @var string */
 	const IMAGES = '/\.(jpe?g|png|gif)\.backup$/i';
 
 
-	protected function configure()
+	/**
+	 * @return void
+	 */
+	protected function configure(): void
 	{
 		$this->setDescription('Restore all backed up images');
 		$this->setName('image:restore')->setAliases(['restore']);
@@ -30,27 +33,25 @@ final class ImageRestoreCommand extends Command
 	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
-	 * @return int|null
+	 * @return int
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$finder = (new Finder)->files()
-			->name($this::IMAGES)
-			->in($folder = getcwd());
+		$files = (new Finder)->in($folder = getcwd())
+			->files()->name($this::IMAGES);
 
-		$progress = new ProgressIterator($output, $finder);
-		$progress->onSingleStep[] = function($bar, $file) use ($folder) {
-			$bar->setMessage(str_replace($folder, '.', $file));
+		$progress = new ProgressBar($output, false);
+		$progress->execute($files, function($progress, $file) use ($folder) {
+			$progress->setMessage(str_replace($folder, '.', $file));
+			$progress->advance();
 
 			$path = $file->getPathname();
 
 			if (!rename($path, rtrim($path, '.backup'))) {
 				// Restore has failed
 			}
+		});
 
-			$bar->advance();
-		};
-
-		$progress->execute();
+		return Command::SUCCESS;
 	}
 }
