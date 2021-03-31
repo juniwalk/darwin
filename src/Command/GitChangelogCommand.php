@@ -21,12 +21,16 @@ final class GitChangelogCommand extends AbstractCommand
 {
 	/** @var string */
 	const CHANGELOG_FILE = 'changelog.md';
+	const CHANGELOG_MSG = '#changelog';
 
 	/** @var string */
 	private $range;
 
 	/** @var string */
 	private $filter;
+
+	/** @var bool */
+	private $autoCommit;
 
 
 	/**
@@ -39,7 +43,8 @@ final class GitChangelogCommand extends AbstractCommand
 
 		$this->addArgument('range', InputArgument::OPTIONAL, 'Range of the logs to include', null);
 		$this->addOption('branch', 'b', InputOption::VALUE_REQUIRED, 'Name of working branch', 'master');
-		$this->addOption('filter', 'f', InputOption::VALUE_REQUIRED, 'Filter pattern for the git log command', '#changelog');
+		$this->addOption('filter', 'f', InputOption::VALUE_REQUIRED, 'Filter pattern for the git log command', $this::CHANGELOG_MSG);
+		$this->addOption('auto-commit', 'a', InputOption::VALUE_NONE, 'Automaticaly commit generated changelog');
 	}
 
 
@@ -50,6 +55,7 @@ final class GitChangelogCommand extends AbstractCommand
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
+		$this->autoCommit = $input->getOption('auto-commit');
 		$this->range = $input->getArgument('range');
 		$this->filter = $input->getOption('filter');
 		$branch = $input->getOption('branch');
@@ -124,6 +130,11 @@ final class GitChangelogCommand extends AbstractCommand
 
 		$filename = $file ? $file->getPathname() : './'.$this::CHANGELOG_FILE;
 		file_put_contents($filename, ltrim($changes).PHP_EOL.$changelog);
+
+		if ($this->autoCommit) {
+			exec('git add '.$this::CHANGELOG_FILE);
+			exec('git commit --message="'.$this::CHANGELOG_MSG.'"');
+		}
 
 		$output->writeln(PHP_EOL.'Changelog generated from '.sizeof($commits).' commits.');
 		return Command::SUCCESS;
