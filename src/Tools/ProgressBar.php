@@ -25,6 +25,8 @@ final class ProgressBar
 
 	/**
 	 * @param OutputInterface  $output
+	 * @param bool  $isHideOnFinish
+	 * @param bool  $throwExceptions
 	 */
 	public function __construct(
 		OutputInterface $output,
