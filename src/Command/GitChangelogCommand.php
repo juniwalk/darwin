@@ -20,7 +20,13 @@ use Symfony\Component\Finder\Finder;
 final class GitChangelogCommand extends AbstractCommand
 {
 	/** @var string */
+	const CHANGELOG_FILE = 'changelog.md';
+
+	/** @var string */
 	private $range;
+
+	/** @var string */
+	private $filter;
 
 
 	/**
@@ -33,6 +39,7 @@ final class GitChangelogCommand extends AbstractCommand
 
 		$this->addArgument('range', InputArgument::OPTIONAL, 'Range of the logs to include', null);
 		$this->addOption('branch', 'b', InputOption::VALUE_REQUIRED, 'Name of working branch', 'master');
+		$this->addOption('filter', 'f', InputOption::VALUE_REQUIRED, 'Filter pattern for the git log command', '#changelog');
 	}
 
 
@@ -43,14 +50,15 @@ final class GitChangelogCommand extends AbstractCommand
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
-		$range = $input->getArgument('range');
+		$this->range = $input->getArgument('range');
+		$this->filter = $input->getOption('filter');
 		$branch = $input->getOption('branch');
 
-		if ($range == null) {
+		if ($this->range == null && $branch) {
 			$this->range = "origin/{$branch}..{$branch}";
 		}
 
-		if ($range == 'rebuild') {
+		if ($this->range == 'create') {
 			$this->range = null;
 		}
 
@@ -83,11 +91,15 @@ final class GitChangelogCommand extends AbstractCommand
 	{
 		$command = 'git --no-pager log '.$this->range.' --format=\'"%cd","%s"\' --date=short';
 
+		if ($this->filter) {
+			$command .= ' --grep='.escapeshellarg($this->filter).' --invert-grep --regexp-ignore-case';
+		}
+
 		if (!exec($command, $commits) || !$commits) {
 			throw GitNoCommitsException::fromRange($this->range);
 		}
 
-		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/changelog.md$/i');
+		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/'.$this::CHANGELOG_FILE.'$/i');
 		$file = current(iterator_to_array($files->getIterator()));
 		$changelog = $changes = $lastDate = null;
 
@@ -99,7 +111,7 @@ final class GitChangelogCommand extends AbstractCommand
 		$progress->execute($commits, function($progress, $commit) use (&$changes, &$lastDate) {
 			[$date, $message] = str_getcsv($commit);
 
-			$progress->setMessage('Processing <comment>'.$message.'</comment>.');
+			$progress->setMessage('Processing <comment>'.$message.'</>.');
 			$progress->advance();
 
 			if ($lastDate !== $date) {
@@ -110,7 +122,7 @@ final class GitChangelogCommand extends AbstractCommand
 			$lastDate = $date;
 		});
 
-		$filename = $file ? $file->getPathname() : './changelog.md';
+		$filename = $file ? $file->getPathname() : './'.$this::CHANGELOG_FILE;
 		file_put_contents($filename, ltrim($changes).PHP_EOL.$changelog);
 
 		$output->writeln(PHP_EOL.'Changelog generated from '.sizeof($commits).' commits.');
