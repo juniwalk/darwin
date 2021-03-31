@@ -32,11 +32,12 @@ git:changelog | changelog
 Create changelog from git log output.
 
 ```
-$ darwin changelog [range] --branch=BRANCH
+$ darwin changelog [range] --branch=BRANCH --filter=FILTER
 ```
 
 - `[range]`: range of the logs to include *("rebuild" or sha..sha)*.
 - `--branch`: name of working branch.
+- `--filter`: commit to be filtered using message.
 
 image:shrink | shrink
 ---------------------
