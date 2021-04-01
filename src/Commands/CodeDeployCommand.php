@@ -71,21 +71,12 @@ final class CodeDeployCommand extends AbstractCommand
 		$output->writeln('');
 
 
-		$cacheCommand = $this->findCommand('clean:cache');
-		$cacheCommand->run(new ArgvInput, $output);
-
-		// clean:
-		// $this->exec('rm', '-rf', 'temp/cache/*');
-		// $this->exec('rm', '-rf', 'www/static/*');
-		// $this->exec('darwin', 'fix', '--no-interaction');
+		$cleanCommand = $this->findCommand('clean:cache');
+		$cleanCommand->run(new ArgvInput, $output);
 
 
-		// warmup:
-		$this->exec('composer', 'dump-autoload', '--optimize', '--no-dev');
-		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
-		$output->writeln('');
-		$this->exec('php', 'www/index.php', 'tessa:warm-up', '--quiet');
-		$this->exec('darwin', 'fix', '--no-interaction');
+		$warmupCommand = $this->findCommand('code:warmup');
+		$warmupCommand->run(new ArgvInput, $output);
 
 		return Command::SUCCESS;
 	}
