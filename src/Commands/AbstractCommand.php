@@ -102,11 +102,9 @@ abstract class AbstractCommand extends Command
 	{
 		$message = str_pad($message, $width, ' ', STR_PAD_BOTH);
 
-		$this->output->writeln('');
 		$this->output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', $width).'</>');
 		$this->output->writeln('<fg=black;bg=#00cdcd>'.$message.'</>');
 		$this->output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', $width).'</>');
-		$this->output->writeln('');
 	}
 
 

@@ -45,6 +45,7 @@ final class CodeDeployCommand extends AbstractCommand
 
 
 		// title.source:
+		$output->writeln('');
 		$this->printHeader('Updating source code of the application');
 
 
@@ -55,7 +56,6 @@ final class CodeDeployCommand extends AbstractCommand
 
 
 		// source:
-		$output->writeln('');
 		$this->exec('git', 'pull', '--ff-only', '--no-stat');
 		$output->writeln('');
 		$this->exec('composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
@@ -73,6 +73,7 @@ final class CodeDeployCommand extends AbstractCommand
 			return $this->exec('mkdir', '-p', '-m', '0755', 'www/static');
 		});
 
+		$output->writeln('');
 
 		// clean.proxies
 		$this->exec('rm', '-rf', 'temp/proxies/*');
@@ -83,18 +84,18 @@ final class CodeDeployCommand extends AbstractCommand
 		$this->exec('rm', '-rf', 'www/static/*');
 		$this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
 		$output->writeln('');
-		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
-		$output->writeln('');
 
 
 		// clean:
 		$this->exec('rm', '-rf', 'temp/cache/*');
 		$this->exec('rm', '-rf', 'www/static/*');
-		$this->exec('composer', 'dump-autoload', '--optimize', '--no-dev');
 		$this->exec('darwin', 'fix', '--no-interaction');
 
 
 		// warmup:
+		$this->exec('composer', 'dump-autoload', '--optimize', '--no-dev');
+		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
+		$output->writeln('');
 		$this->exec('php', 'www/index.php', 'tessa:warm-up', '--quiet');
 		$this->exec('darwin', 'fix', '--no-interaction');
 

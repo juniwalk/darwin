@@ -40,8 +40,9 @@ final class WebLockCommand extends AbstractCommand
 	{
 		$status = new StatusIndicator($output);
 		$status->setMessage('Locking access to the web page');
+		$output->writeln('');
 
-		return $status->execute(function($status) {
+		$code = $status->execute(function($status) {
 			$isWebLocked = $this->exec('test', '-e', $this::FILE_LOCK);
 
 			if ($isWebLocked === Command::SUCCESS) {
@@ -50,5 +51,8 @@ final class WebLockCommand extends AbstractCommand
 
 			return $this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
 		});
+
+		$output->writeln('');
+		return $code;
 	}
 }
