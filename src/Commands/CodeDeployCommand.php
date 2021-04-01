@@ -31,7 +31,6 @@ final class CodeDeployCommand extends AbstractCommand
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 * @return int
-	 * @throws GitNoCommitsException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
@@ -39,13 +38,6 @@ final class CodeDeployCommand extends AbstractCommand
 
 		$lockCommand = $this->findCommand('web:lock');
 		$lockCommand->run(new ArgvInput, $output);
-
-		$this->exec('git', 'pull', '--ff-only', '--no-stat');
-		$output->writeln('');
-		$this->exec('composer', 'install', '--no-interaction', '--prefer-dist', '--no-dev');
-		$output->writeln('');
-		$this->exec('yarn', 'install');
-		$output->writeln('');
 
 		$status = new StatusIndicator($output);
 		$status->setMessage('Create directory for PHP sessions');
@@ -57,6 +49,13 @@ final class CodeDeployCommand extends AbstractCommand
 		$status->execute(function($status) {
 			return $this->exec('mkdir', '-p', '-m', '0755', 'www/static');
 		});
+
+
+		$this->exec('git', 'pull', '--ff-only', '--no-stat');
+		$output->writeln('');
+
+		$installCommand = $this->findCommand('code:install');
+		$installCommand->run(new ArgvInput, $output);
 
 		$output->writeln('');
 

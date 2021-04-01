@@ -19,6 +19,7 @@ $darwin->add(new Commands\CleanBackupCommand);
 $darwin->add(new Commands\CleanCacheCommand);
 $darwin->add(new Commands\CodeChangelogCommand);
 $darwin->add(new Commands\CodeDeployCommand);
+$darwin->add(new Commands\CodeInstallCommand);
 $darwin->add(new Commands\CodeWarmupCommand);
 $darwin->add(new Commands\FilePermissionCommand);
 $darwin->add(new Commands\ImageShrinkCommand);
