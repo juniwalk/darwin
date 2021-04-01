@@ -70,6 +70,7 @@ final class CodeDeployCommand extends AbstractCommand
 		// test ! -e "$(IS_DARWIN)" || darwin fix --no-interaction
 
 		$process = new Process(['composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev']);
+		$process->setTty(Process::isTtySupported());
 		$process->run(function($type, $buffer) use ($output) {
 			$output->write($buffer);
 		});
