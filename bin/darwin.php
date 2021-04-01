@@ -17,6 +17,7 @@ $darwin->setHome('~/.config/darwin');
 
 $darwin->add(new Commands\CleanBackupCommand);
 $darwin->add(new Commands\CleanCacheCommand);
+$darwin->add(new Commands\CleanLogsCommand);
 $darwin->add(new Commands\CodeChangelogCommand);
 $darwin->add(new Commands\CodeDeployCommand);
 $darwin->add(new Commands\CodeInstallCommand);
