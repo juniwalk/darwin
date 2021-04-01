@@ -69,12 +69,31 @@ final class CodeDeployCommand extends AbstractCommand
 		// php www/index.php tessa:warm-up --quiet
 		// test ! -e "$(IS_DARWIN)" || darwin fix --no-interaction
 
-		$process = new Process(['composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev']);
-		$process->setTty(Process::isTtySupported());
-		$process->run(function($type, $buffer) use ($output) {
-			$output->write($buffer);
-		});
+
+		$this->exec($output, 'composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
+
+
+		// $process = new Process(['composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev']);
+		// $process->setTty(Process::isTtySupported());
+		// $process->run(function($type, $buffer) use ($output) {
+		// 	$output->write($buffer);
+		// });
 
 		return Command::SUCCESS;
+	}
+
+
+	/**
+	 * @param  string[]  $command  ...
+	 * @return int
+	 */
+	private function exec($output, string ... $command): int
+	{
+		$process = new Process($command);
+		$process->setTty(Process::isTtySupported());
+
+		return $process->run(function($type, $buffer) use ($output) {
+			$output->write($buffer);
+		});
 	}
 }
