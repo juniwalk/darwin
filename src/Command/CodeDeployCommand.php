@@ -15,6 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeDeployCommand extends AbstractCommand
 {
+	/** @var string */
+	const FILE_LOCK = 'www/lock.phtml';
+	const FILE_UNLOCK = 'www/lock.off';
+
+
 	/**
 	 * @return void
 	 */
@@ -36,7 +41,7 @@ final class CodeDeployCommand extends AbstractCommand
 		// deploy: lock source clean.proxies database clean warmup
 
 		// lock:
-		// test ! -e "$(FILE_UNLOCK)" || mv "$(FILE_UNLOCK)" "$(FILE_LOCK)"
+		$this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
 
 		// source:
 		$this->exec('git', 'pull', '--ff-only', '--no-stat');
@@ -45,28 +50,29 @@ final class CodeDeployCommand extends AbstractCommand
 		$output->writeln('');
 		$this->exec('yarn', 'install');
 		$output->writeln('');
-		// mkdir -p -m 0755 temp/sessions
-		// mkdir -p -m 0755 www/static
+		$this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
+		$this->exec('mkdir', '-p', '-m', '0755', 'www/static');
 
 		// clean.proxies
-		// rm -rf temp/proxies/*
+		$this->exec('rm', '-rf', 'temp/proxies/*');
 
 		// database:
-		// rm -rf temp/cache/*
-		// rm -rf www/static/*
-		// php www/index.php migrations:migrate --no-interaction
-		// echo ""
-		// php www/index.php orm:generate-proxies
+		$this->exec('rm', '-rf', 'temp/cache/*');
+		$this->exec('rm', '-rf', 'www/static/*');
+		$this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
+		$output->writeln('');
+		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
+		$output->writeln('');
 
 		// clean:
-		// rm -rf temp/cache/*
-		// rm -rf www/static/*
-		// test ! -e "$(IS_COMPOSER)" || composer dump-autoload --optimize --no-dev
-		// test ! -e "$(IS_DARWIN)" || darwin fix --no-interaction
+		$this->exec('rm', '-rf', 'temp/cache/*');
+		$this->exec('rm', '-rf', 'www/static/*');
+		$this->exec('composer', 'dump-autoload', '--optimize', '--no-dev');
+		$this->exec('darwin', 'fix', '--no-interaction');
 
 		// warmup:
-		// php www/index.php tessa:warm-up --quiet
-		// test ! -e "$(IS_DARWIN)" || darwin fix --no-interaction
+		$this->exec('php', 'www/index.php', 'tessa:warm-up', '--quiet');
+		$this->exec('darwin', 'fix', '--no-interaction');
 
 		return Command::SUCCESS;
 	}
