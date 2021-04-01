@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 /**
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2021
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin\Command;
+namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Tools\ProgressBar;
 use SplFileInfo;

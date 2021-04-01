@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin\Command;
+namespace JuniWalk\Darwin\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

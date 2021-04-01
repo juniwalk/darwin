@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin\Command;
+namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Exception\GitNoCommitsException;
 use JuniWalk\Darwin\Tools\ProgressBar;

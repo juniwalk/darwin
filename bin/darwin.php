@@ -6,12 +6,7 @@
  */
 
 use JuniWalk\Darwin\Darwin;
-use JuniWalk\Darwin\Command\CodeDeployCommand;
-use JuniWalk\Darwin\Command\BackupCleanCommand;
-use JuniWalk\Darwin\Command\FilePermissionCommand;
-use JuniWalk\Darwin\Command\GitChangelogCommand;
-use JuniWalk\Darwin\Command\ImageShrinkCommand;
-use JuniWalk\Darwin\Command\ImageRestoreCommand;
+use JuniWalk\Darwin\Commands;
 
 if (!@include __DIR__.'/../../../autoload.php') {
 	throw new Exception('Composer autoloader not found.');
@@ -20,11 +15,12 @@ if (!@include __DIR__.'/../../../autoload.php') {
 $darwin = new Darwin('Darwin', 'dev-master');
 $darwin->setHome('~/.config/darwin');
 
-$darwin->add(new CodeDeployCommand);
-$darwin->add(new BackupCleanCommand);
-$darwin->add(new FilePermissionCommand);
-$darwin->add(new GitChangelogCommand);
-$darwin->add(new ImageShrinkCommand);
-$darwin->add(new ImageRestoreCommand);
+$darwin->add(new Commands\CodeDeployCommand);
+$darwin->add(new Commands\BackupCleanCommand);
+$darwin->add(new Commands\FilePermissionCommand);
+$darwin->add(new Commands\GitChangelogCommand);
+$darwin->add(new Commands\ImageShrinkCommand);
+$darwin->add(new Commands\ImageRestoreCommand);
+$darwin->add(new Commands\WebLockCommand);
 
 $darwin->run();
