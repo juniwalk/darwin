@@ -14,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Process\Process;
 
 abstract class AbstractCommand extends Command
 {
@@ -88,6 +89,21 @@ abstract class AbstractCommand extends Command
 	{
 		$this->setCode(function(): int {
 			return Command::SUCCESS;
+		});
+	}
+
+
+	/**
+	 * @param  string[]  $command  ...
+	 * @return int
+	 */
+	protected function exec(string ... $command): int
+	{
+		$process = new Process($command);
+		$process->setTty(Process::isTtySupported());
+
+		return $process->run(function($type, $buffer) {
+			$this->output->write($buffer);
 		});
 	}
 

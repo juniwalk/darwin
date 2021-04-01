@@ -12,7 +12,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 final class CodeDeployCommand extends AbstractCommand
 {
@@ -40,12 +39,12 @@ final class CodeDeployCommand extends AbstractCommand
 		// test ! -e "$(FILE_UNLOCK)" || mv "$(FILE_UNLOCK)" "$(FILE_LOCK)"
 
 		// source:
-		// git pull --ff-only --no-stat
-		// echo ""
-		// test ! -e "$(IS_COMPOSER)" || composer install --no-interaction --optimize-autoloader --prefer-dist --no-dev
-		// echo ""
-		// test ! -e "$(IS_YARN)" || yarn install
-		// echo ""
+		$this->exec('git', 'pull', '--ff-only', '--no-stat');
+		$output->writeln('');
+		$this->exec('composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
+		$output->writeln('');
+		$this->exec('yarn', 'install');
+		$output->writeln('');
 		// mkdir -p -m 0755 temp/sessions
 		// mkdir -p -m 0755 www/static
 
@@ -69,31 +68,6 @@ final class CodeDeployCommand extends AbstractCommand
 		// php www/index.php tessa:warm-up --quiet
 		// test ! -e "$(IS_DARWIN)" || darwin fix --no-interaction
 
-
-		$this->exec($output, 'composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
-
-
-		// $process = new Process(['composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev']);
-		// $process->setTty(Process::isTtySupported());
-		// $process->run(function($type, $buffer) use ($output) {
-		// 	$output->write($buffer);
-		// });
-
 		return Command::SUCCESS;
-	}
-
-
-	/**
-	 * @param  string[]  $command  ...
-	 * @return int
-	 */
-	private function exec($output, string ... $command): int
-	{
-		$process = new Process($command);
-		$process->setTty(Process::isTtySupported());
-
-		return $process->run(function($type, $buffer) use ($output) {
-			$output->write($buffer);
-		});
 	}
 }
