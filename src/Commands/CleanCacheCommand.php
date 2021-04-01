@@ -56,14 +56,19 @@ final class CleanCacheCommand extends AbstractCommand
 		$this->writeHeader('Clearing out application cache');
 
 		$status = new StatusIndicator($output);
-		$status->setMessage('Clear files in application cache');
+		$status->setMessage('Clear application cache');
 		$status->execute(function($status) {
 			return $this->exec('rm', '-rf', 'temp/cache/*');
 		});
 
-		$status->setMessage('Clear files in assets cache');
+		$status->setMessage('Clear compiled assets');
 		$status->execute(function($status) {
 			return $this->exec('rm', '-rf', 'www/static/*');
+		});
+
+		$status->setMessage('Clear doctrine proxies');
+		$status->execute(function($status) {
+			return $this->exec('rm', '-rf', 'temp/proxies/*');
 		});
 
 		if ($this->skipFix === true) {

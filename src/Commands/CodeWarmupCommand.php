@@ -39,7 +39,6 @@ final class CodeWarmupCommand extends AbstractCommand
 		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
 		$output->writeln('');
 		$this->exec('php', 'www/index.php', 'tessa:warm-up', '--quiet');
-		$this->exec('darwin', 'fix', '--no-interaction');
 
 		return Command::SUCCESS;
 	}

@@ -42,7 +42,7 @@ final class CodeDeployCommand extends AbstractCommand
 
 		$this->exec('git', 'pull', '--ff-only', '--no-stat');
 		$output->writeln('');
-		$this->exec('composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
+		$this->exec('composer', 'install', '--no-interaction', '--prefer-dist', '--no-dev');
 		$output->writeln('');
 		$this->exec('yarn', 'install');
 		$output->writeln('');
@@ -60,19 +60,14 @@ final class CodeDeployCommand extends AbstractCommand
 
 		$output->writeln('');
 
-		// clean.proxies
-		$this->exec('rm', '-rf', 'temp/proxies/*');
-
-
-		// database:
-		$this->exec('rm', '-rf', 'temp/cache/*');
-		$this->exec('rm', '-rf', 'www/static/*');
-		$this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
-		$output->writeln('');
-
 
 		$cleanCommand = $this->findCommand('clean:cache');
 		$cleanCommand->run(new ArgvInput, $output);
+
+
+		// database:
+		$this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
+		$output->writeln('');
 
 
 		$warmupCommand = $this->findCommand('code:warmup');
