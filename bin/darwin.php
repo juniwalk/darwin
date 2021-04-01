@@ -22,5 +22,6 @@ $darwin->add(new Commands\GitChangelogCommand);
 $darwin->add(new Commands\ImageShrinkCommand);
 $darwin->add(new Commands\ImageRestoreCommand);
 $darwin->add(new Commands\WebLockCommand);
+$darwin->add(new Commands\WebUnlockCommand);
 
 $darwin->run();
