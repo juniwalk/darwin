@@ -94,6 +94,23 @@ abstract class AbstractCommand extends Command
 
 
 	/**
+	 * @param  string  $message
+	 * @param  int  $width
+	 * @return int
+	 */
+	protected function printHeader(string $message, int $width = 68): void
+	{
+		$message = str_pad($message, $width, ' ', STR_PAD_BOTH);
+
+		$this->output->writeln('');
+		$this->output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', $width).'</>');
+		$this->output->writeln('<fg=black;bg=#00cdcd>'.$message.'</>');
+		$this->output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', $width).'</>');
+		$this->output->writeln('');
+	}
+
+
+	/**
 	 * @param  string[]  $command  ...
 	 * @return int
 	 */

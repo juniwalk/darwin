@@ -45,21 +45,13 @@ final class CodeDeployCommand extends AbstractCommand
 
 
 		// title.source:
-		$output->writeln('');
-		$output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', 68).'</>');
-		$output->writeln('<fg=black;bg=#00cdcd>'.str_pad('Updating source code of the application', 68, ' ', STR_PAD_BOTH).'</>');
-		$output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', 68).'</>');
-		$output->writeln('');
+		$this->printHeader('Updating source code of the application');
 
 
 		// lock:
-		$status->setMessage('Locking access to the web page.');
-		$status->execute(function($status) use ($cli, $output) {
-			$params = new ArrayInput(['command' => 'web:lock']);
-			$params->setInteractive(false);
-
-			return $cli->doRun($params, $output);
-		});
+		$params = new ArrayInput(['command' => 'web:lock']);
+		$params->setInteractive(false);
+		$cli->doRun($params, $output);
 
 
 		// source:
@@ -70,8 +62,16 @@ final class CodeDeployCommand extends AbstractCommand
 		$output->writeln('');
 		$this->exec('yarn', 'install');
 		$output->writeln('');
-		$this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
-		$this->exec('mkdir', '-p', '-m', '0755', 'www/static');
+
+		$status->setMessage('Create directory for PHP sessions');
+		$status->execute(function($status) {
+			return $this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
+		});
+
+		$status->setMessage('Create directory for assets cache');
+		$status->execute(function($status) {
+			return $this->exec('mkdir', '-p', '-m', '0755', 'www/static');
+		});
 
 
 		// clean.proxies

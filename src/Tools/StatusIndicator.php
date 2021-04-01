@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Tools;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -87,14 +88,14 @@ final class StatusIndicator
 		$renderer->setAfterRender([$progress, 'display']);
 
 		try {
-			$code = $callback($this) ?: 0;
+			$code = $callback($this) ?: Command::SUCCESS;
 
 			if ($progress->getMessage('status') === $this::WORKING) {
 				$this->setStatus($this::SUCCESS);
 			}
 
 		} catch (Throwable $e) {
-			$code = $e->getCode() ?: 1;
+			$code = $e->getCode() ?: Command::FAILURE;
 
 			if ($this->throwExceptions) {
 				throw $e;

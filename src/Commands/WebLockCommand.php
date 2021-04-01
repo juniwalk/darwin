@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Commands;
 
+use JuniWalk\Darwin\Tools\StatusIndicator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,18 +35,20 @@ final class WebLockCommand extends AbstractCommand
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 * @return int
-	 * @throws GitNoCommitsException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$isWebLocked = $this->exec('test', '-e', $this::FILE_LOCK);
+		$status = new StatusIndicator($output);
+		$status->setMessage('Locking access to the web page');
 
-		if ($isWebLocked === Command::SUCCESS) {
-			return Command::SUCCESS;
-		}
+		return $status->execute(function($status) {
+			$isWebLocked = $this->exec('test', '-e', $this::FILE_LOCK);
 
-		$this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
+			if ($isWebLocked === Command::SUCCESS) {
+				return $status->setStatus($status::SKIPPED);
+			}
 
-		return Command::SUCCESS;
+			return $this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
+		});
 	}
 }
