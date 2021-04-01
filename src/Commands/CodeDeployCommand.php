@@ -8,6 +8,7 @@
 namespace JuniWalk\Darwin\Commands;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,12 +39,20 @@ final class CodeDeployCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$console = $this->getApplication();
+
+
+		$output->writeln('');
 		$output->writeln('<question>'.str_repeat(' ', 68).'</>');
 		$output->writeln('<question>'.str_pad('Updating source code of the application', 68, ' ', STR_PAD_BOTH).'</>');
 		$output->writeln('<question>'.str_repeat(' ', 68).'</>');
+		$output->writeln('');
 
 		// lock:
-		$this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
+		$params = new ArrayInput(['command' => 'web:lock']);
+		$params->setInteractive(false);
+		$console->doRun($params, $output);
+
 
 		// source:
 		$this->exec('git', 'pull', '--ff-only', '--no-stat');
