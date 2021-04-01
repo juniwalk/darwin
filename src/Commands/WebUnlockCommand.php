@@ -39,7 +39,7 @@ final class WebUnlockCommand extends AbstractCommand
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$status = new StatusIndicator($output);
-		$status->setMessage('Locking access to the web page');
+		$status->setMessage('Opening access to the web page');
 		$output->writeln('');
 
 		$code = $status->execute(function($status) {
