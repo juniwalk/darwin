@@ -6,6 +6,7 @@
  */
 
 use JuniWalk\Darwin\Darwin;
+use JuniWalk\Darwin\Command\CodeDeployCommand;
 use JuniWalk\Darwin\Command\BackupCleanCommand;
 use JuniWalk\Darwin\Command\FilePermissionCommand;
 use JuniWalk\Darwin\Command\GitChangelogCommand;
@@ -19,6 +20,7 @@ if (!@include __DIR__.'/../../../autoload.php') {
 $darwin = new Darwin('Darwin', 'dev-master');
 $darwin->setHome('~/.config/darwin');
 
+$darwin->add(new CodeDeployCommand);
 $darwin->add(new BackupCleanCommand);
 $darwin->add(new FilePermissionCommand);
 $darwin->add(new GitChangelogCommand);
