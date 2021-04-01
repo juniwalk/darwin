@@ -38,7 +38,12 @@ final class WebLockCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		// lock:
+		$isWebLocked = $this->exec('test', '-e', $this::FILE_LOCK);
+
+		if ($isWebLocked === Command::SUCCESS) {
+			return Command::SUCCESS;
+		}
+
 		$this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
 
 		return Command::SUCCESS;
