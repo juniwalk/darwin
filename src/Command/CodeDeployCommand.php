@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 final class CodeDeployCommand extends AbstractCommand
 {
@@ -67,6 +68,11 @@ final class CodeDeployCommand extends AbstractCommand
 		// warmup:
 		// php www/index.php tessa:warm-up --quiet
 		// test ! -e "$(IS_DARWIN)" || darwin fix --no-interaction
+
+		$process = new Process(['composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev']);
+		$process->run(function($type, $buffer) use ($output) {
+			$output->write($buffer);
+		});
 
 		return Command::SUCCESS;
 	}
