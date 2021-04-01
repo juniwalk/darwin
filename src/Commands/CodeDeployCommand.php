@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Commands;
 
+use JuniWalk\Darwin\Tools\StatusIndicator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,22 +40,30 @@ final class CodeDeployCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$console = $this->getApplication();
+		$status = new StatusIndicator($output);
+		$cli = $this->getApplication();
 
 
+		// title.source:
 		$output->writeln('');
-		$output->writeln('<question>'.str_repeat(' ', 68).'</>');
-		$output->writeln('<question>'.str_pad('Updating source code of the application', 68, ' ', STR_PAD_BOTH).'</>');
-		$output->writeln('<question>'.str_repeat(' ', 68).'</>');
+		$output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', 68).'</>');
+		$output->writeln('<fg=black;bg=#00cdcd>'.str_pad('Updating source code of the application', 68, ' ', STR_PAD_BOTH).'</>');
+		$output->writeln('<fg=black;bg=#00cdcd>'.str_repeat(' ', 68).'</>');
 		$output->writeln('');
+
 
 		// lock:
-		$params = new ArrayInput(['command' => 'web:lock']);
-		$params->setInteractive(false);
-		$console->doRun($params, $output);
+		$status->setMessage('Locking access to the web page.');
+		$status->execute(function($status) use ($cli, $output) {
+			$params = new ArrayInput(['command' => 'web:lock']);
+			$params->setInteractive(false);
+
+			return $cli->doRun($params, $output);
+		});
 
 
 		// source:
+		$output->writeln('');
 		$this->exec('git', 'pull', '--ff-only', '--no-stat');
 		$output->writeln('');
 		$this->exec('composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
@@ -64,8 +73,10 @@ final class CodeDeployCommand extends AbstractCommand
 		$this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
 		$this->exec('mkdir', '-p', '-m', '0755', 'www/static');
 
+
 		// clean.proxies
 		$this->exec('rm', '-rf', 'temp/proxies/*');
+
 
 		// database:
 		$this->exec('rm', '-rf', 'temp/cache/*');
@@ -75,11 +86,13 @@ final class CodeDeployCommand extends AbstractCommand
 		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
 		$output->writeln('');
 
+
 		// clean:
 		$this->exec('rm', '-rf', 'temp/cache/*');
 		$this->exec('rm', '-rf', 'www/static/*');
 		$this->exec('composer', 'dump-autoload', '--optimize', '--no-dev');
 		$this->exec('darwin', 'fix', '--no-interaction');
+
 
 		// warmup:
 		$this->exec('php', 'www/index.php', 'tessa:warm-up', '--quiet');
