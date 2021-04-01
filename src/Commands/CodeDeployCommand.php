@@ -17,11 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeDeployCommand extends AbstractCommand
 {
-	/** @var string */
-	const FILE_LOCK = 'www/lock.phtml';
-	const FILE_UNLOCK = 'www/lock.off';
-
-
 	/**
 	 * @return void
 	 */
