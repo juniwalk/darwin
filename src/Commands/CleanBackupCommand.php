@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class BackupCleanCommand extends AbstractCommand
+final class CleanBackupCommand extends AbstractCommand
 {
 	/** @var string */
 	const DATE_FORMAT = '/(\d{14})/';
@@ -47,7 +47,7 @@ final class BackupCleanCommand extends AbstractCommand
 	protected function configure(): void
 	{
 		$this->setDescription('Clear out backups using defined parameters.');
-		$this->setName('backup:clean');
+		$this->setName('clean:backup')->setAliases(['backup:clean']);
 
 		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for backup cleaning.', getcwd());
 		$this->addOption('keep-count', 'c', InputOption::VALUE_REQUIRED, 'Minimum number of backups to be kept per project.', 3);

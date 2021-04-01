@@ -15,10 +15,10 @@ if (!@include __DIR__.'/../../../autoload.php') {
 $darwin = new Darwin('Darwin', 'dev-master');
 $darwin->setHome('~/.config/darwin');
 
+$darwin->add(new Commands\CleanBackupCommand);
 $darwin->add(new Commands\CleanCacheCommand);
 $darwin->add(new Commands\CodeDeployCommand);
 $darwin->add(new Commands\CodeWarmupCommand);
-$darwin->add(new Commands\BackupCleanCommand);
 $darwin->add(new Commands\FilePermissionCommand);
 $darwin->add(new Commands\GitChangelogCommand);
 $darwin->add(new Commands\ImageShrinkCommand);
