@@ -35,6 +35,8 @@ final class CodeWarmupCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$this->writeHeader('Warming up');
+
 		$this->exec('composer', 'dump-autoload', '--optimize', '--no-dev');
 		$this->exec('php', 'www/index.php', 'orm:generate-proxies');
 		$output->writeln('');
