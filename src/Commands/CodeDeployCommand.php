@@ -9,7 +9,7 @@ namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Tools\StatusIndicator;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,7 +41,6 @@ final class CodeDeployCommand extends AbstractCommand
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$status = new StatusIndicator($output);
-		$cli = $this->getApplication();
 
 
 		// title.source:
@@ -50,9 +49,8 @@ final class CodeDeployCommand extends AbstractCommand
 
 
 		// lock:
-		$params = new ArrayInput(['command' => 'web:lock']);
-		$params->setInteractive(false);
-		$cli->doRun($params, $output);
+		$lockCommand = $this->findCommand('web:lock');
+		$lockCommand->run(new ArgvInput, $output);
 
 
 		// source:
