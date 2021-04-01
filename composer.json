@@ -21,6 +21,7 @@
 	"require": {
 		"php": ">=7.1",
 		"symfony/console": "^5.0",
+		"symfony/process": "^5.0",
 		"symfony/finder": "^5.0",
 		"tracy/tracy": "^2.0",
 		"nette/utils": "^3.0",
