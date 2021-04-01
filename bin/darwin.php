@@ -17,10 +17,10 @@ $darwin->setHome('~/.config/darwin');
 
 $darwin->add(new Commands\CleanBackupCommand);
 $darwin->add(new Commands\CleanCacheCommand);
+$darwin->add(new Commands\CodeChangelogCommand);
 $darwin->add(new Commands\CodeDeployCommand);
 $darwin->add(new Commands\CodeWarmupCommand);
 $darwin->add(new Commands\FilePermissionCommand);
-$darwin->add(new Commands\GitChangelogCommand);
 $darwin->add(new Commands\ImageShrinkCommand);
 $darwin->add(new Commands\ImageRestoreCommand);
 $darwin->add(new Commands\WebLockCommand);
