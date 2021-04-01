@@ -38,7 +38,9 @@ final class CodeDeployCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		// deploy: lock source clean.proxies database clean warmup
+		$output->writeln('<question>'.str_repeat(' ', 68).'</>');
+		$output->writeln('<question>'.str_pad('Updating source code of the application', 68, ' ', STR_PAD_BOTH).'</>');
+		$output->writeln('<question>'.str_repeat(' ', 68).'</>');
 
 		// lock:
 		$this->exec('mv', $this::FILE_UNLOCK, $this::FILE_LOCK);
