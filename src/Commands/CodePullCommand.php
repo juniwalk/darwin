@@ -12,7 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CodeSourceCommand extends AbstractCommand
+final class CodePullCommand extends AbstractCommand
 {
 	/**
 	 * @return void
@@ -20,7 +20,7 @@ final class CodeSourceCommand extends AbstractCommand
 	protected function configure(): void
 	{
 		$this->setDescription('Pull repository changes.');
-		$this->setName('code:source');
+		$this->setName('code:pull');
 	}
 
 

@@ -34,7 +34,7 @@ final class CodeDeployCommand extends AbstractCommand
 		$params = new ArgvInput;
 		$commands = [
 			'web:lock',			// lock access
-			'code:source',		// download new source code
+			'code:pull',		// pull new source code
 			'code:install',		// install dependencies
 			'clean:cache',		// clear cache
 			'schema:migrate',	// migrate database
