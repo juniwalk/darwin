@@ -21,9 +21,11 @@ $darwin->add(new Commands\CodeChangelogCommand);
 $darwin->add(new Commands\CodeDeployCommand);
 $darwin->add(new Commands\CodeInstallCommand);
 $darwin->add(new Commands\CodeWarmupCommand);
+$darwin->add(new Commands\CodeSourceCommand);
 $darwin->add(new Commands\FilePermissionCommand);
 $darwin->add(new Commands\ImageShrinkCommand);
 $darwin->add(new Commands\ImageRestoreCommand);
+$darwin->add(new Commands\SchemaMigrateCommand);
 $darwin->add(new Commands\WebLockCommand);
 $darwin->add(new Commands\WebUnlockCommand);
 

@@ -7,12 +7,9 @@
 
 namespace JuniWalk\Darwin\Commands;
 
-use JuniWalk\Darwin\Tools\StatusIndicator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeDeployCommand extends AbstractCommand
@@ -34,43 +31,20 @@ final class CodeDeployCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$this->writeHeader('Updating source code of the application');
+		$params = new ArgvInput;
+		$commands = [
+			'web:lock',			// lock access
+			'code:source',		// download new source code
+			'code:install',		// install dependencies
+			'clean:cache',		// clear cache
+			'schema:migrate',	// migrate database
+			'code:warmup',		// warmup cache
+		];
 
-		$lockCommand = $this->findCommand('web:lock');
-		$lockCommand->run(new ArgvInput, $output);
-
-		$status = new StatusIndicator($output);
-		$status->setMessage('Create directory for PHP sessions');
-		$status->execute(function($status) {
-			return $this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
-		});
-
-		$status->setMessage('Create directory for assets cache');
-		$status->execute(function($status) {
-			return $this->exec('mkdir', '-p', '-m', '0755', 'www/static');
-		});
-
-
-		$this->exec('git', 'pull', '--ff-only', '--no-stat');
-		$output->writeln('');
-
-		$installCommand = $this->findCommand('code:install');
-		$installCommand->run(new ArgvInput, $output);
-
-		$output->writeln('');
-
-
-		$cleanCommand = $this->findCommand('clean:cache');
-		$cleanCommand->run(new ArgvInput, $output);
-
-
-		// database:
-		$this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
-		$output->writeln('');
-
-
-		$warmupCommand = $this->findCommand('code:warmup');
-		$warmupCommand->run(new ArgvInput, $output);
+		foreach ($commands as $command) {
+			$command = $this->findCommand($command);
+			$command->run($params, $output);
+		}
 
 		return Command::SUCCESS;
 	}
