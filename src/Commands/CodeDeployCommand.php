@@ -35,20 +35,11 @@ final class CodeDeployCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$status = new StatusIndicator($output);
+		$this->writeHeader('Updating source code of the application');
 
-
-		// title.source:
-		$output->writeln('');
-		$this->printHeader('Updating source code of the application');
-
-
-		// lock:
 		$lockCommand = $this->findCommand('web:lock');
 		$lockCommand->run(new ArgvInput, $output);
 
-
-		// source:
 		$this->exec('git', 'pull', '--ff-only', '--no-stat');
 		$output->writeln('');
 		$this->exec('composer', 'install', '--no-interaction', '--optimize-autoloader', '--prefer-dist', '--no-dev');
@@ -56,6 +47,7 @@ final class CodeDeployCommand extends AbstractCommand
 		$this->exec('yarn', 'install');
 		$output->writeln('');
 
+		$status = new StatusIndicator($output);
 		$status->setMessage('Create directory for PHP sessions');
 		$status->execute(function($status) {
 			return $this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
@@ -79,10 +71,13 @@ final class CodeDeployCommand extends AbstractCommand
 		$output->writeln('');
 
 
+		$cacheCommand = $this->findCommand('clean:cache');
+		$cacheCommand->run(new ArgvInput, $output);
+
 		// clean:
-		$this->exec('rm', '-rf', 'temp/cache/*');
-		$this->exec('rm', '-rf', 'www/static/*');
-		$this->exec('darwin', 'fix', '--no-interaction');
+		// $this->exec('rm', '-rf', 'temp/cache/*');
+		// $this->exec('rm', '-rf', 'www/static/*');
+		// $this->exec('darwin', 'fix', '--no-interaction');
 
 
 		// warmup:

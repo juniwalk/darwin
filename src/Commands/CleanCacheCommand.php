@@ -53,11 +53,9 @@ final class CleanCacheCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$this->writeHeader('Clearing out application cache');
+
 		$status = new StatusIndicator($output);
-
-		$output->writeln('');
-		$this->printHeader('Clearing out application cache');
-
 		$status->setMessage('Clear files in application cache');
 		$status->execute(function($status) {
 			return $this->exec('rm', '-rf', 'temp/cache/*');
