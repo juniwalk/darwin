@@ -20,6 +20,10 @@ use Symfony\Component\Finder\Finder;
 final class CleanBackupCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'Clear out backups using defined parameters';
+	protected static $defaultName = 'clean:backup';
+
+	/** @var string */
 	const DATE_FORMAT = '/(\d{14})/';
 
 	/** @var DateTime */
@@ -46,8 +50,8 @@ final class CleanBackupCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Clear out backups using defined parameters.');
-		$this->setName('clean:backup')->setAliases(['backup:clean']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 
 		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for backup cleaning.', getcwd());
 		$this->addOption('keep-count', 'c', InputOption::VALUE_REQUIRED, 'Minimum number of backups to be kept per project.', 3);
@@ -100,12 +104,9 @@ final class CleanBackupCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$files = (new Finder)->files()
-			->in($this->folder)
-			->name('*.files.tgz')
-			->name('*.db.tgz')
-			->sortByName()
-			->reverseSorting();
+		$files = (new Finder)->in($this->folder)
+			->files()->name('*.files.tgz')->name('*.db.tgz')
+			->sortByName()->reverseSorting();
 
 		if (!$files->hasResults()) {
 			$output->writeln('Error, no files were found.');

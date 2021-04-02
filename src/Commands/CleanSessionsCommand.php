@@ -13,13 +13,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CleanSessionsCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Remove all user sessions';
+	protected static $defaultName = 'clean:sessions';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Remove all user sessions');
-		$this->setName('clean:sessions');
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 	}
 
 

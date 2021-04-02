@@ -13,13 +13,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeInstallCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Install application dependencies';
+	protected static $defaultName = 'code:install';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Install application dependencies.');
-		$this->setName('code:install');
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 	}
 
 

@@ -13,13 +13,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SchemaDumpCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Dump SQLs of pending schema structure update';
+	protected static $defaultName = 'schema:dump';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Dump SQLs of pending schema structure update');
-		$this->setName('schema:dump');
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 	}
 
 

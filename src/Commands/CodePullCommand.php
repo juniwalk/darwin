@@ -14,13 +14,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodePullCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Pull repository changes';
+	protected static $defaultName = 'code:pull';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Pull repository changes.');
-		$this->setName('code:pull');
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 	}
 
 

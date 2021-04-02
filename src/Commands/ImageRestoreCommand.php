@@ -17,6 +17,10 @@ use Symfony\Component\Finder\Finder;
 final class ImageRestoreCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'Restore all backed up images';
+	protected static $defaultName = 'image:restore';
+
+	/** @var string */
 	const IMAGES = '/\.(jpe?g|png|gif)\.backup$/i';
 
 
@@ -25,8 +29,9 @@ final class ImageRestoreCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Restore all backed up images');
-		$this->setName('image:restore')->setAliases(['restore']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['restore']);
 	}
 
 

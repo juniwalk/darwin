@@ -14,13 +14,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeDeployCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Deploy pending updates to the project';
+	protected static $defaultName = 'code:deploy';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Deploy pending updates to the project.');
-		$this->setName('code:deploy')->setAliases(['deploy']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['deploy']);
 	}
 
 

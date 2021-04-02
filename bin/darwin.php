@@ -5,41 +5,43 @@
  * @license   MIT License
  */
 
-use JuniWalk\Darwin\Darwin;
 use JuniWalk\Darwin\Commands;
+use JuniWalk\Darwin\CommandLoader;
+use Symfony\Component\Console\Application;
 
 if (!@include __DIR__.'/../../../autoload.php') {
 	throw new Exception('Composer autoloader not found.');
 }
 
-$darwin = new Darwin('Darwin', 'dev-master');
-$darwin->setHome('~/.config/darwin');
+$commandLoader = new CommandLoader([
+	// Clean commands
+	Commands\CleanBackupCommand::class,
+	Commands\CleanCacheCommand::class,
+	Commands\CleanLogsCommand::class,
+	Commands\CleanSessionsCommand::class,
+	
+	// Code commands
+	Commands\CodeChangelogCommand::class,
+	Commands\CodeDeployCommand::class,
+	Commands\CodeInstallCommand::class,
+	Commands\CodePermissionCommand::class,
+	Commands\CodePullCommand::class,
+	Commands\CodeWarmupCommand::class,
+	
+	// Image commands
+	Commands\ImageShrinkCommand::class,
+	Commands\ImageRestoreCommand::class,
+	
+	// Schema commands
+	Commands\SchemaDiffCommand::class,
+	Commands\SchemaDumpCommand::class,
+	Commands\SchemaMigrateCommand::class,
+	
+	// Web commands
+	Commands\WebLockCommand::class,
+	Commands\WebUnlockCommand::class,
+]);
 
-// Clean commands
-$darwin->add(new Commands\CleanBackupCommand);
-$darwin->add(new Commands\CleanCacheCommand);
-$darwin->add(new Commands\CleanLogsCommand);
-$darwin->add(new Commands\CleanSessionsCommand);
-
-// Code commands
-$darwin->add(new Commands\CodeChangelogCommand);
-$darwin->add(new Commands\CodeDeployCommand);
-$darwin->add(new Commands\CodeInstallCommand);
-$darwin->add(new Commands\CodePermissionCommand);
-$darwin->add(new Commands\CodePullCommand);
-$darwin->add(new Commands\CodeWarmupCommand);
-
-// Image commands
-$darwin->add(new Commands\ImageShrinkCommand);
-$darwin->add(new Commands\ImageRestoreCommand);
-
-// Schema commands
-$darwin->add(new Commands\SchemaDiffCommand);
-$darwin->add(new Commands\SchemaDumpCommand);
-$darwin->add(new Commands\SchemaMigrateCommand);
-
-// Web commands
-$darwin->add(new Commands\WebLockCommand);
-$darwin->add(new Commands\WebUnlockCommand);
-
+$darwin = new Application('Darwin', 'dev-master');
+$darwin->setCommandLoader($commandLoader);
 $darwin->run();

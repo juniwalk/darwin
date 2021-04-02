@@ -12,13 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CleanLogsCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Remove all error logs';
+	protected static $defaultName = 'clean:logs';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Remove all error logs');
-		$this->setName('clean:logs');
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 	}
 
 

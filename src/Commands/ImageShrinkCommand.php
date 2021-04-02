@@ -20,6 +20,10 @@ use Nette\Utils\ImageException;
 final class ImageShrinkCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'Shrink all images that ale larger than given size';
+	protected static $defaultName = 'image:shrink';
+
+	/** @var string */
 	const IMAGES = '/\.(jpe?g|png|gif)$/i';
 
 	/** @var int|null */
@@ -37,8 +41,9 @@ final class ImageShrinkCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Shrink all images that ale larger than given size');
-		$this->setName('image:shrink')->setAliases(['shrink']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['shrink']);
 
 		$this->addOption('size', null, InputOption::VALUE_REQUIRED, 'Size to which the image will be fitted', null);
 		$this->addOption('quality', null, InputOption::VALUE_REQUIRED, 'Quality of resulting image', 75);

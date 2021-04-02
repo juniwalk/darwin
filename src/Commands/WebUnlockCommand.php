@@ -15,6 +15,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class WebUnlockCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'UNLOCK access into website';
+	protected static $defaultName = 'web:unlock';
+
+	/** @var string */
 	const FILE_LOCK = 'www/lock.phtml';
 	const FILE_UNLOCK = 'www/lock.off';
 
@@ -24,8 +28,9 @@ final class WebUnlockCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('UNLOCK access into website');
-		$this->setName('web:unlock')->setAliases(['unlock']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['unlock']);
 	}
 
 

@@ -13,13 +13,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SchemaDiffCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Create new migration from schema differences';
+	protected static $defaultName = 'schema:diff';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Create new migration from schema differences.');
-		$this->setName('schema:diff');
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
 	}
 
 

@@ -15,6 +15,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class WebLockCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'LOCK access into website';
+	protected static $defaultName = 'web:lock';
+
+	/** @var string */
 	const FILE_LOCK = 'www/lock.phtml';
 	const FILE_UNLOCK = 'www/lock.off';
 
@@ -24,8 +28,9 @@ final class WebLockCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('LOCK access into website');
-		$this->setName('web:lock')->setAliases(['lock']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['lock']);
 	}
 
 

@@ -20,6 +20,10 @@ use Symfony\Component\Finder\Finder;
 final class CodeChangelogCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'Create changelog from git log output';
+	protected static $defaultName = 'code:changelog';
+
+	/** @var string */
 	const CHANGELOG_FILE = 'changelog.md';
 	const CHANGELOG_MSG = '#changelog';
 
@@ -38,8 +42,9 @@ final class CodeChangelogCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Create changelog from git log output.');
-		$this->setName('code:changelog')->setAliases(['changelog']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['changelog']);
 
 		$this->addArgument('range', InputArgument::OPTIONAL, 'Range of the logs to include', null);
 		$this->addOption('branch', 'b', InputOption::VALUE_REQUIRED, 'Name of working branch', 'master');

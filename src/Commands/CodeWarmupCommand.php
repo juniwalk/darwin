@@ -13,13 +13,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeWarmupCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Warmup the use of the application';
+	protected static $defaultName = 'code:warmup';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Warmup the use of the application.');
-		$this->setName('code:warmup')->setAliases(['warmup']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['warmup']);
 	}
 
 

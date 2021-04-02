@@ -13,13 +13,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SchemaMigrateCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Migrate to latest database version';
+	protected static $defaultName = 'schema:migrate';
+
+
 	/**
 	 * @return void
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Migrate to latest database version.');
-		$this->setName('schema:migrate')->setAliases(['migrate']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['migrate']);
 	}
 
 

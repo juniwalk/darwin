@@ -16,6 +16,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CleanCacheCommand extends AbstractCommand
 {
+	/** @var string */
+	protected static $defaultDescription = 'Clear application cache and fix permissions';
+	protected static $defaultName = 'clean:cache';
+
 	/** @var bool */
 	private $skipFix;
 
@@ -25,8 +29,9 @@ final class CleanCacheCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Clear application cache and fix permissions');
-		$this->setName('clean:cache')->setAliases(['clean']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['clean']);
 
 		$this->addOption('skip-fix', 's', InputOption::VALUE_NONE, 'Skip fixing permissions');
 	}

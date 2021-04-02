@@ -20,6 +20,10 @@ use Symfony\Component\Finder\Finder;
 final class CodePermissionCommand extends AbstractCommand
 {
 	/** @var string */
+	protected static $defaultDescription = 'Fix file permissions in given directory';
+	protected static $defaultName = 'code:permission';
+
+	/** @var string */
 	private $folder;
 
 
@@ -28,8 +32,9 @@ final class CodePermissionCommand extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription('Fix file permissions in given directory');
-		$this->setName('code:permission')->setAliases(['fix']);
+		$this->setDescription(static::$defaultDescription);
+		$this->setName(static::$defaultName);
+		$this->setAliases(['fix']);
 
 		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for permission fixer');
 		$this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Name of configuration file', 'default');
