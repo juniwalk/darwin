@@ -50,7 +50,7 @@ final class CommandLoader implements CommandLoaderInterface
 			throw new CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
 		}
 
-		return $this->commands[$name]();
+		return new $this->commands[$name];
 	}
 
 
