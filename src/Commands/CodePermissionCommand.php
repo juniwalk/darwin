@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class FilePermissionCommand extends AbstractCommand
+final class CodePermissionCommand extends AbstractCommand
 {
 	/** @var string */
 	private $folder;
@@ -29,7 +29,7 @@ final class FilePermissionCommand extends AbstractCommand
 	protected function configure(): void
 	{
 		$this->setDescription('Fix file permissions in given directory');
-		$this->setName('file:permission')->setAliases(['fix']);
+		$this->setName('code:permission')->setAliases(['fix']);
 
 		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for permission fixer');
 		$this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Name of configuration file', 'default');

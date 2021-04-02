@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2021
  * @license   MIT License
  */
 
@@ -25,10 +25,9 @@ $darwin->add(new Commands\CleanSessionsCommand);
 $darwin->add(new Commands\CodeChangelogCommand);
 $darwin->add(new Commands\CodeDeployCommand);
 $darwin->add(new Commands\CodeInstallCommand);
+$darwin->add(new Commands\CodePermissionCommand);
 $darwin->add(new Commands\CodePullCommand);
 $darwin->add(new Commands\CodeWarmupCommand);
-
-$darwin->add(new Commands\FilePermissionCommand);
 
 // Image commands
 $darwin->add(new Commands\ImageShrinkCommand);
