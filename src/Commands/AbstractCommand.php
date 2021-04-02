@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Commands;
 
+use JuniWalk\Darwin\Configuration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,8 +19,8 @@ use Symfony\Component\Process\Process;
 
 abstract class AbstractCommand extends Command
 {
-	/** @var callable[] */
-	private $questions = [];
+	/** @var Configuration */
+	private $config;
 
 	/** @var InputInterface */
 	private $input;
@@ -27,14 +28,16 @@ abstract class AbstractCommand extends Command
 	/** @var OutputInterface */
 	private $output;
 
+	/** @var callable[] */
+	private $questions = [];
+
 
 	/**
-	 * @param  callable  $question
-	 * @return void
+	 * @return Configuration
 	 */
-	public function addQuestion(callable $question): void
+	public function getConfig(): Configuration
 	{
-		$this->questions[] = $question;
+		return $this->config;
 	}
 
 
@@ -49,11 +52,22 @@ abstract class AbstractCommand extends Command
 
 
 	/**
+	 * @param  callable  $question
+	 * @return void
+	 */
+	public function addQuestion(callable $question): void
+	{
+		$this->questions[] = $question;
+	}
+
+
+	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output)
 	{
+		$this->config = new Configuration;
 		$this->input = $input;
 		$this->output = $output;
 	}

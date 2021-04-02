@@ -81,7 +81,7 @@ final class CodePermissionCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$config = new \JuniWalk\Darwin\Configuration;
+		$config = $this->getConfig();
 
 		$folder = new SplFileInfo($this->folder);
 		$finder = (new Finder)->ignoreDotFiles(false)
