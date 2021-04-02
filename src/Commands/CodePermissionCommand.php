@@ -48,7 +48,7 @@ final class CodePermissionCommand extends AbstractCommand
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
-		$this->getHelper('config')->load($input->getOption('config'));
+		// $this->getHelper('config')->load($input->getOption('config'));
 		$this->folder = $input->getArgument('folder') ?: getcwd();
 
 		parent::initialize($input, $output);
@@ -81,8 +81,7 @@ final class CodePermissionCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$config = $this->getHelper('config');
-		$config->loadCurrent($this->folder);
+		$config = new \JuniWalk\Darwin\Configuration;
 
 		$folder = new SplFileInfo($this->folder);
 		$finder = (new Finder)->ignoreDotFiles(false)

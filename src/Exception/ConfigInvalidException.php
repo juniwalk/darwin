@@ -12,12 +12,4 @@ namespace JuniWalk\Darwin\Exception;
 
 final class ConfigInvalidException extends DarwinException
 {
-	/**
-	 * @param  string  $fileName
-	 * @return static
-	 */
-	public static function fromFileName($fileName)
-	{
-		return new static('Invalid configuration structure in file '.$fileName, 500);
-	}
 }
