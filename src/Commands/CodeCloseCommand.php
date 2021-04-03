@@ -11,6 +11,7 @@ use JuniWalk\Darwin\Tools\ProgressBar;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -19,6 +20,9 @@ final class CodeCloseCommand extends AbstractConfigAwareCommand
 	/** @var string */
 	protected static $defaultDescription = 'Set file permissions as strictly closed';
 	protected static $defaultName = 'code:close';
+
+	/** @var bool */
+	private $isForced;
 
 	/** @var string */
 	private $folder;
@@ -32,6 +36,8 @@ final class CodeCloseCommand extends AbstractConfigAwareCommand
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
 		$this->setAliases(['fix']);
+
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force permission fix even on excluded folders.');
 	}
 
 
@@ -42,6 +48,7 @@ final class CodeCloseCommand extends AbstractConfigAwareCommand
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
+		$this->isForced = $input->getOption('force');
 		$this->folder = getcwd();
 
 		parent::initialize($input, $output);
@@ -70,12 +77,15 @@ final class CodeCloseCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$folder = new SplFileInfo($this->folder);
 		$config = $this->getConfig();
 
-		$folder = new SplFileInfo($this->folder);
 		$finder = (new Finder)->ignoreDotFiles(false)
-			->exclude($config->getExcludeFolders())
 			->in($folder->getPathname());
+
+		if (!$this->isForced) {
+			$finder->exclude($config->getExcludeFolders());
+		}
 
 		foreach ($config->getRules() as $rule) {
 			$rule->apply($folder);
