@@ -25,6 +25,7 @@ $commandLoader = new CommandLoader([
 	Commands\CodeCloseCommand::class,
 	Commands\CodeDeployCommand::class,
 	Commands\CodeInstallCommand::class,
+	Commands\CodeOpenCommand::class,
 	Commands\CodePullCommand::class,
 	Commands\CodeWarmupCommand::class,
 
