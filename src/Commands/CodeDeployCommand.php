@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CodeDeployCommand extends AbstractCommand
+final class CodeDeployCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
 	protected static $defaultDescription = 'Deploy pending updates to the project';

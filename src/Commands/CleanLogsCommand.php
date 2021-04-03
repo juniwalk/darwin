@@ -10,7 +10,7 @@ namespace JuniWalk\Darwin\Commands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CleanLogsCommand extends AbstractCommand
+final class CleanLogsCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
 	protected static $defaultDescription = 'Remove all error logs';

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CodePullCommand extends AbstractCommand
+final class CodePullCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
 	protected static $defaultDescription = 'Pull repository changes';

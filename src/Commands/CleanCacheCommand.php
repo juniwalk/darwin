@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CleanCacheCommand extends AbstractCommand
+final class CleanCacheCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
 	protected static $defaultDescription = 'Clear application cache and fix permissions';

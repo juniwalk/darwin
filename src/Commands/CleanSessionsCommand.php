@@ -11,7 +11,7 @@ use JuniWalk\Darwin\Tools\StatusIndicator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CleanSessionsCommand extends AbstractCommand
+final class CleanSessionsCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
 	protected static $defaultDescription = 'Remove all user sessions';
