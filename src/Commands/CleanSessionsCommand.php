@@ -36,11 +36,16 @@ final class CleanSessionsCommand extends AbstractConfigAwareCommand
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$status = new StatusIndicator($output);
-		$status->setMessage('Clear user sessions');
+		$config = $this->getConfig();
 		$output->writeln('');
 
-		$code = $status->execute(function($status) {
-			return $this->exec('rm', '-rf', 'temp/sessions/*');
+		$status->setMessage('Clear user sessions');
+		$code = $status->execute(function($status) use ($config) {
+			if (!$sessionDir = $config->getSessionDir()) {
+				return $status->setStatus($status::SKIPPED);
+			}
+
+			return $this->exec('rm', '-rf', $sessionDir.'*');
 		});
 
 		$output->writeln('');

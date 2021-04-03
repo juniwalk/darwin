@@ -57,23 +57,21 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$status = new StatusIndicator($output);
+		$config = $this->getConfig();
+
+		if (!$cacheDirs = $config->getCacheDirs()) {
+			return Command::SUCCESS;
+		}
+
 		$this->writeHeader('Clearing out application cache');
 
-		$status = new StatusIndicator($output);
-		$status->setMessage('Clear application cache');
-		$status->execute(function($status) {
-			return $this->exec('rm', '-rf', 'temp/cache/*');
-		});
-
-		$status->setMessage('Clear compiled assets');
-		$status->execute(function($status) {
-			return $this->exec('rm', '-rf', 'www/static/*');
-		});
-
-		$status->setMessage('Clear doctrine proxies');
-		$status->execute(function($status) {
-			return $this->exec('rm', '-rf', 'temp/proxies/*');
-		});
+		foreach ($cacheDirs as $dir) {
+			$status->setMessage('Clear directory: <comment>'.$dir.'</>');
+			$status->execute(function($status) use ($dir) {
+				return $this->exec('rm', '-rf', $dir.'*');
+			});
+		}
 
 		if ($this->skipFix === true) {
 			return Command::SUCCESS;
@@ -81,7 +79,7 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 
 		$params = new ArgvInput;
 		$params->setInteractive(false);
-		$fixCommand = $this->findCommand('file:permission');
+		$fixCommand = $this->findCommand('code:close');
 		$fixCommand->run($params, $output);
 
 		return Command::SUCCESS;
