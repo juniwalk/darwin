@@ -18,7 +18,23 @@ use Nette\Schema\ValidationException;
 
 final class Configuration
 {
-	private $params;
+	/** @var string */
+	private $sessionDir;
+
+	/** @var string */
+	private $logDir;
+
+	/** @var string[] */
+	private $cacheDirs;
+
+	/** @var string[] */
+	private $lockingFiles;
+
+	/** @var string[] */
+	private $excludePaths;
+
+	/** @var Rule[] */
+	private $rules;
 
 
 	/**
@@ -27,15 +43,68 @@ final class Configuration
 	 */
 	public function __construct()
 	{
-		$schema = $this->getConfigSchema();
-		$config = $this->getConfigData();
-
 		try {
-			$this->params = (new Processor)->process($schema, $config);
+			$config = (new Processor)->process(
+				$this->getConfigSchema(),
+				$this->getConfigData()
+			);
 
 		} catch (ValidationException $e) {
 			throw new ConfigInvalidException($e->getMessage(), $e->getCode());
 		}
+
+		foreach ($config as $key => $value) {
+			$this->{$key} = $value;
+		}
+
+		foreach ($this->rules as $pattern => $params) {
+			$this->rules[$pattern] = new Rule($pattern, 'any', $params->owner, $params->mode);
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSessionDir(): string
+	{
+		return $this->sessionDir;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLogDir(): string
+	{
+		return $this->logDir;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getCacheDirs(): iterable
+	{
+		return $this->cacheDirs;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLockFile(): string
+	{
+		return $this->lockingFiles->lock;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getUnlockFile(): string
+	{
+		return $this->lockingFiles->unlock;
 	}
 
 
@@ -44,7 +113,7 @@ final class Configuration
 	 */
 	public function getExcludeFolders(): iterable
 	{
-		return $this->params->permissions->excludePaths;
+		return $this->excludePaths;
 	}
 
 
@@ -53,13 +122,7 @@ final class Configuration
 	 */
 	public function getRules(): iterable
 	{
-		$rules = [];
-
-		foreach ($this->params->permissions->rules as $pattern => $params) {
-			$rules[] = new Rule($pattern, 'any', $params->owner, $params->mode);
-		}
-
-		return $rules;
+		return $this->rules;
 	}
 
 
@@ -75,7 +138,7 @@ final class Configuration
 			throw new ConfigNotFoundException;
 		}
 
-		return (array) Neon::decode($content);
+		return Neon::decode($content);
 	}
 
 
@@ -85,28 +148,24 @@ final class Configuration
 	private function getConfigSchema(): Schema
 	{
 		return Expect::structure([
-			'paths' => Expect::structure([
-				'sessionDir' => Expect::string()->assert('is_dir'),
-				'logDir' => Expect::string()->assert('is_dir'),
-				'cacheDirs' => Expect::listOf(
-					Expect::string()->assert('is_dir')
-				),
+			'sessionDir' => Expect::string()->assert('is_dir'),
+			'logDir' => Expect::string()->assert('is_dir'),
+			'cacheDirs' => Expect::listOf(
+				Expect::string()->assert('is_dir')
+			),
+			'lockingFiles' => Expect::structure([
+				'lock' => Expect::string('www/lock.phtml'),
+				'unlock' => Expect::string('www/lock.off'),
 			]),
-			'security' => Expect::structure([
-				'lock' => Expect::string(),
-				'unlock' => Expect::string(),
-			]),
-			'permissions' => Expect::structure([
-				'excludePaths' => Expect::listOf(
-					Expect::string()->assert('is_dir')
-				),
-				'rules' => Expect::arrayOf(
-					Expect::structure([
-						'owner' => Expect::string(),
-						'mode' => Expect::listOf('int|null')->min(2)->max(2),
-					])
-				)
-			]),
+			'excludePaths' => Expect::listOf(
+				Expect::string()->assert('is_dir')
+			),
+			'rules' => Expect::arrayOf(
+				Expect::structure([
+					'owner' => Expect::string(),
+					'mode' => Expect::listOf('int|null')->min(2)->max(2),
+				])
+			)
 		]);
 	}
 }
