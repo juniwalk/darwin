@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Finder\Finder;
 
-final class CodePermissionCommand extends AbstractCommand
+final class CodePermissionCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
 	protected static $defaultDescription = 'Fix file permissions in given directory';
@@ -35,9 +35,6 @@ final class CodePermissionCommand extends AbstractCommand
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
 		$this->setAliases(['fix']);
-
-		$this->addArgument('folder', InputArgument::OPTIONAL, 'Working directory for permission fixer');
-		$this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Name of configuration file', 'default');
 	}
 
 
@@ -48,8 +45,7 @@ final class CodePermissionCommand extends AbstractCommand
 	 */
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
-		// $this->getHelper('config')->load($input->getOption('config'));
-		$this->folder = $input->getArgument('folder') ?: getcwd();
+		$this->folder = getcwd();
 
 		parent::initialize($input, $output);
 	}
@@ -62,12 +58,8 @@ final class CodePermissionCommand extends AbstractCommand
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output): void
 	{
-		$folder = $this->folder !== getcwd()
-			? $this->folder
-			: 'current';
-
-		$this->addQuestion(function($cli) use ($folder) {
-			return $cli->confirm('Continue with <info>'.$folder.'</> directory?');
+		$this->addQuestion(function($cli) {
+			return $cli->confirm('Continue with <info>current</> directory?');
 		});
 
 		parent::interact($input, $output);
