@@ -37,7 +37,7 @@ final class CodeCloseCommand extends AbstractConfigAwareCommand
 		$this->setName(static::$defaultName);
 		$this->setAliases(['fix']);
 
-		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force permission fix even on excluded folders.');
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force permission fix even on excluded folders');
 	}
 
 
