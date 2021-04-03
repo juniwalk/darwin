@@ -47,7 +47,7 @@ final class CodePullCommand extends AbstractConfigAwareCommand
 				return $status->setStatus($status::SKIPPED);
 			}
 
-			$this->exec('mkdir', '-p', '-m', '0755', $sessionDir);
+			return $this->exec('mkdir', '-p', '-m', '0755', $sessionDir);
 		});
 
 		$status->setMessage('Create logging directory');
@@ -56,18 +56,24 @@ final class CodePullCommand extends AbstractConfigAwareCommand
 				return $status->setStatus($status::SKIPPED);
 			}
 
-			$this->exec('mkdir', '-p', '-m', '0755', $loggingDir);
+			return $this->exec('mkdir', '-p', '-m', '0755', $loggingDir);
 		});
 
 		$status->setMessage('Create cache directories');
 		$status->execute(function($status) use ($config) {
-			if (!$caches = $config->getCacheDirs()) {
+			if (!$cacheDirs = $config->getCacheDirs()) {
 				return $status->setStatus($status::SKIPPED);
 			}
 
-			foreach ($caches as $dir) {
-				$this->exec('mkdir', '-p', '-m', '0755', $dir);
+			$codes = [];
+
+			foreach ($cacheDirs as $dir) {
+				$code[] = $this->exec('mkdir', '-p', '-m', '0755', $dir);
 			}
+
+			return array_sum($code) === 0
+				? Command::SUCCESS
+				: Command::FAILURE;
 		});
 
 		$output->writeln('');
