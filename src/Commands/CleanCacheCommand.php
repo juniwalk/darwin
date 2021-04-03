@@ -40,9 +40,9 @@ final class CleanCacheCommand extends AbstractCommand
 	/**
 	 * @param  InputInterface   $input
 	 * @param  OutputInterface  $output
-	 * @throws ProjectNotFoundException
+	 * @return void
 	 */
-	protected function initialize(InputInterface $input, OutputInterface $output)
+	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		$this->skipFix = $input->getOption('skip-fix');
 
