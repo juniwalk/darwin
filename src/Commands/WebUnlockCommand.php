@@ -18,10 +18,6 @@ final class WebUnlockCommand extends AbstractConfigAwareCommand
 	protected static $defaultDescription = 'UNLOCK access into website';
 	protected static $defaultName = 'web:unlock';
 
-	/** @var string */
-	const FILE_LOCK = 'www/lock.phtml';
-	const FILE_UNLOCK = 'www/lock.off';
-
 
 	/**
 	 * @return void
@@ -42,17 +38,18 @@ final class WebUnlockCommand extends AbstractConfigAwareCommand
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$status = new StatusIndicator($output);
-		$status->setMessage('Opening access to the web page');
+		$config = $this->getConfig();
 		$output->writeln('');
 
-		$code = $status->execute(function($status) {
-			$isWebLocked = $this->exec('test', '-e', $this::FILE_LOCK);
+		$status->setMessage('Opening access to the web page');
+		$code = $status->execute(function($status) use ($config) {
+			$isWebLocked = $this->exec('test', '-e', $config->getLockFile());
 	
 			if ($isWebLocked !== Command::SUCCESS) {
 				return $status->setStatus($status::SKIPPED);
 			}
 	
-			return $this->exec('mv', $this::FILE_LOCK, $this::FILE_UNLOCK);
+			return $this->exec('mv', $config->getLockFile(), $config->getUnlockFile());
 		});
 
 		$output->writeln('');
