@@ -22,7 +22,7 @@ final class Configuration
 	private $sessionDir;
 
 	/** @var string */
-	private $logDir;
+	private $loggingDir;
 
 	/** @var string[] */
 	private $cacheDirs;
@@ -64,20 +64,20 @@ final class Configuration
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getSessionDir(): string
+	public function getSessionDir(): ?string
 	{
 		return $this->sessionDir;
 	}
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getLogDir(): string
+	public function getLoggingDir(): ?string
 	{
-		return $this->logDir;
+		return $this->loggingDir;
 	}
 
 
@@ -149,7 +149,7 @@ final class Configuration
 	{
 		return Expect::structure([
 			'sessionDir' => Expect::string()->assert('is_dir'),
-			'logDir' => Expect::string()->assert('is_dir'),
+			'loggingDir' => Expect::string()->assert('is_dir'),
 			'cacheDirs' => Expect::listOf(
 				Expect::string()->assert('is_dir')
 			),

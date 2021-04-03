@@ -52,7 +52,7 @@ final class CodePullCommand extends AbstractConfigAwareCommand
 
 		$status->setMessage('Create logging directory');
 		$status->execute(function($status) use ($config) {
-			if (!$loggingDir = $config->getLogDir()) {
+			if (!$loggingDir = $config->getLoggingDir()) {
 				return $status->setStatus($status::SKIPPED);
 			}
 
