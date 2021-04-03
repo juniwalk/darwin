@@ -36,17 +36,38 @@ final class CodePullCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$status = new StatusIndicator($output);
+		$config = $this->getConfig();
+
 		$this->writeHeader('Updating source code of the application');
 
-		$status = new StatusIndicator($output);
 		$status->setMessage('Create directory for PHP sessions');
-		$status->execute(function($status) {
-			return $this->exec('mkdir', '-p', '-m', '0755', 'temp/sessions');
+		$status->execute(function($status) use ($config) {
+			if (!$sessionDir = $config->getSessionDir()) {
+				return $status->setStatus($status::SKIPPED);
+			}
+
+			$this->exec('mkdir', '-p', '-m', '0755', $sessionDir);
 		});
 
-		$status->setMessage('Create directory for assets cache');
-		$status->execute(function($status) {
-			return $this->exec('mkdir', '-p', '-m', '0755', 'www/static');
+		$status->setMessage('Create logging directory');
+		$status->execute(function($status) use ($config) {
+			if (!$loggingDir = $config->getLogDir()) {
+				return $status->setStatus($status::SKIPPED);
+			}
+
+			$this->exec('mkdir', '-p', '-m', '0755', $loggingDir);
+		});
+
+		$status->setMessage('Create cache directories');
+		$status->execute(function($status) use ($config) {
+			if (!$caches = $config->getCacheDirs()) {
+				return $status->setStatus($status::SKIPPED);
+			}
+
+			foreach ($caches as $dir) {
+				$this->exec('mkdir', '-p', '-m', '0755', $dir);
+			}
 		});
 
 		$output->writeln('');
