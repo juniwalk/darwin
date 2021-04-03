@@ -8,6 +8,7 @@
 namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Tools\ProgressBar;
+use JuniWalk\Darwin\Tools\Rule;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,25 +71,20 @@ final class CodeOpenCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$config = $this->getConfig();
-
 		$folder = new SplFileInfo($this->folder);
 		$finder = (new Finder)->ignoreDotFiles(false)
-			->exclude($config->getExcludeFolders())
+			//->exclude($config->getExcludeFolders())
 			->in($folder->getPathname());
 
-		foreach ($config->getRules() as $rule) {
-			$rule->apply($folder);
-		}
+		$rule = new Rule('/(.*)/i', 'any', 'www-data', [644, 755]);
+		$rule->apply($folder);
 
 		$progress = new ProgressBar($output, false);
-		$progress->execute($finder, function($progress, $file) use ($config) {
+		$progress->execute($finder, function($progress, $file) use ($rule) {
 			$progress->setMessage(str_replace($this->folder, '.', $file->getPathname()));
 			$progress->advance();
 
-			foreach ($config->getRules() as $rule) {
-				$rule->apply($file);
-			}
+			$rule->apply($file);
 		});
 
 		return Command::SUCCESS;
