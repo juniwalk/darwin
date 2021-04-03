@@ -22,12 +22,12 @@ $commandLoader = new CommandLoader([
 	
 	// Code commands
 	Commands\CodeChangelogCommand::class,
+	Commands\CodeCloseCommand::class,
 	Commands\CodeDeployCommand::class,
 	Commands\CodeInstallCommand::class,
-	Commands\CodePermissionCommand::class,
 	Commands\CodePullCommand::class,
 	Commands\CodeWarmupCommand::class,
-	
+
 	// Image commands
 	Commands\ImageShrinkCommand::class,
 	Commands\ImageRestoreCommand::class,
@@ -36,7 +36,7 @@ $commandLoader = new CommandLoader([
 	Commands\SchemaDiffCommand::class,
 	Commands\SchemaDumpCommand::class,
 	Commands\SchemaMigrateCommand::class,
-	
+
 	// Web commands
 	Commands\WebLockCommand::class,
 	Commands\WebUnlockCommand::class,

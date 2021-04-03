@@ -14,11 +14,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-final class CodePermissionCommand extends AbstractConfigAwareCommand
+final class CodeCloseCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
-	protected static $defaultDescription = 'Fix file permissions in given directory';
-	protected static $defaultName = 'code:permission';
+	protected static $defaultDescription = 'Set file permissions as strictly closed';
+	protected static $defaultName = 'code:close';
 
 	/** @var string */
 	private $folder;
