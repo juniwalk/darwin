@@ -88,7 +88,7 @@ final class CodeOpenCommand extends AbstractConfigAwareCommand
 			$finder->exclude($config->getExcludeFolders());
 		}
 
-		$rule = new Rule('/\/(.*)/i', 'any', 'www-data', [644, 755]);
+		$rule = Rule::createOpen();
 		$rule->apply($folder);
 
 		$progress = new ProgressBar($output, false);

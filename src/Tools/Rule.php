@@ -44,6 +44,15 @@ final class Rule
 
 
 	/**
+	 * @return static
+	 */
+	public static function createOpen(): self
+	{
+		return new self('/\/(.*)/i', 'any', 'www-data', [644, 755]);
+	}
+
+
+	/**
 	 * @param  File  $file
 	 * @return bool
 	 */
