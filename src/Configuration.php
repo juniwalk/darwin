@@ -10,10 +10,12 @@ namespace JuniWalk\Darwin;
 use JuniWalk\Darwin\Exception\ConfigInvalidException;
 use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use JuniWalk\Darwin\Tools\Rule;
-use Nette\Neon\Neon;
+use Nette\DI\Config\Adapters\NeonAdapter;
+use Nette\DI\Config\Loader as ConfigLoader;
+use Nette\FileNotFoundException;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
-use Nette\Schema\Processor;
+use Nette\Schema\Processor as ConfigValidator;
 use Nette\Schema\ValidationException;
 
 final class Configuration
@@ -43,11 +45,19 @@ final class Configuration
 	 */
 	public function __construct()
 	{
+		$file = getcwd().'/.darwinrc';
+
+		$configLoader = new ConfigLoader;
+		$configLoader->addAdapter('darwinrc', NeonAdapter::class);
+
 		try {
-			$config = (new Processor)->process(
+			$config = (new ConfigValidator)->process(
 				$this->getConfigSchema(),
-				$this->getConfigData()
+				$configLoader->load($file)
 			);
+
+		} catch (FileNotFoundException $e) {
+			throw new ConfigNotFoundException($e->getMessage(), $e->getCode());
 
 		} catch (ValidationException $e) {
 			throw new ConfigInvalidException($e->getMessage(), $e->getCode());
@@ -127,27 +137,14 @@ final class Configuration
 
 
 	/**
-	 * @return string[]
-	 * @throws ConfigNotFoundException
-	 */
-	private function getConfigData(): iterable
-	{
-		$file = getcwd().'/.darwinrc';
-
-		if (!is_file($file) || !$content = file_get_contents($file)) {
-			throw new ConfigNotFoundException;
-		}
-
-		return Neon::decode($content);
-	}
-
-
-	/**
 	 * @return Schema
 	 */
 	private function getConfigSchema(): Schema
 	{
 		return Expect::structure([
+			'includes' => Expect::listOf(
+				Expect::string()->assert('is_dir')
+			),
 			'sessionDir' => Expect::string()->assert('is_dir'),
 			'loggingDir' => Expect::string()->assert('is_dir'),
 			'cacheDirs' => Expect::listOf(

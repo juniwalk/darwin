@@ -24,9 +24,7 @@
 		"symfony/process": "^5.0",
 		"symfony/finder": "^5.0",
 		"tracy/tracy": "^2.0",
-		"nette/utils": "^3.0",
-		"nette/schema": "^1.0",
-		"nette/neon": "^3.0"
+		"nette/di": "^3.0"
 	},
 
 	"bin": [
