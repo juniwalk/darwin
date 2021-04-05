@@ -9,7 +9,6 @@ namespace JuniWalk\Darwin;
 
 use JuniWalk\Darwin\Exception\ConfigInvalidException;
 use JuniWalk\Darwin\Exception\ConfigNotFoundException;
-use JuniWalk\Darwin\Tools\Rule;
 use Nette\DI\Config\Adapters\NeonAdapter;
 use Nette\DI\Config\Loader;
 use Nette\FileNotFoundException;

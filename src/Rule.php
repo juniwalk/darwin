@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 /**
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2021
  * @license   MIT License
  */
 
-namespace JuniWalk\Darwin\Tools;
+namespace JuniWalk\Darwin;
 
 use SplFileInfo as File;
 
