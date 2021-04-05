@@ -8,7 +8,6 @@
 namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Tools\ProgressBar;
-use JuniWalk\Darwin\Tools\Rule;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,11 +15,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-final class CodeOpenCommand extends AbstractConfigAwareCommand
+final class MakeCloseCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
-	protected static $defaultDescription = 'Set file permissions as open';
-	protected static $defaultName = 'code:open';
+	protected static $defaultDescription = 'Set file permissions as strictly closed';
+	protected static $defaultName = 'make:close';
 
 	/** @var bool */
 	private $isForced;
@@ -88,15 +87,18 @@ final class CodeOpenCommand extends AbstractConfigAwareCommand
 			$finder->exclude($config->getExcludeFolders());
 		}
 
-		$rule = Rule::createOpen();
-		$rule->apply($folder);
+		foreach ($config->getRules() as $rule) {
+			$rule->apply($folder);
+		}
 
 		$progress = new ProgressBar($output, false);
-		$progress->execute($finder, function($progress, $file) use ($rule) {
+		$progress->execute($finder, function($progress, $file) use ($config) {
 			$progress->setMessage(str_replace($this->folder, '.', $file->getPathname()));
 			$progress->advance();
 
-			$rule->apply($file);
+			foreach ($config->getRules() as $rule) {
+				$rule->apply($file);
+			}
 		});
 
 		return Command::SUCCESS;

@@ -19,28 +19,28 @@ $commandLoader = new CommandLoader([
 	Commands\CleanCacheCommand::class,
 	Commands\CleanLogsCommand::class,
 	Commands\CleanSessionsCommand::class,
-	
+
 	// Code commands
 	Commands\CodeChangelogCommand::class,
-	Commands\CodeCloseCommand::class,
 	Commands\CodeDeployCommand::class,
 	Commands\CodeInstallCommand::class,
-	Commands\CodeOpenCommand::class,
 	Commands\CodePullCommand::class,
 	Commands\CodeWarmupCommand::class,
 
 	// Image commands
 	Commands\ImageShrinkCommand::class,
 	Commands\ImageRestoreCommand::class,
-	
+
+	// Make commands
+	Commands\MakeCloseCommand::class,
+	Commands\MakeLockedCommand::class,
+	Commands\MakeOpenCommand::class,
+	Commands\MakeUnlockedCommand::class,
+
 	// Schema commands
 	Commands\SchemaDiffCommand::class,
 	Commands\SchemaDumpCommand::class,
 	Commands\SchemaMigrateCommand::class,
-
-	// Web commands
-	Commands\WebLockCommand::class,
-	Commands\WebUnlockCommand::class,
 ]);
 
 $darwin = new Application('Darwin', 'dev-master');

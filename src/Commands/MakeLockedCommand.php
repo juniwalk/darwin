@@ -12,11 +12,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class WebUnlockCommand extends AbstractConfigAwareCommand
+final class MakeLockedCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
-	protected static $defaultDescription = 'UNLOCK access into website';
-	protected static $defaultName = 'web:unlock';
+	protected static $defaultDescription = 'LOCK access into website';
+	protected static $defaultName = 'make:locked';
 
 
 	/**
@@ -26,7 +26,7 @@ final class WebUnlockCommand extends AbstractConfigAwareCommand
 	{
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
-		$this->setAliases(['unlock']);
+		$this->setAliases(['lock']);
 	}
 
 
@@ -41,15 +41,15 @@ final class WebUnlockCommand extends AbstractConfigAwareCommand
 		$config = $this->getConfig();
 		$output->writeln('');
 
-		$status->setMessage('Opening access to the web page');
+		$status->setMessage('Locking access to the web page');
 		$code = $status->execute(function($status) use ($config) {
 			$isWebLocked = $this->exec('test', '-e', $config->getLockFile());
-	
-			if ($isWebLocked !== Command::SUCCESS) {
+
+			if ($isWebLocked === Command::SUCCESS) {
 				return $status->setStatus($status::SKIPPED);
 			}
-	
-			return $this->exec('mv', $config->getLockFile(), $config->getUnlockFile());
+
+			return $this->exec('mv', $config->getUnlockFile(), $config->getLockFile());
 		});
 
 		$output->writeln('');
