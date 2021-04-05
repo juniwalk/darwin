@@ -15,9 +15,6 @@ final class Rule
 	private $pattern;
 
 	/** @var string */
-	private $type;
-
-	/** @var string */
 	private $owner;
 
 	/** @var int[] */
@@ -26,18 +23,15 @@ final class Rule
 
 	/**
 	 * @param string  $pattern
-	 * @param string  $type
 	 * @param string  $owner
 	 * @param int[]  $modes
 	 */
 	public function __construct(
 		string $pattern,
-		string $type,
 		string $owner,
 		iterable $modes
 	) {
 		$this->pattern = $pattern;
-		$this->type = $type;
 		$this->owner = $owner;
 		$this->modes = $modes;
 	}
@@ -48,7 +42,7 @@ final class Rule
 	 */
 	public static function createOpen(): self
 	{
-		return new self('/\/(.*)/i', 'any', 'www-data', [644, 755]);
+		return new self('/\/(.*)/i', 'www-data', [644, 755]);
 	}
 
 
@@ -58,19 +52,15 @@ final class Rule
 	 */
 	private function isDesiredType(File $file): bool
 	{
-		if ($this->type == 'any') {
+		if (isset($this->modes[0]) && $file->isFile()) {
 			return true;
 		}
 
-		if ($file->isFile() && $this->type == 'file') {
+		if (isset($this->modes[1]) && $file->isDir()) {
 			return true;
 		}
 
-		if ($file->isDir() && $this->type == 'dir') {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 

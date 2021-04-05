@@ -71,7 +71,7 @@ final class Configuration
 		}
 
 		foreach ($this->rules as $pattern => $params) {
-			$this->rules[$pattern] = new Rule($pattern, 'any', $params->owner, $params->mode);
+			$this->rules[$pattern] = new Rule($pattern, $params->owner, $params->mode);
 		}
 	}
 
