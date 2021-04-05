@@ -45,10 +45,15 @@ final class Configuration
 	 */
 	public function __construct()
 	{
-		$file = getcwd().'/.darwinrc';
+		$file = CWD.'/.darwinrc';
 
 		$configLoader = new ConfigLoader;
 		$configLoader->addAdapter('darwinrc', NeonAdapter::class);
+		$configLoader->setParameters([
+			'projectName' => CWD_NAME,
+			'presetPath' => DARWIN_HOME_PATH.'/preset',
+			'darwinPath' => DARWIN_HOME_PATH,
+		]);
 
 		try {
 			$config = (new ConfigValidator)->process(

@@ -12,6 +12,10 @@ if (!@include __DIR__.'/../../../autoload.php') {
 	throw new Exception('Composer autoloader not found.');
 }
 
+define('DARWIN_HOME_PATH', realpath(__DIR__.'/../'));
+define('CWD', getcwd());
+define('CWD_NAME', basename(CWD));
+
 $darwin = new Application('Darwin', 'dev-master');
 $darwin->addCommands([
 	// Clean commands
