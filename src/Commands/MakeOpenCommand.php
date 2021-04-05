@@ -36,7 +36,6 @@ final class MakeOpenCommand extends AbstractConfigAwareCommand
 	{
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
-		$this->setAliases(['fix']);
 
 		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force permission fix even on excluded folders');
 	}
