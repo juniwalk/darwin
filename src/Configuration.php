@@ -11,11 +11,11 @@ use JuniWalk\Darwin\Exception\ConfigInvalidException;
 use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use JuniWalk\Darwin\Tools\Rule;
 use Nette\DI\Config\Adapters\NeonAdapter;
-use Nette\DI\Config\Loader as ConfigLoader;
+use Nette\DI\Config\Loader;
 use Nette\FileNotFoundException;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
-use Nette\Schema\Processor as ConfigValidator;
+use Nette\Schema\Processor;
 use Nette\Schema\ValidationException;
 
 final class Configuration
@@ -47,7 +47,7 @@ final class Configuration
 	{
 		$file = CWD.'/.darwinrc';
 
-		$configLoader = new ConfigLoader;
+		$configLoader = new Loader;
 		$configLoader->addAdapter('darwinrc', NeonAdapter::class);
 		$configLoader->setParameters([
 			'projectName' => CWD_NAME,
@@ -56,7 +56,7 @@ final class Configuration
 		]);
 
 		try {
-			$config = (new ConfigValidator)->process(
+			$config = (new Processor)->process(
 				$this->getConfigSchema(),
 				$configLoader->load($file)
 			);
@@ -147,9 +147,6 @@ final class Configuration
 	private function getConfigSchema(): Schema
 	{
 		return Expect::structure([
-			'includes' => Expect::listOf(
-				Expect::string()->assert('is_dir')
-			),
 			'sessionDir' => Expect::string()->assert('is_dir'),
 			'loggingDir' => Expect::string()->assert('is_dir'),
 			'cacheDirs' => Expect::listOf(
