@@ -45,20 +45,19 @@ final class Configuration
 	 */
 	public function __construct()
 	{
-		$file = CWD.'/.darwinrc';
-
 		$configLoader = new Loader;
-		$configLoader->addAdapter('darwinrc', NeonAdapter::class);
+		$configLoader->addAdapter(CONFIG_NAME, NeonAdapter::class);
 		$configLoader->setParameters([
-			'projectName' => CWD_NAME,
-			'presetPath' => DARWIN_HOME_PATH.'/preset',
-			'darwinPath' => DARWIN_HOME_PATH,
+			'projectName' => basename(WORKING_DIR),
+			'presetPath' => DARWIN_PATH.'/preset',
+			'darwinPath' => DARWIN_PATH,
+			'basePath' => WORKING_DIR,
 		]);
 
 		try {
 			$config = (new Processor)->process(
 				$this->getConfigSchema(),
-				$configLoader->load($file)
+				$configLoader->load(CONFIG_FILE)
 			);
 
 		} catch (FileNotFoundException $e) {
