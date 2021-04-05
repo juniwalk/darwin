@@ -39,7 +39,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	{
 		$params = new ArgvInput;
 		$commands = [
-			'make:lock',		// lock access
+			'make:locked',		// lock access
 			'code:pull',		// pull new source code
 			'code:install',		// install dependencies
 			'clean:cache',		// clear cache
