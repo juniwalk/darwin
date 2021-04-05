@@ -6,43 +6,41 @@
  */
 
 use JuniWalk\Darwin\Commands;
-use JuniWalk\Darwin\CommandLoader;
 use Symfony\Component\Console\Application;
 
 if (!@include __DIR__.'/../../../autoload.php') {
 	throw new Exception('Composer autoloader not found.');
 }
 
-$commandLoader = new CommandLoader([
+$darwin = new Application('Darwin', 'dev-master');
+$darwin->addCommands([
 	// Clean commands
-	Commands\CleanBackupCommand::class,
-	Commands\CleanCacheCommand::class,
-	Commands\CleanLogsCommand::class,
-	Commands\CleanSessionsCommand::class,
+	new Commands\CleanBackupCommand,
+	new Commands\CleanCacheCommand,
+	new Commands\CleanLogsCommand,
+	new Commands\CleanSessionsCommand,
 
 	// Code commands
-	Commands\CodeChangelogCommand::class,
-	Commands\CodeDeployCommand::class,
-	Commands\CodeInstallCommand::class,
-	Commands\CodePullCommand::class,
-	Commands\CodeWarmupCommand::class,
+	new Commands\CodeChangelogCommand,
+	new Commands\CodeDeployCommand,
+	new Commands\CodeInstallCommand,
+	new Commands\CodePullCommand,
+	new Commands\CodeWarmupCommand,
 
 	// Image commands
-	Commands\ImageShrinkCommand::class,
-	Commands\ImageRestoreCommand::class,
+	new Commands\ImageShrinkCommand,
+	new Commands\ImageRestoreCommand,
 
 	// Make commands
-	Commands\MakeCloseCommand::class,
-	Commands\MakeLockedCommand::class,
-	Commands\MakeOpenCommand::class,
-	Commands\MakeUnlockedCommand::class,
+	new Commands\MakeCloseCommand,
+	new Commands\MakeLockedCommand,
+	new Commands\MakeOpenCommand,
+	new Commands\MakeUnlockedCommand,
 
 	// Schema commands
-	Commands\SchemaDiffCommand::class,
-	Commands\SchemaDumpCommand::class,
-	Commands\SchemaMigrateCommand::class,
+	new Commands\SchemaDiffCommand,
+	new Commands\SchemaDumpCommand,
+	new Commands\SchemaMigrateCommand,
 ]);
 
-$darwin = new Application('Darwin', 'dev-master');
-$darwin->setCommandLoader($commandLoader);
 $darwin->run();
