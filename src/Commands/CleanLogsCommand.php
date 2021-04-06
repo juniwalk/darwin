@@ -47,7 +47,7 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 			->files()->notName('index.*')
 			->in($loggingDir);
 
-		if ($finder->hasResults()) {
+		if (!$finder->hasResults()) {
 			return Command::SUCCESS;
 		}
 
