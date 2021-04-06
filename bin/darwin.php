@@ -38,6 +38,7 @@ $darwin->addCommands([
 
 	// Make commands
 	new Commands\MakeCloseCommand,
+	new Commands\MakeConfigCommand,
 	new Commands\MakeLockedCommand,
 	new Commands\MakeOpenCommand,
 	new Commands\MakeUnlockedCommand,

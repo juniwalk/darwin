@@ -18,7 +18,18 @@ Set file permissions as open
 $ darwin make:open --force
 ```
 
-- `--force`: force permission fix even on excluded folders.
+- `--force`: force permission fix even on excluded folders
+
+
+make:config
+-----------
+Create darwin configuration file
+
+```
+$ darwin make:config --type=TYPE
+```
+
+- `--type`: type of the config to be created
 
 
 make:locked | lock
