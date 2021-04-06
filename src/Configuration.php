@@ -9,12 +9,11 @@ namespace JuniWalk\Darwin;
 
 use JuniWalk\Darwin\Exception\ConfigInvalidException;
 use JuniWalk\Darwin\Exception\ConfigNotFoundException;
+use Nette\DI\Config;
 use Nette\DI\Config\Adapters\NeonAdapter;
-use Nette\DI\Config\Loader;
 use Nette\FileNotFoundException;
+use Nette\Schema;
 use Nette\Schema\Expect;
-use Nette\Schema\Schema;
-use Nette\Schema\Processor;
 use Nette\Schema\ValidationException;
 
 final class Configuration
@@ -44,19 +43,10 @@ final class Configuration
 	 */
 	public function __construct()
 	{
-		$configLoader = new Loader;
-		$configLoader->addAdapter(CONFIG_NAME, NeonAdapter::class);
-		$configLoader->setParameters([
-			'projectName' => basename(WORKING_DIR),
-			'presetPath' => DARWIN_PATH.'/preset',
-			'darwinPath' => DARWIN_PATH,
-			'basePath' => WORKING_DIR,
-		]);
-
 		try {
-			$config = (new Processor)->process(
+			$config = (new Schema\Processor)->process(
 				$this->getConfigSchema(),
-				$configLoader->load(CONFIG_FILE)
+				$this->getConfigData()
 			);
 
 		} catch (FileNotFoundException $e) {
@@ -140,9 +130,27 @@ final class Configuration
 
 
 	/**
-	 * @return Schema
+	 * @return string[]
 	 */
-	private function getConfigSchema(): Schema
+	private function getConfigData(): iterable
+	{
+		$loader = new Config\Loader;
+		$loader->addAdapter(CONFIG_NAME, NeonAdapter::class);
+		$loader->setParameters([
+			'projectName' => basename(WORKING_DIR),
+			'presetPath' => DARWIN_PATH.'/preset',
+			'darwinPath' => DARWIN_PATH,
+			'basePath' => WORKING_DIR,
+		]);
+
+		return $loader->load(CONFIG_FILE);
+	}
+
+
+	/**
+	 * @return Schema\Schema
+	 */
+	private function getConfigSchema(): Schema\Schema
 	{
 		return Expect::structure([
 			'sessionDir' => Expect::string()->assert('is_dir'),
