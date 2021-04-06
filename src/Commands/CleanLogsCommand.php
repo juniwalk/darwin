@@ -34,6 +34,12 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		return $this->exec('find', 'log/*', '-not', '-name', '\'.gitignore\'', '-print0', '|', 'xargs', '-0', 'rm', '-rf', '--');
+		$config = $this->getConfig();
+
+		if (!$loggingDir = $config->getLoggingDir()) {
+			return Command::SUCCESS;
+		}
+
+		return $this->exec('find', $loggingDir.'/*', '-not', '-name', '\'.gitignore\'', '-print0', '|', 'xargs', '-0', 'rm', '-rf', '--');
 	}
 }
