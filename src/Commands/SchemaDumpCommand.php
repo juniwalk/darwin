@@ -7,7 +7,6 @@
 
 namespace JuniWalk\Darwin\Commands;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -35,9 +34,9 @@ final class SchemaDumpCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$this->exec('php', 'www/index.php', 'orm:schema-tool:update', '--dump-sql');
+		$code = $this->exec('php', 'www/index.php', 'orm:schema-tool:update', '--dump-sql');
 		$output->writeln('');
 
-		return Command::SUCCESS;
+		return $code;
 	}
 }

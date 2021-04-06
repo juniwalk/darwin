@@ -73,19 +73,16 @@ final class ImageShrinkCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$files = (new Finder)->in($folder = getcwd())
+		$files = (new Finder)->in(WORKING_DIR)
 			->files()->name($this::IMAGES);
 
 		$progress = new ProgressBar($output, false);
-		$progress->execute($files, function($progress, $file) use ($folder) {
-			$progress->setMessage(str_replace($folder, '.', $file));
+		$progress->execute($files, function($progress, $file) {
+			$progress->setMessage(str_replace(WORKING_DIR, '.', $file));
 			$progress->advance();
 
 			$this->resizeImage($file);
 		});
-
-		// TODO: Print table with failed images
-		// limit the list to X entries
 
 		return Command::SUCCESS;
 	}

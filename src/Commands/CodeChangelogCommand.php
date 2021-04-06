@@ -110,7 +110,7 @@ final class CodeChangelogCommand extends AbstractCommand
 			throw NoCommitsException::fromRange($this->range);
 		}
 
-		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/'.$this::CHANGELOG_FILE.'$/i');
+		$files = (new Finder)->in(WORKING_DIR)->depth('== 0')->name('/'.$this::CHANGELOG_FILE.'$/i');
 		$file = current(iterator_to_array($files->getIterator()));
 		$changelog = $changes = $lastDate = null;
 
@@ -137,8 +137,8 @@ final class CodeChangelogCommand extends AbstractCommand
 		file_put_contents($filename, ltrim($changes).PHP_EOL.$changelog);
 
 		if ($this->autoCommit) {
-			exec('git add '.$this::CHANGELOG_FILE);
-			exec('git commit --message="'.$this::CHANGELOG_MSG.'"');
+			$this->exec('git', 'add', $this::CHANGELOG_FILE);
+			$this->exec('git', 'commit', '--message="'.$this::CHANGELOG_MSG.'"');
 		}
 
 		$output->writeln(PHP_EOL.'Changelog generated from '.sizeof($commits).' commits.');

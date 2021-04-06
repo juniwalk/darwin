@@ -38,14 +38,14 @@ final class MakeUnlockedCommand extends AbstractConfigAwareCommand
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$status = new StatusIndicator($output);
-		$config = $this->getConfig();
 		$output->writeln('');
 
 		$status->setMessage('Opening access to the web page');
-		$code = $status->execute(function($status) use ($config) {
-			$isWebLocked = $this->exec('test', '-e', $config->getLockFile());
+		$code = $status->execute(function($status) {
+			$config = $this->getConfig();
+			$isWebUnlocked = $this->exec('test', '-e', $config->getUnlockFile());
 	
-			if ($isWebLocked !== Command::SUCCESS) {
+			if ($isWebUnlocked === Command::SUCCESS) {
 				return $status->setStatus($status::SKIPPED);
 			}
 	

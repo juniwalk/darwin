@@ -7,7 +7,6 @@
 
 namespace JuniWalk\Darwin\Commands;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,9 +35,9 @@ final class SchemaMigrateCommand extends AbstractCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
+		$code = $this->exec('php', 'www/index.php', 'migrations:migrate', '--no-interaction');
 		$output->writeln('');
 
-		return Command::SUCCESS;
+		return $code;
 	}
 }

@@ -49,7 +49,7 @@ final class MakeCloseCommand extends AbstractConfigAwareCommand
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		$this->isForced = $input->getOption('force');
-		$this->folder = getcwd();
+		$this->folder = WORKING_DIR;
 
 		parent::initialize($input, $output);
 	}

@@ -144,7 +144,7 @@ abstract class AbstractCommand extends Command
 	protected function confirm(string $message, bool $default = true): bool
 	{
 		return $this->ask(new ConfirmationQuestion(
-			$message.' <comment>[Y,n]</comment> ',
+			$message.' <comment>[Y,n]</> ',
 			$default
 		));
 	}
@@ -165,7 +165,7 @@ abstract class AbstractCommand extends Command
 		}
 
 		return $this->ask(new ChoiceQuestion(
-			$message.' <comment>['.$choices[$default].']</comment> ',
+			$message.' <comment>['.$choices[$default].']</> ',
 			$choices,
 			$default
 		));

@@ -38,11 +38,11 @@ final class MakeLockedCommand extends AbstractConfigAwareCommand
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$status = new StatusIndicator($output);
-		$config = $this->getConfig();
 		$output->writeln('');
 
 		$status->setMessage('Locking access to the web page');
-		$code = $status->execute(function($status) use ($config) {
+		$code = $status->execute(function($status) {
+			$config = $this->getConfig();
 			$isWebLocked = $this->exec('test', '-e', $config->getLockFile());
 
 			if ($isWebLocked === Command::SUCCESS) {

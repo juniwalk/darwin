@@ -37,7 +37,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$params = new ArgvInput;
+		$arguments = new ArgvInput;
 		$commands = [
 			'make:locked',		// lock access
 			'code:pull',		// pull new source code
@@ -47,9 +47,14 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 			'code:warmup',		// warmup cache
 		];
 
-		foreach ($commands as $command) {
-			$command = $this->findCommand($command);
-			$command->run($params, $output);
+		foreach ($commands as $commandName) {
+			$command = $this->findCommand($commandName);
+			$code = $command->run($arguments, $output);
+
+			if ($code !== Command::SUCCESS) {
+				$output->writeln('Command <comment>'.$commandName.'</> has failed to execute');
+				return $code;
+			}
 		}
 
 		return Command::SUCCESS;
