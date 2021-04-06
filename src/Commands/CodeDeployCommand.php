@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Commands;
 
+use JuniWalk\Darwin\Exception\CommandFailedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,6 +34,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	/**
 	 * @param  InputInterface  $input
 	 * @param  OutputInterface  $output
+	 * @throws CommandFailedException
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
@@ -52,8 +54,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 			$code = $command->run($arguments, $output);
 
 			if ($code !== Command::SUCCESS) {
-				$output->writeln('Command <comment>'.$commandName.'</> has failed to execute');
-				return $code;
+				throw CommandFailedException::fromName($commandName);
 			}
 		}
 
