@@ -1,0 +1,14 @@
+excludePaths:
+	- vendor
+	- bin
+
+rules:
+	'/\/(.*)/i':
+		owner: root
+		mode: [0644, 0755]
+	'/\/(.*)\.sh$/i':
+		owner: root
+		mode: [null, 0755]
+	'/(assets|cache|config|img|logs?|mails|modules|translations|upload|download)/i':
+		owner: www-data
+		mode: [644, 755]
