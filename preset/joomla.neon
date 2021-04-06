@@ -1,3 +1,10 @@
+sessionDir: /var/lib/php/sessions/dp/www/%projectName%/
+loggingDir: administrator/logs/
+cacheDirs:
+	- administrator/cache/
+	- cache/
+	- tmp/
+
 rules:
 	'/\/(.*)/i':
 		owner: root
