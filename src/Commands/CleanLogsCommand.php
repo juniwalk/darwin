@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Darwin\Commands;
 
+use JuniWalk\Darwin\Tools\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -40,6 +41,22 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 			return Command::SUCCESS;
 		}
 
-		return $this->exec('find', $loggingDir.'/*', '-not', '-name', '\'.gitignore\'', '-print0', '|', 'xargs', '-0', 'rm', '-rf', '--');
+		$finder = (new Finder)->ignoreDotFiles(false)
+			->files()->notName('index.*')
+			->in($loggingDir);
+
+		if ($finder->hasResults()) {
+			return Command::SUCCESS;
+		}
+
+		$progress = new ProgressBar($output, false);
+		$progress->execute($finder, function($progress, $file) use ($loggingDir) {
+			$progress->setMessage(str_replace($loggingDir, '.', $file->getPathname()));
+			$progress->advance();
+
+			unlink($file->getPathname());
+		});
+
+		return Command::SUCCESS;
 	}
 }
