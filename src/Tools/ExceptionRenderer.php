@@ -8,10 +8,9 @@
 namespace JuniWalk\Darwin\Tools;
 
 use Nette\Utils\Strings;
-use Throwable;
-use Tracy\Debugger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
+use Throwable;
 
 final class ExceptionRenderer
 {
@@ -20,9 +19,6 @@ final class ExceptionRenderer
 
 	/** @var Terminal */
 	private $terminal;
-
-	/** @var bool */
-	private $logExceptions = true;
 
 	/** @var callable */
 	private $onBeforeRender;
@@ -38,16 +34,6 @@ final class ExceptionRenderer
 	{
 		$this->terminal = new Terminal;
 		$this->output = $output;
-	}
-
-
-	/**
-	 * @param  bool  $logExceptions
-	 * @return void
-	 */
-	public function setLogExceptions(bool $logExceptions = false): void
-	{
-		$this->logExceptions = $logExceptions;
 	}
 
 
@@ -99,21 +85,17 @@ final class ExceptionRenderer
 		}
 
 		$messages = [];
-		$messages[] = $emptyLine = $formatter->format(sprintf('<error>%s</error>', str_repeat(' ', $len)));
-		$messages[] = $formatter->format(sprintf('<error>%s%s</error>', $title, str_repeat(' ', max(0, $len - Strings::length($title)))));
+		$messages[] = $emptyLine = $formatter->format(sprintf('<error>%s</>', str_repeat(' ', $len)));
+		$messages[] = $formatter->format(sprintf('<error>%s%s</>', $title, str_repeat(' ', max(0, $len - Strings::length($title)))));
 
 		foreach ($lines as $line) {
-			$messages[] = $formatter->format(sprintf('<error>  %s  %s</error>', $line[0], str_repeat(' ', $len - $line[1])));
+			$messages[] = $formatter->format(sprintf('<error>  %s  %s</>', $line[0], str_repeat(' ', $len - $line[1])));
 		}
 
 		$messages[] = $emptyLine;
 		$messages[] = PHP_EOL;
 
 		$output->writeln($messages);
-
-		if ($this->logExceptions) {
-			Debugger::log($e);
-		}
 
 		if (isset($this->onAfterRender)) {
 			call_user_func($this->onAfterRender, $e);

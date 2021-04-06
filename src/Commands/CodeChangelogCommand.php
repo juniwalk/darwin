@@ -7,7 +7,7 @@
 
 namespace JuniWalk\Darwin\Commands;
 
-use JuniWalk\Darwin\Exception\GitNoCommitsException;
+use JuniWalk\Darwin\Exception\NoCommitsException;
 use JuniWalk\Darwin\Tools\ProgressBar;
 use Nette\Utils\DateTime;
 use Symfony\Component\Console\Command\Command;
@@ -107,7 +107,7 @@ final class CodeChangelogCommand extends AbstractCommand
 		}
 
 		if (!exec($command, $commits) || !$commits) {
-			throw GitNoCommitsException::fromRange($this->range);
+			throw NoCommitsException::fromRange($this->range);
 		}
 
 		$files = (new Finder)->in(getcwd())->depth('== 0')->name('/'.$this::CHANGELOG_FILE.'$/i');

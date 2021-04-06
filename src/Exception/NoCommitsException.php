@@ -7,13 +7,13 @@
 
 namespace JuniWalk\Darwin\Exception;
 
-final class GitNoCommitsException extends DarwinException
+final class NoCommitsException extends \RuntimeException
 {
 	/**
 	 * @param  string  $range
 	 * @return static
 	 */
-	public static function fromRange(string $range)
+	public static function fromRange(string $range): self
 	{
 		return new static('No commits found for range: '.$range, 500);
 	}

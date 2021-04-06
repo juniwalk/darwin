@@ -1,15 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Darwin
- * @link      https://github.com/juniwalk/darwin
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2021
  * @license   MIT License
  */
 
 namespace JuniWalk\Darwin\Exception;
 
-final class ConfigInvalidException extends DarwinException
+final class ConfigInvalidException extends \RuntimeException
 {
 }

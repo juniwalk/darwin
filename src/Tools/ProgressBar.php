@@ -7,9 +7,9 @@
 
 namespace JuniWalk\Darwin\Tools;
 
-use Throwable;
 use Symfony\Component\Console\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 final class ProgressBar
 {
@@ -72,7 +72,7 @@ final class ProgressBar
 
 		$progress = new Helper\ProgressBar($this->output, sizeof($values));
 		$progress->setFormat(" %current%/%max% [%bar%] %percent:3s%%\n %message%");
-		$progress->setMessage('<info>Preparing...</info>');
+		$progress->setMessage('<info>Preparing...</>');
 		$progress->start();
 
 		$renderer = new ExceptionRenderer($this->output);
@@ -92,7 +92,7 @@ final class ProgressBar
 			}
 		}
 
-		$progress->setMessage('<info>Process has finished</info>');
+		$progress->setMessage('<info>Process has finished</>');
 		$progress->finish();
 
 		if ($this->isHideOnFinish) {
