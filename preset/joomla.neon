@@ -14,7 +14,7 @@ rules:
 		mode: [null, 0755]
 	'/\/(avatar|cache|logs?|images|media|tmp|xml|static|css|js|favicon|sitemap.xml)/i':
 		owner: www-data
-		mode: [644, 755]
+		mode: [0644, 0755]
 	'/(mod_login|mod_k2_login|mod_socialmedialinks|katalog|index)/i':
 		owner: root
-		mode: [644, 755]
+		mode: [0644, 0755]
