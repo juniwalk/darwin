@@ -24,7 +24,7 @@ final class CodeChangelogCommand extends AbstractCommand
 	protected static $defaultName = 'code:changelog';
 
 	/** @var string */
-	const CHANGELOG_FILE = 'changelog.md';
+	const CHANGELOG_FILE = 'CHANGELOG.md';
 	const CHANGELOG_MSG = '#changelog';
 
 	/** @var string */
