@@ -43,7 +43,7 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 			return Command::SUCCESS;
 		}
 
-		$finder = (new Finder)->ignoreDotFiles(false)
+		$finder = (new Finder)->ignoreDotFiles(true)
 			->files()->notName('index.*')
 			->in($loggingDir);
 
