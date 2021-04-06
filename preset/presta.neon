@@ -1,3 +1,9 @@
+sessionDir: /var/lib/php/sessions/dp/www/%projectName%/
+loggingDir: var/logs/
+cacheDirs:
+	- var/cache/
+	- cache/
+
 excludePaths:
 	- vendor
 	- bin
