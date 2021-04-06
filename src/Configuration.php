@@ -11,6 +11,7 @@ use JuniWalk\Darwin\Exception\ConfigInvalidException;
 use JuniWalk\Darwin\Exception\ConfigNotFoundException;
 use Nette\DI\Config;
 use Nette\DI\Config\Adapters\NeonAdapter;
+use Nette\DI\Helpers;
 use Nette\FileNotFoundException;
 use Nette\Schema;
 use Nette\Schema\Expect;
@@ -136,14 +137,17 @@ final class Configuration
 	{
 		$loader = new Config\Loader;
 		$loader->addAdapter(CONFIG_NAME, NeonAdapter::class);
-		$loader->setParameters([
+		$loader->setParameters($params = [
 			'projectName' => basename(WORKING_DIR),
 			'presetPath' => DARWIN_PATH.'/preset',
 			'darwinPath' => DARWIN_PATH,
 			'basePath' => WORKING_DIR,
 		]);
 
-		return $loader->load(CONFIG_FILE);
+		$data = $loader->load(CONFIG_FILE);
+		$data = Helpers::expand($data, $params, true);
+
+		return $data;
 	}
 
 
