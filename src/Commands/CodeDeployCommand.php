@@ -11,6 +11,7 @@ use JuniWalk\Darwin\Exception\CommandFailedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class CodeDeployCommand extends AbstractConfigAwareCommand
@@ -18,6 +19,16 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	/** @var string */
 	protected static $defaultDescription = 'Deploy pending updates to the project';
 	protected static $defaultName = 'code:deploy';
+
+	/** @var string[] */
+	private $commandList = [
+		'make:locked',		// lock access
+		'code:pull',		// pull new source code
+		'code:install',		// install dependencies
+		'clean:cache',		// clear cache
+		'schema:migrate',	// migrate database
+		'code:warmup',		// warmup cache
+	];
 
 
 	/**
@@ -28,6 +39,23 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
 		$this->setAliases(['deploy']);
+
+		$this->addOption('skip-migrations', 'm', InputOption::VALUE_NONE, 'Do not execute schema migrations');
+	}
+
+
+	/**
+	 * @param  InputInterface  $input
+	 * @param  OutputInterface  $output
+	 * @return void
+	 */
+	protected function initialize(InputInterface $input, OutputInterface $output): void
+	{
+		if ($input->getOption('skip-migrations')) {
+			unset($this->commandList[4]);
+		}
+
+		parent::initialize($input, $output);
 	}
 
 
@@ -39,19 +67,9 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$arguments = new ArgvInput;
-		$commands = [
-			'make:locked',		// lock access
-			'code:pull',		// pull new source code
-			'code:install',		// install dependencies
-			'clean:cache',		// clear cache
-			'schema:migrate',	// migrate database
-			'code:warmup',		// warmup cache
-		];
-
-		foreach ($commands as $commandName) {
+		foreach ($this->commandList as $commandName) {
 			$command = $this->findCommand($commandName);
-			$code = $command->run($arguments, $output);
+			$code = $command->run(new ArgvInput, $output);
 
 			if ($code !== Command::SUCCESS) {
 				throw CommandFailedException::fromName($commandName);
