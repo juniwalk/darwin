@@ -20,9 +20,6 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 	protected static $defaultDescription = 'Clear application cache and fix permissions';
 	protected static $defaultName = 'clean:cache';
 
-	/** @var bool */
-	private $skipFix;
-
 
 	/**
 	 * @return void
@@ -34,19 +31,6 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 		$this->setAliases(['clean']);
 
 		$this->addOption('skip-fix', 's', InputOption::VALUE_NONE, 'Skip fixing permissions');
-	}
-
-
-	/**
-	 * @param  InputInterface   $input
-	 * @param  OutputInterface  $output
-	 * @return void
-	 */
-	protected function initialize(InputInterface $input, OutputInterface $output): void
-	{
-		$this->skipFix = $input->getOption('skip-fix');
-
-		parent::initialize($input, $output);
 	}
 
 
@@ -73,7 +57,7 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 			});
 		}
 
-		if ($this->skipFix === true) {
+		if ($input->getOption('skip-fix')) {
 			return Command::SUCCESS;
 		}
 

@@ -21,12 +21,6 @@ final class MakeCloseCommand extends AbstractConfigAwareCommand
 	protected static $defaultDescription = 'Set file permissions as strictly closed';
 	protected static $defaultName = 'make:close';
 
-	/** @var bool */
-	private $isForced;
-
-	/** @var string */
-	private $folder;
-
 
 	/**
 	 * @return void
@@ -38,20 +32,6 @@ final class MakeCloseCommand extends AbstractConfigAwareCommand
 		$this->setAliases(['fix']);
 
 		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force permission fix even on excluded folders');
-	}
-
-
-	/**
-	 * @param  InputInterface  $input
-	 * @param  OutputInterface  $output
-	 * @return void
-	 */
-	protected function initialize(InputInterface $input, OutputInterface $output): void
-	{
-		$this->isForced = $input->getOption('force');
-		$this->folder = WORKING_DIR;
-
-		parent::initialize($input, $output);
 	}
 
 
@@ -77,13 +57,13 @@ final class MakeCloseCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$folder = new SplFileInfo($this->folder);
+		$folder = new SplFileInfo(WORKING_DIR);
 		$config = $this->getConfig();
 
 		$finder = (new Finder)->ignoreDotFiles(false)
 			->in($folder->getPathname());
 
-		if (!$this->isForced) {
+		if (!$input->getOption('force')) {
 			$finder->exclude($config->getExcludeFolders());
 		}
 
@@ -93,7 +73,7 @@ final class MakeCloseCommand extends AbstractConfigAwareCommand
 
 		$progress = new ProgressBar($output, false);
 		$progress->execute($finder, function($progress, $file) use ($config) {
-			$progress->setMessage(str_replace($this->folder, '.', $file->getPathname()));
+			$progress->setMessage(str_replace(WORKING_DIR, '.', $file->getPathname()));
 			$progress->advance();
 
 			foreach ($config->getRules() as $rule) {

@@ -10,6 +10,7 @@ namespace JuniWalk\Darwin\Commands;
 use JuniWalk\Darwin\Tools\ProgressBar;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -27,6 +28,8 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 	{
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
+
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force removal of email logs too');
 	}
 
 
@@ -47,11 +50,8 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 			->files()->notName('index.*')
 			->in($loggingDir);
 
-		// Ignore folder with sended emails and any *.eml files
-		$finder->exclude($loggingDir.'/mails')->notName('*.eml');
-
-		if (!$finder->hasResults()) {
-			return Command::SUCCESS;
+		if (!$input->getOption('force')) {
+			$finder->exclude($loggingDir.'/mails')->notName('*.eml');
 		}
 
 		$progress = new ProgressBar($output, false);

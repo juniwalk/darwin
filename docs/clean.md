@@ -28,8 +28,10 @@ clean:logs
 Remove all error logs
 
 ```
-$ darwin clean:logs
+$ darwin clean:logs --force
 ```
+
+- `--force`: force permission fix even on excluded folders
 
 
 clean:sessions
