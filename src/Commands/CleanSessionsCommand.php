@@ -45,7 +45,7 @@ final class CleanSessionsCommand extends AbstractConfigAwareCommand
 				return $status->setStatus($status::SKIPPED);
 			}
 
-			return $this->exec('rm', '-rf', $sessionDir.'*');
+			return $this->exec('rm', '-rf', $sessionDir.'/*');
 		});
 
 		$output->writeln('');

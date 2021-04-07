@@ -53,7 +53,7 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 		foreach ($cacheDirs as $dir) {
 			$status->setMessage('Clear directory: <comment>'.$dir.'</>');
 			$status->execute(function($status) use ($dir) {
-				return $this->exec('rm', '-rf', $dir.'*');
+				return $this->exec('rm', '-rf', $dir.'/*');
 			});
 		}
 
