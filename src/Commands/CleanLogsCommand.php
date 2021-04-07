@@ -47,6 +47,9 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 			->files()->notName('index.*')
 			->in($loggingDir);
 
+		// Do not clear logs of sended emails
+		$finder->exclude($loggingDir.'/mails');
+
 		if (!$finder->hasResults()) {
 			return Command::SUCCESS;
 		}
