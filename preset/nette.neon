@@ -1,13 +1,13 @@
-sessionDir: temp/sessions/
-loggingDir: log/
+sessionDir: temp/sessions
+loggingDir: log
 cacheDirs:
-	- temp/cache/
-	- temp/proxies/
-	- www/static/
+	- temp/cache
+	- temp/proxies
+	- www/static
 
 excludePaths:
-	- temp/sessions/
-	- vendor/
+	- temp/sessions
+	- vendor
 
 rules:
 	'/\/(.*)/i':

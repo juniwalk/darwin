@@ -1,8 +1,8 @@
-sessionDir: /var/lib/php/sessions/dp/www/%projectName%/
-loggingDir: var/logs/
+sessionDir: /var/lib/php/sessions/dp/www/%projectName%
+loggingDir: var/logs
 cacheDirs:
-	- var/cache/
-	- cache/
+	- var/cache
+	- cache
 
 excludePaths:
 	- vendor
