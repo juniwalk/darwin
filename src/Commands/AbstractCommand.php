@@ -117,7 +117,9 @@ abstract class AbstractCommand extends Command
 	 */
 	protected function exec(string ... $command): int
 	{
-		$process = new Process($command);
+		$command = implode(' ', $command);
+
+		$process = Process::fromShellCommandline($command);
 		$process->setTty(Process::isTtySupported());
 
 		return $process->run(function($type, $buffer) {
