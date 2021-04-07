@@ -25,8 +25,8 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 		'make:locked',		// lock access
 		'code:pull',		// pull new source code
 		'code:install',		// install dependencies
-		'clean:cache',		// clear cache
 		'schema:migrate',	// migrate database
+		'clean:cache',		// clear cache
 		'code:warmup',		// warmup cache
 	];
 
