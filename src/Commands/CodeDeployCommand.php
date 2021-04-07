@@ -68,9 +68,12 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		$arguments = new ArgvInput;
+		$arguments->setInteractive(false);
+
 		foreach ($this->commandList as $commandName) {
 			$command = $this->findCommand($commandName);
-			$code = $command->run(new ArgvInput, $output);
+			$code = $command->run($arguments, $output);
 
 			if ($code !== Command::SUCCESS) {
 				throw CommandFailedException::fromName($commandName);
