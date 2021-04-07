@@ -28,6 +28,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 		'schema:migrate',	// migrate database
 		'clean:cache',		// clear cache
 		'code:warmup',		// warmup cache
+		'make:close',		// fix permission
 	];
 
 
@@ -52,7 +53,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		if ($input->getOption('skip-migrations')) {
-			unset($this->commandList[4]);
+			unset($this->commandList[3]);
 		}
 
 		parent::initialize($input, $output);
