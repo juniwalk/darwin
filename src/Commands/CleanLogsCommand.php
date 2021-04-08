@@ -51,8 +51,8 @@ final class CleanLogsCommand extends AbstractConfigAwareCommand
 			->in($loggingDir);
 
 		if (!$input->getOption('force')) {
-			$finder->exclude($loggingDir.'/mails')->notName('*.eml');
-			$finder->exclude($loggingDir.'/prod');
+			$finder->exclude('mails')->notName('*.eml');
+			$finder->exclude('prod');
 		}
 
 		$progress = new ProgressBar($output, false);
