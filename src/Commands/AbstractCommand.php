@@ -8,6 +8,7 @@
 namespace JuniWalk\Darwin\Commands;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,10 +32,11 @@ abstract class AbstractCommand extends Command
 	/**
 	 * @param  string  $name
 	 * @return Command
+	 * @throws CommandNotFoundException
 	 */
-	public function findCommand(string $name): Command
+	public function getCommand(string $name): Command
 	{
-		return $this->getApplication()->find($name);
+		return $this->getApplication()->get($name);
 	}
 
 

@@ -63,7 +63,7 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 
 		$params = new ArrayInput([]);
 		$params->setInteractive(false);
-		$fixCommand = $this->findCommand('make:close');
+		$fixCommand = $this->getCommand('make:close');
 		$fixCommand->run($params, $output);
 
 		return Command::SUCCESS;
