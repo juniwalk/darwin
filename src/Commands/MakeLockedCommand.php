@@ -40,16 +40,24 @@ final class MakeLockedCommand extends AbstractConfigAwareCommand
 		$status = new StatusIndicator($output);
 		$output->writeln('');
 
-		$status->setMessage('Locking access to the web page');
-		$code = $status->execute(function($status) {
-			$config = $this->getConfig();
-			$isWebLocked = $this->exec('test', '-e', $config->getLockFile());
+		$config = $this->getConfig();
+		$lockFile = $config->getLockFile();
+		$unlockFile = $config->getUnlockFile();
 
-			if ($isWebLocked === Command::SUCCESS) {
+		$status->setMessage('Locking access to the web page');
+		$code = $status->execute(function($status) use ($lockFile, $unlockFile) {
+			$hasLockFile = $this->exec('test', '-e', $lockFile);
+			$hasUnlockFile = $this->exec('test', '-e', $unlockFile);
+
+			if ($hasLockFile === Command::SUCCESS) {
 				return $status->setStatus($status::SKIPPED);
 			}
 
-			return $this->exec('mv', $config->getUnlockFile(), $config->getLockFile());
+			if ($hasUnlockFile === Command::FAILURE) {
+				return $status->setStatus($status::SKIPPED);
+			}
+
+			return $this->exec('mv', $unlockFile, $lockFile);
 		});
 
 		$output->writeln('');
