@@ -7,8 +7,8 @@
 
 namespace JuniWalk\Darwin\Commands;
 
+use JuniWalk\Darwin\Rule;
 use JuniWalk\Darwin\Tools\ProgressBar;
-use JuniWalk\Darwin\Tools\Rule;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
