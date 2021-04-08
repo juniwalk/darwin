@@ -20,19 +20,6 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	protected static $defaultDescription = 'Deploy pending updates to the project';
 	protected static $defaultName = 'code:deploy';
 
-	/** @var string[] */
-	private $commandList = [
-		'make:locked' => [],
-		'code:pull' => [],
-		'code:install' => [],
-		'schema:migrate' => [],
-		'clean:cache' => [
-			'--skip-fix' => true
-		],
-		'code:warmup' => [],
-		'make:close' => [],
-	];
-
 
 	/**
 	 * @return void
@@ -42,23 +29,6 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
 		$this->setAliases(['deploy']);
-
-		$this->addOption('skip-migrations', 'm', InputOption::VALUE_NONE, 'Do not execute schema migrations');
-	}
-
-
-	/**
-	 * @param  InputInterface  $input
-	 * @param  OutputInterface  $output
-	 * @return void
-	 */
-	protected function initialize(InputInterface $input, OutputInterface $output): void
-	{
-		if ($input->getOption('skip-migrations')) {
-			unset($this->commandList['schema:migrate']);
-		}
-
-		parent::initialize($input, $output);
 	}
 
 
@@ -70,11 +40,17 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		foreach ($this->commandList as $commandName => $arguments) {
+		$config = $this->getConfig();
+
+		if (!$commandList = $config->getDeployCommands()) {
+			throw CommandFailedException::fromName(static::$defaultName);
+		}
+
+		foreach ($commandList as $commandName => $arguments) {
 			$arguments = new ArrayInput($arguments);
 			$arguments->setInteractive(false);
 
-			$command = $this->findCommand($commandName);
+			$command = $this->getCommand($commandName);
 			$code = $command->run($arguments, $output);
 
 			if ($code === Command::FAILURE) {

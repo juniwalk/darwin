@@ -32,6 +32,9 @@ final class Configuration
 	private $lockingFiles;
 
 	/** @var string[] */
+	private $deployCommands;
+
+	/** @var string[] */
 	private $excludePaths;
 
 	/** @var Rule[] */
@@ -115,6 +118,15 @@ final class Configuration
 	/**
 	 * @return string[]
 	 */
+	public function getDeployCommands(): iterable
+	{
+		return $this->deployCommands;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
 	public function getExcludeFolders(): iterable
 	{
 		return $this->excludePaths;
@@ -166,6 +178,9 @@ final class Configuration
 				'lock' => Expect::string('www/lock.phtml'),
 				'unlock' => Expect::string('www/lock.off'),
 			]),
+			'deployCommands' => Expect::arrayOf(
+				Expect::arrayOf('string|int|bool')
+			),
 			'excludePaths' => Expect::listOf(
 				Expect::string()->assert('is_dir')
 			),
