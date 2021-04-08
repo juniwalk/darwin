@@ -97,7 +97,7 @@ final class ImageShrinkCommand extends AbstractCommand
 		$path = $file->getPathname();
 		$image = Image::fromFile($path, $format);
 
-		if ($this->size && ($image->getWidth() <= $this->size && $image->getHeight() <= $this->size)) {
+		if (!$this->size || ($image->getWidth() <= $this->size && $image->getHeight() <= $this->size)) {
 			return;
 		}
 
