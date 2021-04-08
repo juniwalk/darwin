@@ -9,7 +9,7 @@ namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Exception\CommandFailedException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,13 +22,15 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 
 	/** @var string[] */
 	private $commandList = [
-		'make:locked',		// lock access
-		'code:pull',		// pull new source code
-		'code:install',		// install dependencies
-		'schema:migrate',	// migrate database
-		'clean:cache',		// clear cache
-		'code:warmup',		// warmup cache
-		'make:close',		// fix permission
+		'make:locked' => [],
+		'code:pull' => [],
+		'code:install' => [],
+		'schema:migrate' => [],
+		'clean:cache' => [
+			'--skip-fix' => true
+		],
+		'code:warmup' => [],
+		'make:close' => [],
 	];
 
 
@@ -68,14 +70,14 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$arguments = new ArgvInput;
-		$arguments->setInteractive(false);
+		foreach ($this->commandList as $commandName => $arguments) {
+			$arguments = new ArrayInput($arguments);
+			$arguments->setInteractive(false);
 
-		foreach ($this->commandList as $commandName) {
 			$command = $this->findCommand($commandName);
 			$code = $command->run($arguments, $output);
 
-			if ($code !== Command::SUCCESS) {
+			if ($code === Command::FAILURE) {
 				throw CommandFailedException::fromName($commandName);
 			}
 		}
