@@ -55,7 +55,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		if ($input->getOption('skip-migrations')) {
-			unset($this->commandList[3]);
+			unset($this->commandList['schema:migrate']);
 		}
 
 		parent::initialize($input, $output);
