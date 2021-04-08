@@ -1,0 +1,10 @@
+rules:
+	'/\/(.*)/i':
+		owner: root
+		mode: [0644, 0755]
+	'/\/(.*)\.sh$/i':
+		owner: root
+		mode: [null, 0755]
+	'/\/(avatar|cache|compile|logs?|images|media|te?mp|xml|static)/i':
+		owner: www-data
+		mode: [0644, 0755]
