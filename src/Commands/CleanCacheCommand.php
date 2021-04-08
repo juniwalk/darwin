@@ -9,7 +9,7 @@ namespace JuniWalk\Darwin\Commands;
 
 use JuniWalk\Darwin\Tools\StatusIndicator;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,7 +61,7 @@ final class CleanCacheCommand extends AbstractConfigAwareCommand
 			return Command::SUCCESS;
 		}
 
-		$params = new ArgvInput;
+		$params = new ArrayInput([]);
 		$params->setInteractive(false);
 		$fixCommand = $this->findCommand('make:close');
 		$fixCommand->run($params, $output);
