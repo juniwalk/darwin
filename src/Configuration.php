@@ -169,10 +169,10 @@ final class Configuration
 	private function getConfigSchema(): Schema\Schema
 	{
 		return Expect::structure([
-			'sessionDir' => Expect::string()->assert('is_dir'),
-			'loggingDir' => Expect::string()->assert('is_dir'),
+			'sessionDir' => Expect::string(),
+			'loggingDir' => Expect::string(),
 			'cacheDirs' => Expect::listOf(
-				Expect::string()->assert('is_dir')
+				Expect::string(),
 			),
 			'lockingFiles' => Expect::structure([
 				'lock' => Expect::string('www/lock.phtml'),
@@ -182,7 +182,7 @@ final class Configuration
 				Expect::arrayOf('string|int|bool')
 			),
 			'excludePaths' => Expect::listOf(
-				Expect::string()->assert('is_dir')
+				Expect::string()
 			),
 			'rules' => Expect::arrayOf(
 				Expect::structure([
