@@ -25,6 +25,9 @@ final class Configuration
 	/** @var string */
 	private $loggingDir;
 
+	/** @var string */
+	private $assetsDir;
+
 	/** @var string[] */
 	private $cacheDirs;
 
@@ -85,6 +88,15 @@ final class Configuration
 	public function getLoggingDir(): ?string
 	{
 		return $this->loggingDir;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getAssetsDir(): ?string
+	{
+		return $this->assetsDir;
 	}
 
 
@@ -171,6 +183,7 @@ final class Configuration
 		return Expect::structure([
 			'sessionDir' => Expect::string(),
 			'loggingDir' => Expect::string(),
+			'assetsDir' => Expect::string(),
 			'cacheDirs' => Expect::listOf(
 				Expect::string(),
 			),

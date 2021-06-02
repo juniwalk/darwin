@@ -15,6 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class CodePullCommand extends AbstractConfigAwareCommand
 {
 	/** @var string */
+	const YARNRC_FILE = '.yarnrc';
+
+	/** @var string */
 	protected static $defaultDescription = 'Pull repository changes';
 	protected static $defaultName = 'code:pull';
 
@@ -40,6 +43,18 @@ final class CodePullCommand extends AbstractConfigAwareCommand
 		$config = $this->getConfig();
 
 		$this->writeHeader('Updating source code of the application');
+
+		$status->setMessage('Create '.self::YARNRC_FILE.' configuration');
+		$status->execute(function($status) use ($config) {
+			if (!$assetsDir = $config->getAssetsDir()) {
+				return $status->setStatus($status::SKIPPED);
+			}
+
+			$content = $this->createYarnFile($assetsDir);
+			$file = getcwd().'/'.self::YARNRC_FILE;
+
+			return $this->exec('echo', '"'.$content.'"', '>', $file);
+		});
 
 		$status->setMessage('Create directory for PHP sessions');
 		$status->execute(function($status) use ($config) {
@@ -81,5 +96,18 @@ final class CodePullCommand extends AbstractConfigAwareCommand
 		$output->writeln('');
 
 		return Command::SUCCESS;
+	}
+
+
+	/**
+	 * @param  string  $assetsDir
+	 * @return string
+	 */
+	public function createYarnFile(string $assetsDir): string
+	{
+		return implode(PHP_EOL, [
+			'# ./'.self::YARNRC_FILE,
+			'--modules-folder '.getcwd().'/'.$assetsDir,
+		]);
 	}
 }

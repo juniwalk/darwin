@@ -1,5 +1,6 @@
 sessionDir: temp/sessions
 loggingDir: log
+assetsDir: www/vendor
 cacheDirs:
 	- temp/cache
 	- temp/proxies
@@ -7,7 +8,6 @@ cacheDirs:
 
 deployCommands:
 	make:locked: []		# lock access
-	make:yarnrc: []		# create .yarnrc file
 	code:pull: []		# pull new source code
 	code:install: []	# install dependencies
 	schema:migrate: []	# migrate database
