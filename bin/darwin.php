@@ -42,6 +42,7 @@ $darwin->addCommands([
 	new Commands\MakeLockedCommand,
 	new Commands\MakeOpenCommand,
 	new Commands\MakeUnlockedCommand,
+	new Commands\MakeYarnrcCommand,
 
 	// Schema commands
 	new Commands\SchemaDiffCommand,

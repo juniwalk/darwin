@@ -7,6 +7,7 @@ cacheDirs:
 
 deployCommands:
 	make:locked: []		# lock access
+	make:yarnrc: []		# create .yarnrc file
 	code:pull: []		# pull new source code
 	code:install: []	# install dependencies
 	schema:migrate: []	# migrate database
