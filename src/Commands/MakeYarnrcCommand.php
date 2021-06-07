@@ -78,14 +78,10 @@ final class MakeYarnrcCommand extends AbstractCommand
 
 		$status->setMessage('Creating <comment>'.self::YARNRC_FILE.'</> file');
 		$code = $status->execute(function($status) {
-			$status = file_put_contents(
-				getcwd().'/'.self::YARNRC_FILE,
-				$this->createYarnFile()
-			);
+			$content = $this->createYarnFile(self::VENDOR_PATH);
+			$file = getcwd().'/'.self::YARNRC_FILE;
 
-			return $status > 0
-				? Command::SUCCESS
-				: Command::FAILURE;
+			return $this->exec('echo', '"'.$content.'"', '>', $file);
 		});
 
 		$output->writeln('');
@@ -94,13 +90,16 @@ final class MakeYarnrcCommand extends AbstractCommand
 
 
 	/**
+	 * @param  string  $assetsDir
 	 * @return string
 	 */
-	private function createYarnFile(): string
+	public function createYarnFile(string $assetsDir): string
 	{
 		return implode(PHP_EOL, [
 			'# ./'.self::YARNRC_FILE,
-			'--modules-folder '.getcwd().'/'.self::VENDOR_PATH,
+			'--modules-folder '.getcwd().'/'.$assetsDir,
+			'env:',
+			'  NODE_PATH "'.getcwd().'/'.$assetsDir.'"',
 		]);
 	}
 }
