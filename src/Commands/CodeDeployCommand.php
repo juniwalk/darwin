@@ -49,7 +49,7 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 		}
 
 		if ($input->getOption('unlock')) {
-			$commandList[MakeUnlockedCommand::$defaultName] = [];
+			$commandList['make:unlocked'] = [];
 		}
 
 		foreach ($commandList as $commandName => $arguments) {
