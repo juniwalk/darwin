@@ -29,6 +29,8 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 		$this->setDescription(static::$defaultDescription);
 		$this->setName(static::$defaultName);
 		$this->setAliases(['deploy']);
+
+		$this->addOption('unlock', 'u', InputOption::VALUE_NONE, 'Unlock application afterwards');
 	}
 
 
@@ -44,6 +46,10 @@ final class CodeDeployCommand extends AbstractConfigAwareCommand
 
 		if (!$commandList = $config->getDeployCommands()) {
 			throw CommandFailedException::fromName(static::$defaultName);
+		}
+
+		if ($input->getOption('unlock')) {
+			$commandList[MakeUnlockedCommand::$defaultName] = [];
 		}
 
 		foreach ($commandList as $commandName => $arguments) {
