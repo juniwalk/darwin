@@ -48,3 +48,12 @@ UNLOCK access into website
 ```
 $ darwin make:unlocked
 ```
+
+
+make:yarnrc | yarn
+----------------------
+Create .yarnrc file from current working directory
+
+```
+$ darwin make:yarnrc
+```

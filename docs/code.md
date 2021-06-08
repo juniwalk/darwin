@@ -17,10 +17,10 @@ code:deploy | deploy
 Deploy pending updates to the project
 
 ```
-$ darwin code:deploy --skip-migrations
+$ darwin code:deploy --unlock
 ```
 
-- `--skip-migrations`: do not execute schema migrations
+- `--unlock`: unlock application afterwards
 
 
 code:install
